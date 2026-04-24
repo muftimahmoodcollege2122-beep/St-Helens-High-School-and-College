@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal – MMPC D.I. Khan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --nv:#0d1f4a; --nv2:#1a3270; --nv3:#2a4494;
+  --gd:#c8952a; --gd2:#e8b84b; --gd3:#f5d78e;
+  --wh:#fff; --of:#f4f6fb; --gr:#6b7280;
+  --gn:#38a169; --rd:#e53e3e; --bd:#e2e8f0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--of);color:#1a1a2e;min-height:100vh}
+
+/* Nav */
+nav{background:var(--nv2);border-bottom:3px solid var(--gd);box-shadow:0 4px 20px rgba(0,0,0,.3);position:sticky;top:0;z-index:99}
+.navi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:var(--gd2);font-family:'Playfair Display',serif}
+.brand-txt{color:var(--wh);font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2}
+.brand-txt small{display:block;font-family:'Nunito',sans-serif;font-size:.6rem;color:var(--gd2);letter-spacing:.07em;font-weight:600}
+.nav-back{color:var(--gd2);text-decoration:none;font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:.4rem;transition:.2s}
+.nav-back:hover{color:var(--wh)}
+
+/* Hero banner */
+.portal-hero{background:linear-gradient(160deg,var(--nv) 0%,var(--nv2) 55%,#1e3d8f 100%);padding:3.5rem 1.5rem 5rem;text-align:center;position:relative;overflow:hidden}
+.portal-hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 80px)}
+.portal-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,var(--of),transparent)}
+.ph-inner{position:relative;z-index:2}
+.ph-badge{display:inline-block;background:var(--gd);color:var(--nv);font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:4px 16px;border-radius:2px;margin-bottom:1rem}
+.portal-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,4vw,2.8rem);color:var(--wh);font-weight:900;margin-bottom:.5rem}
+.portal-hero h1 em{color:var(--gd2);font-style:normal}
+.portal-hero p{color:rgba(255,255,255,.6);font-size:.9rem;max-width:480px;margin:0 auto}
+
+/* Search card */
+.search-wrap{max-width:600px;margin:-2.5rem auto 0;padding:0 1.2rem;position:relative;z-index:10}
+.search-card{background:var(--wh);border-radius:14px;box-shadow:0 8px 40px rgba(13,31,74,.15);padding:2rem;border-top:4px solid var(--gd)}
+.search-card h2{font-family:'Playfair Display',serif;color:var(--nv);font-size:1.25rem;margin-bottom:.3rem}
+.search-card p{color:var(--gr);font-size:.82rem;margin-bottom:1.4rem}
+.form-row{display:flex;gap:.8rem;flex-wrap:wrap}
+.form-row .fg{flex:1;min-width:140px}
+.form-row .fg-main{flex:2;min-width:200px}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--nv);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.05em}
+input, select{width:100%;padding:10px 14px;border:1.5px solid var(--bd);border-radius:7px;font-family:'Nunito',sans-serif;font-size:.9rem;color:#1a1a2e;outline:none;transition:.2s;background:#fff}
+input:focus, select:focus{border-color:var(--gd);box-shadow:0 0 0 3px rgba(200,149,42,.12)}
+.btn-search{width:100%;margin-top:1.2rem;padding:12px;background:var(--gd);color:var(--nv);border:none;border-radius:7px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;letter-spacing:.04em;transition:.2s}
+.btn-search:hover{background:var(--gd2);transform:translateY(-2px)}
+.btn-search:disabled{opacity:.6;transform:none;cursor:not-allowed}
+
+/* Result area */
+.result-area{max-width:800px;margin:2.5rem auto 3rem;padding:0 1.2rem}
+
+/* Error / info box */
+.msg-box{background:var(--wh);border-radius:12px;padding:2rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.msg-box.err{border-top:4px solid var(--rd)}
+.msg-box.info{border-top:4px solid var(--gd)}
+.msg-box .ic{font-size:2.5rem;margin-bottom:.7rem}
+.msg-box h3{font-family:'Playfair Display',serif;color:var(--nv);margin-bottom:.4rem}
+.msg-box p{color:var(--gr);font-size:.85rem}
+
+/* Result card */
+.res-card{background:var(--wh);border-radius:14px;overflow:hidden;box-shadow:0 6px 30px rgba(13,31,74,.12);margin-bottom:1.5rem}
+.res-header{background:linear-gradient(135deg,var(--nv),var(--nv3));padding:1.5rem;color:var(--wh);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem}
+.res-header-left h3{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:.3rem}
+.res-header-left p{color:rgba(255,255,255,.65);font-size:.8rem}
+.res-badge{background:var(--gd);color:var(--nv);font-size:.72rem;font-weight:800;letter-spacing:.08em;padding:5px 14px;border-radius:20px;text-transform:uppercase;white-space:nowrap;height:fit-content}
+
+.res-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;border-bottom:1px solid var(--bd)}
+.res-meta-item{padding:1rem 1.4rem;text-align:center;border-right:1px solid var(--bd)}
+.res-meta-item:last-child{border-right:none}
+.rmi-label{font-size:.68rem;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.rmi-val{font-size:1rem;font-weight:800;color:var(--nv);font-family:'Playfair Display',serif}
+
+/* Subject table */
+.sub-table-wrap{padding:1.4rem}
+.sub-table-wrap h4{font-family:'Playfair Display',serif;color:var(--nv);font-size:1rem;margin-bottom:1rem;border-bottom:2px solid var(--of);padding-bottom:.6rem}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--of);color:var(--nv);font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:9px 12px;text-align:left}
+thead th:last-child{text-align:right}
+tbody tr{border-bottom:1px solid var(--bd);transition:.15s}
+tbody tr:hover{background:rgba(200,149,42,.04)}
+tbody tr:last-child{border-bottom:none}
+tbody td{padding:10px 12px;font-size:.88rem;color:#1a1a2e}
+tbody td:last-child{text-align:right}
+.grade-pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.72rem;font-weight:800}
+.grade-A{background:rgba(56,161,105,.12);color:#276749}
+.grade-B{background:rgba(44,122,123,.12);color:#276749}
+.grade-C{background:rgba(200,149,42,.12);color:#92660a}
+.grade-F{background:rgba(229,62,62,.12);color:#c53030}
+
+/* Total row */
+.total-row td{font-weight:800;color:var(--nv);background:rgba(200,149,42,.06);border-top:2px solid var(--bd)}
+
+/* Remarks */
+.remarks-box{margin:0 1.4rem 1.4rem;padding:1rem;background:var(--of);border-radius:8px;border-left:4px solid var(--gd)}
+.remarks-box span{font-size:.72rem;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem}
+.remarks-box p{font-size:.88rem;color:var(--nv);font-style:italic}
+
+/* Print btn */
+.print-row{display:flex;justify-content:flex-end;gap:.8rem;padding:1rem 1.4rem;border-top:1px solid var(--bd)}
+.btn-print{padding:9px 22px;background:var(--nv);color:var(--wh);border:none;border-radius:6px;font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-print:hover{background:var(--nv2)}
+
+/* Footer */
+footer{background:var(--nv);color:rgba(255,255,255,.5);text-align:center;padding:1.5rem;font-size:.78rem}
+footer a{color:var(--gd2);text-decoration:none}
+
+/* Spinner */
+.spinner{display:inline-block;width:22px;height:22px;border:3px solid rgba(255,255,255,.3);border-top-color:var(--wh);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Tablet (max 768px) */
+@media(max-width:768px){
+  .portal-hero{padding:2.5rem 1rem 4rem}
+  .search-wrap{padding:0 1rem}
+  .search-card{padding:1.5rem}
+  .result-area{padding:0 1rem}
+  .res-header{padding:1.2rem}
+  .res-meta{grid-template-columns:1fr 1fr}
+  .res-meta-item:nth-child(2){border-right:none}
+  .res-meta-item{border-bottom:1px solid var(--bd)}
+  .res-meta-item:nth-last-child(-n+2){border-bottom:none}
+  .sub-table-wrap{padding:1rem}
+  .print-row{padding:.8rem 1rem;gap:.6rem}
+  .btn-print{padding:8px 16px;font-size:.78rem}
+}
+
+/* Mobile (max 540px) */
+@media(max-width:540px){
+  .navi{height:56px}
+  .brand-txt{font-size:.78rem}
+  .brand-logo{width:38px;height:38px;font-size:1rem}
+  .portal-hero h1{font-size:1.5rem}
+  .ph-badge{font-size:.6rem}
+  .search-card{padding:1.2rem}
+  .search-card h2{font-size:1.05rem}
+  .form-row{flex-direction:column}
+  .form-row .fg, .form-row .fg-main{min-width:unset;width:100%}
+  .res-header{flex-direction:column;gap:.7rem}
+  .res-header-left h3{font-size:1.1rem}
+  .res-meta{grid-template-columns:1fr 1fr}
+  .res-meta-item{border-right:none;border-bottom:1px solid var(--bd);padding:.75rem 1rem}
+  .res-meta-item:last-child{border-bottom:none}
+  .rmi-val{font-size:.9rem}
+  table{font-size:.78rem}
+  thead th{padding:7px 8px;font-size:.65rem}
+  tbody td{padding:8px}
+  .grade-pill{padding:2px 7px;font-size:.65rem}
+  .print-row{flex-direction:column}
+  .btn-print{width:100%;text-align:center}
+  .remarks-box{margin:0 1rem 1rem}
+}
+
+/* Small mobile (max 380px) */
+@media(max-width:380px){
+  .brand-txt{display:none}
+  .portal-hero{padding:2rem .75rem 3.5rem}
+  .search-wrap{padding:0 .75rem}
+  .search-card{padding:1rem}
+  .result-area{padding:0 .75rem}
+  table{font-size:.72rem}
+  thead th{padding:6px 6px}
+  tbody td{padding:7px 6px}
+}
+
+@media print{
+  nav,footer,.search-wrap,.nav-back,#result-area .msg-box{display:none!important}
+  body{background:#fff;margin:0}
+  .portal-hero{display:none}
+  .result-area{margin:0;padding:0;max-width:100%}
+  .res-card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
+  .print-row{display:none!important}
+  @page{margin:15mm;size:A4}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="navi">
+    <a class="brand" href="/">
+      <div class="brand-logo" style="background:none;padding:0;overflow:hidden"><img src="/images/logo.jpg" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+      <div class="brand-txt">Mufti Mahmood Public School &amp; College<small>D.I. Khan, KPK, Pakistan</small></div>
+    </a>
+    <a class="nav-back" href="/">← Back to Website</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="portal-hero">
+  <div class="ph-inner">
+    <div class="ph-badge">🎓 Student Portal</div>
+    <h1>Check Your <em>Result</em></h1>
+    <div style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1rem;flex-wrap:wrap">
+      <button onclick="portalTab('results')" id="ptab-results"
+        style="padding:.5rem 1.2rem;border-radius:20px;border:none;cursor:pointer;font-weight:600;background:#1a3a6b;color:#fff;font-size:.85rem">📊 Results</button>
+      <button onclick="portalTab('attendance')" id="ptab-attendance"
+        style="padding:.5rem 1.2rem;border-radius:20px;border:2px solid #1a3a6b;cursor:pointer;font-weight:600;background:transparent;color:#1a3a6b;font-size:.85rem">📋 Attendance</button>
+    </div>
+    <p id="portal-desc">Enter your Roll Number to view your exam result and subject-wise marks.</p>
+  </div>
+</div>
+
+<!-- Search Card -->
+<div class="search-wrap">
+  <div class="search-card">
+    <h2>Result Lookup</h2>
+    <p>Enter your roll number below. Optionally filter by exam name and year.</p>
+    <div class="form-row">
+      <div class="fg-main">
+        <label for="inp-roll">Roll Number *</label>
+        <input type="text" id="inp-roll" placeholder="e.g. 1001" autocomplete="off"
+          onkeydown="if(event.key==='Enter') searchResult()">
+      </div>
+      <div class="fg">
+        <label for="inp-exam">Exam (optional)</label>
+        <select id="inp-exam">
+          <option value="">Any Exam</option>
+          <option>Annual 2025</option>
+          <option>Mid-Term 2025</option>
+          <option>Annual 2024</option>
+          <option>Mid-Term 2024</option>
+          <option>Annual 2023</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-search" id="btn-search" onclick="searchResult()">🔍 Search Result</button>
+  </div>
+</div>
+
+<!-- Result Output Area -->
+<div class="result-area" id="result-area"></div>
+<div class="result-area" id="att-area" style="display:none">
+  <div style="background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08);padding:1.5rem;margin-bottom:1rem">
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
+      <input type="text" id="att-portal-roll" placeholder="Roll Number"
+        style="padding:.5rem .8rem;border-radius:8px;border:1px solid #ddd;font-size:.9rem;flex:1;min-width:120px">
+      <input type="month" id="att-portal-month"
+        style="padding:.5rem .8rem;border-radius:8px;border:1px solid #ddd;font-size:.9rem">
+      <button onclick="loadPortalAtt()"
+        style="padding:.5rem 1.2rem;border-radius:8px;background:#1a3a6b;color:#fff;border:none;cursor:pointer;font-weight:600">View</button>
+    </div>
+    <div id="att-portal-result">
+      <p style="color:#aaa;text-align:center">Enter roll number and select month</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 Mufti Mahmood Public School &amp; College – D.I. Khan &nbsp;|&nbsp;
+  <a href="/">Visit Website</a>
+</footer>
+
+<script>
+async function searchResult() {
+  const rollNo = document.getElementById('inp-roll').value.trim();
+  const exam   = document.getElementById('inp-exam').value;
+  const area   = document.getElementById('result-area');
+  const btn    = document.getElementById('btn-search');
+
+  if (!rollNo) {
+    area.innerHTML = msgBox('err','❗','Roll Number Required','Please enter your roll number to search.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Searching…';
+  area.innerHTML = '';
+
+  try {
+    let url = `/api/results/lookup?rollNo=${encodeURIComponent(rollNo)}`;
+    if (exam) url += `&exam=${encodeURIComponent(exam)}`;
+
+    const res  = await fetch(url);
+    const json = await res.json();
+
+    if (!json.success) {
+      area.innerHTML = msgBox('err','😔','No Result Found',
+        `No result was found for roll number <strong>${rollNo}</strong>. Please check your roll number or contact the school office.`);
+    } else {
+      area.innerHTML = json.data.map(r => renderResult(r)).join('');
+    }
+  } catch {
+    area.innerHTML = msgBox('err','⚠️','Connection Error','Could not connect to the server. Please try again later.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Search Result';
+    area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function msgBox(type, icon, title, text) {
+  return `<div class="msg-box ${type}">
+    <div class="ic">${icon}</div>
+    <h3>${title}</h3>
+    <p>${text}</p>
+  </div>`;
+}
+
+function getGrade(obtained, total) {
+  const pct = (obtained / total) * 100;
+  if (pct >= 80) return { g: 'A', cls: 'grade-A' };
+  if (pct >= 65) return { g: 'B', cls: 'grade-B' };
+  if (pct >= 50) return { g: 'C', cls: 'grade-C' };
+  return { g: 'F', cls: 'grade-F' };
+}
+
+function renderResult(r) {
+  const totalObtained = r.subjects.reduce((s, sub) => s + Number(sub.obtainedMarks), 0);
+  const totalMax      = r.subjects.reduce((s, sub) => s + Number(sub.totalMarks), 0);
+  const pct           = totalMax > 0 ? ((totalObtained / totalMax) * 100).toFixed(1) : 0;
+  const overall       = getGrade(totalObtained, totalMax);
+  const passed        = overall.g !== 'F';
+
+  const subRows = r.subjects.map(sub => {
+    const g = getGrade(sub.obtainedMarks, sub.totalMarks);
+    const subPct = ((sub.obtainedMarks / sub.totalMarks) * 100).toFixed(0);
+    return `<tr>
+      <td>${sub.name}</td>
+      <td>${sub.totalMarks}</td>
+      <td><strong>${sub.obtainedMarks}</strong></td>
+      <td>${subPct}%</td>
+      <td><span class="grade-pill ${g.cls}">${g.g}</span></td>
+    </tr>`;
+  }).join('');
+
+  const remarksHtml = r.remarks
+    ? `<div class="remarks-box"><span>Remarks</span><p>${r.remarks}</p></div>`
+    : '';
+
+  return `
+  <div class="res-card">
+    <div class="res-header">
+      <div class="res-header-left">
+        <h3>${r.studentName}</h3>
+        <p>Roll No: ${r.rollNo} &nbsp;·&nbsp; Class ${r.class}${r.section ? ' – ' + r.section : ''}</p>
+        <p style="margin-top:.25rem">${r.exam} – ${r.year}</p>
+      </div>
+      <div class="res-badge">${passed ? '✅ PASSED' : '❌ FAILED'}</div>
+    </div>
+
+    <div class="res-meta">
+      <div class="res-meta-item">
+        <div class="rmi-label">Total Marks</div>
+        <div class="rmi-val">${totalMax}</div>
+      </div>
+      <div class="res-meta-item">
+        <div class="rmi-label">Obtained</div>
+        <div class="rmi-val">${totalObtained}</div>
+      </div>
+      <div class="res-meta-item">
+        <div class="rmi-label">Percentage</div>
+        <div class="rmi-val">${pct}%</div>
+      </div>
+      <div class="res-meta-item">
+        <div class="rmi-label">Grade</div>
+        <div class="rmi-val" style="color:var(--gd)">${overall.g}</div>
+      </div>
+    </div>
+
+    <div class="sub-table-wrap">
+      <h4>📋 Subject-wise Marks</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Total</th>
+            <th>Obtained</th>
+            <th>%</th>
+            <th style="text-align:right">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${subRows}
+          <tr class="total-row">
+            <td>TOTAL</td>
+            <td>${totalMax}</td>
+            <td>${totalObtained}</td>
+            <td>${pct}%</td>
+            <td style="text-align:right"><span class="grade-pill ${overall.cls}">${overall.g}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    ${remarksHtml}
+
+    <div class="print-row">
+      <button class="btn-print" onclick="window.print()">🖨 Print Result</button>
+    </div>
+  </div>`;
+}
+
+function portalTab(tab) {
+  document.getElementById('result-area').style.display = tab === 'results' ? '' : 'none';
+  document.getElementById('att-area').style.display    = tab === 'attendance' ? '' : 'none';
+  document.getElementById('portal-desc').textContent   = tab === 'results'
+    ? 'Enter your Roll Number to view your exam result and subject-wise marks.'
+    : 'Enter your Roll Number to view monthly attendance.';
+  document.getElementById('ptab-results').style.background    = tab === 'results' ? '#1a3a6b' : 'transparent';
+  document.getElementById('ptab-results').style.color         = tab === 'results' ? '#fff' : '#1a3a6b';
+  document.getElementById('ptab-results').style.border        = tab === 'results' ? 'none' : '2px solid #1a3a6b';
+  document.getElementById('ptab-attendance').style.background = tab === 'attendance' ? '#1a3a6b' : 'transparent';
+  document.getElementById('ptab-attendance').style.color      = tab === 'attendance' ? '#fff' : '#1a3a6b';
+  document.getElementById('ptab-attendance').style.border     = tab === 'attendance' ? 'none' : '2px solid #1a3a6b';
+}
+
+async function loadPortalAtt() {
+  const rollNo = document.getElementById('att-portal-roll').value.trim();
+  const month  = document.getElementById('att-portal-month').value;
+  const div    = document.getElementById('att-portal-result');
+  if (!rollNo || !month) { div.innerHTML = '<p style="color:#e53935">Please enter roll number and select month.</p>'; return; }
+
+  div.innerHTML = '<p style="color:#aaa">Loading...</p>';
+  try {
+    const res  = await fetch(`/api/attendance/student/${encodeURIComponent(rollNo)}?month=${month}`);
+    const json = await res.json();
+    const data = json?.data || [];
+    if (!data.length) { div.innerHTML = '<p style="color:#aaa">No attendance records found for this month.</p>'; return; }
+
+    const present = data.filter(a => a.status === 'Present').length;
+    const absent  = data.filter(a => a.status === 'Absent').length;
+    const late    = data.filter(a => a.status === 'Late').length;
+    const total   = data.length;
+    const pct     = total ? Math.round((present / total) * 100) : 0;
+    const pctColor = pct >= 75 ? '#2e7d32' : pct >= 50 ? '#e65100' : '#c62828';
+
+    div.innerHTML = `
+      <h3 style="margin-bottom:.8rem;color:#1a3a6b">${data[0]?.studentName || ''} — ${month}</h3>
+      <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.2rem">
+        <div style="background:#e8f5e9;padding:.6rem 1rem;border-radius:10px;text-align:center;flex:1;min-width:70px">
+          <div style="font-size:1.3rem;font-weight:700;color:#2e7d32">${present}</div>
+          <div style="font-size:.72rem;color:#555">Present</div>
+        </div>
+        <div style="background:#fce4ec;padding:.6rem 1rem;border-radius:10px;text-align:center;flex:1;min-width:70px">
+          <div style="font-size:1.3rem;font-weight:700;color:#c62828">${absent}</div>
+          <div style="font-size:.72rem;color:#555">Absent</div>
+        </div>
+        <div style="background:#fff3e0;padding:.6rem 1rem;border-radius:10px;text-align:center;flex:1;min-width:70px">
+          <div style="font-size:1.3rem;font-weight:700;color:#e65100">${late}</div>
+          <div style="font-size:.72rem;color:#555">Late</div>
+        </div>
+        <div style="background:#e3f2fd;padding:.6rem 1rem;border-radius:10px;text-align:center;flex:1;min-width:70px">
+          <div style="font-size:1.3rem;font-weight:700;color:${pctColor}">${pct}%</div>
+          <div style="font-size:.72rem;color:#555">Rate</div>
+        </div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:.83rem">
+        <thead><tr style="background:#f5f7fb">
+          <th style="padding:.5rem;text-align:left;border-bottom:1px solid #eee">Date</th>
+          <th style="padding:.5rem;text-align:left;border-bottom:1px solid #eee">Status</th>
+        </tr></thead>
+        <tbody>${data.map(a => {
+          const color = a.status === 'Present' ? '#2e7d32' : a.status === 'Absent' ? '#c62828' : '#e65100';
+          const icon  = a.status === 'Present' ? '✅' : a.status === 'Absent' ? '❌' : '🕐';
+          return `<tr><td style="padding:.4rem .5rem;border-bottom:1px solid #f0f0f0">${a.date}</td>
+                  <td style="padding:.4rem .5rem;border-bottom:1px solid #f0f0f0;color:${color};font-weight:600">${icon} ${a.status}</td></tr>`;
+        }).join('')}</tbody>
+      </table>`;
+  } catch(e) {
+    div.innerHTML = '<p style="color:#e53935">Error loading attendance. Please try again.</p>';
+  }
+}
+
+// Set default month for portal
+document.addEventListener('DOMContentLoaded', () => {
+  const m = document.getElementById('att-portal-month');
+  if (m) m.value = new Date().toISOString().slice(0,7);
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "mmpc-school-system",
+  "version": "2.0.0",
+  "description": "Mufti Mehmood College — D.I. Khan — Single-Tenant School Management System",
+  "main": "server.js",
+  "scripts": {
+    "start":    "node server.js",
+    "dev":      "nodemon server.js",
+    "seed":     "node server/seed.js",
+    "migrate":  "node server/db/migrate.js",
+    "setup":    "node server/setup-passwords.js"
+  },
+  "dependencies": {
+    "bcryptjs":         "^2.4.3",
+    "better-sqlite3":   "^9.4.3",
+    "cors":             "^2.8.5",
+    "dotenv":           "^16.0.3",
+    "express":          "^4.18.2",
+    "jsonwebtoken":     "^9.0.0",
+    "multer":           "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teacher Panel — MMPC D.I. Khan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nv:#1a3a6b;--nv2:#2a5298;--gn:#1b5e20;--gn2:#2e7d32;
+  --gd:#e65100;--rd:#c62828;--wh:#fff;--bg:#f0f4f8;
+  --card:#fff;--border:#e2e8f0;--txt:#1a202c;--muted:#718096;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* ── Login Screen ── */
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--nv) 0%,var(--nv2) 100%);z-index:9999}
+.login-screen-inner{width:100%;max-width:420px;padding:1rem}
+.login-box{background:#fff;border-radius:16px;padding:2.5rem;width:100%;max-width:400px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.login-logo{text-align:center;margin-bottom:1.5rem}
+.login-logo .ic{font-size:3rem;display:block;margin-bottom:.5rem}
+.login-logo h2{color:var(--nv);font-size:1.3rem;font-weight:800}
+.login-logo p{color:var(--muted);font-size:.85rem;margin-top:.2rem}
+.login-box label{display:block;font-size:.83rem;font-weight:700;color:var(--muted);margin-bottom:.2rem;margin-top:1rem}
+.login-box input{width:100%;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;transition:border .2s}
+.login-box input:focus{outline:none;border-color:var(--nv)}
+.login-btn{width:100%;margin-top:1.5rem;padding:.8rem;background:var(--nv);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;transition:background .2s}
+.login-btn:hover{background:var(--nv2)}
+#login-err{color:var(--rd);font-size:.82rem;margin-top:.5rem;text-align:center;min-height:1.2rem}
+
+/* ── App Layout ── */
+#app{display:none}
+.topbar{background:var(--nv);color:#fff;padding:.75rem 1.2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.topbar-left{display:flex;align-items:center;gap:.8rem}
+.topbar-left .ic{font-size:1.5rem}
+.topbar-title{font-weight:800;font-size:1rem}
+.topbar-sub{font-size:.75rem;opacity:.7}
+.topbar-right{display:flex;align-items:center;gap:.8rem}
+.teacher-badge{background:rgba(255,255,255,.15);padding:.3rem .8rem;border-radius:20px;font-size:.8rem;font-weight:700}
+.logout-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.3rem .8rem;border-radius:8px;cursor:pointer;font-size:.8rem;font-family:inherit}
+
+/* ── Tab Navigation ── */
+.tabs{background:#fff;border-bottom:2px solid var(--border);display:flex;overflow-x:auto;position:sticky;top:56px;z-index:99}
+.tab-btn{padding:.8rem 1.2rem;border:none;background:none;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:700;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn.active{color:var(--nv);border-bottom-color:var(--nv)}
+
+/* ── Content ── */
+.content{padding:1.2rem;max-width:900px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+
+/* ── Cards ── */
+.card{background:var(--card);border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:1rem;overflow:hidden}
+.card-hdr{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.card-hdr h3{font-size:.95rem;font-weight:800;color:var(--nv)}
+.card-body{padding:1.2rem}
+
+/* ── Buttons ── */
+.btn{padding:.5rem 1rem;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.83rem;font-weight:700;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.btn-gn{background:var(--gn2);color:#fff}
+.btn-nv{background:var(--nv);color:#fff}
+.btn-gd{background:var(--gd);color:#fff}
+.btn-rd{background:var(--rd);color:#fff}
+.btn-sm{padding:.3rem .7rem;font-size:.75rem}
+
+/* ── Stat Chips ── */
+.chips{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}
+.chip{padding:.4rem .9rem;border-radius:20px;font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:.3rem}
+.chip-gn{background:#e8f5e9;color:#2e7d32}
+.chip-rd{background:#fce4ec;color:#c62828}
+.chip-gd{background:#fff3e0;color:#e65100}
+.chip-nv{background:#e3f2fd;color:#1565c0}
+
+/* ── Forms ── */
+.form-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}
+.form-row select,.form-row input{padding:.45rem .7rem;border-radius:8px;border:1.5px solid var(--border);font-size:.83rem;font-family:inherit;background:#fff}
+.form-row select:focus,.form-row input:focus{outline:none;border-color:var(--nv)}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{background:#f7fafc;color:var(--muted);font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;padding:.6rem .8rem;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:.55rem .8rem;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafcff}
+.empty{text-align:center;padding:2.5rem;color:var(--muted)}
+.empty .ei{font-size:2.5rem;margin-bottom:.5rem}
+
+/* ── Attendance Status Buttons ── */
+.att-btns{display:flex;gap:.3rem}
+.att-btn{padding:.25rem .6rem;border-radius:16px;border:none;cursor:pointer;font-size:.72rem;font-weight:700;font-family:inherit;transition:all .15s}
+
+/* ── Homework card ── */
+.hw-card{background:#f7fafc;border-radius:10px;padding:1rem;margin-bottom:.7rem;border-left:4px solid var(--nv)}
+.hw-card .hw-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem}
+.hw-card .hw-subj{font-weight:800;color:var(--nv);font-size:.88rem}
+.hw-card .hw-date{font-size:.75rem;color:var(--muted)}
+.hw-card .hw-desc{font-size:.83rem;color:var(--txt);margin-top:.4rem}
+.hw-card .hw-due{font-size:.75rem;color:var(--gd);font-weight:700;margin-top:.3rem}
+
+/* ── Save message ── */
+.save-msg{font-size:.82rem;font-weight:700;min-height:1.2rem}
+
+/* ── Modal ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-hdr{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-hdr h3{font-size:.95rem;font-weight:800;color:var(--nv)}
+.modal-cls{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted)}
+.modal-body{padding:1.2rem}
+.modal-body label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:.2rem;margin-top:.8rem}
+.modal-body label:first-child{margin-top:0}
+.modal-body input,.modal-body textarea,.modal-body select{width:100%;padding:.55rem .8rem;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem;font-family:inherit}
+.modal-body input:focus,.modal-body textarea:focus,.modal-body select:focus{outline:none;border-color:var(--nv)}
+
+@media(max-width:600px){
+  .content{padding:.8rem}
+  .card-body{padding:.9rem}
+  .topbar-sub{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ LOGIN ══════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="/images/logo.jpg" alt="MMPC Logo" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #c8a84b;display:block;margin:0 auto .8rem;box-shadow:0 4px 16px rgba(0,0,0,.2)">
+      <h2>Teacher Panel</h2>
+      <p>Mufti Mahmood Public School &amp; College</p>
+      <p style="font-size:.75rem;color:#aaa;margin-top:.2rem">D.I. Khan, Khyber Pakhtunkhwa</p>
+    </div>
+    <label>Username</label>
+    <input type="text" id="t-user" placeholder="Enter your username" autocomplete="username">
+    <label>Password</label>
+    <input type="password" id="t-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div id="login-err"></div>
+    <button class="login-btn" onclick="doLogin()">🔐 Login</button>
+    <p style="text-align:center;font-size:.75rem;color:#aaa;margin-top:1.2rem">© Mufti Mahmood Public School &amp; College</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ APP ════════════════════════════════════ -->
+<div id="app">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="/images/logo.jpg" alt="Logo" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #c8a84b;flex-shrink:0">
+      <div>
+        <div class="topbar-title">MMPC — Teacher Panel</div>
+        <div class="topbar-sub" id="t-classinfo">Loading...</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="teacher-badge" id="t-namebadge">Teacher</span>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('attendance',this)">📋 Attendance</button>
+    <button class="tab-btn" onclick="showTab('homework',this)">📚 Homework</button>
+    <button class="tab-btn" onclick="showTab('results',this)">📊 Results</button>
+    <button class="tab-btn" onclick="showTab('students',this)">👥 My Students</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════ ATTENDANCE ══════════ -->
+    <div class="panel active" id="panel-attendance">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📋 Mark Attendance</h3>
+          <div class="form-row" style="margin:0">
+            <input type="date" id="att-t-date" onchange="loadTAttStudents()">
+            <button class="btn btn-gn btn-sm" onclick="markAllPresent()">✅ All Present</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chips">
+            <span class="chip chip-gn">✅ Present: <b id="t-cnt-p">0</b></span>
+            <span class="chip chip-rd">❌ Absent: <b id="t-cnt-a">0</b></span>
+            <span class="chip chip-gd">🕐 Late: <b id="t-cnt-l">0</b></span>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Roll No</th><th>Student</th><th>Status</th></tr></thead>
+              <tbody id="tb-t-att">
+                <tr><td colspan="4" class="empty"><div class="ei">📋</div><p>Loading students...</p></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:1rem;display:flex;gap:.7rem;align-items:center">
+            <button class="btn btn-gn" onclick="saveTeacherAttendance()">💾 Save Attendance</button>
+            <span class="save-msg" id="t-att-msg"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ HOMEWORK ══════════ -->
+    <div class="panel" id="panel-homework">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📚 Homework</h3>
+          <button class="btn btn-nv" onclick="openModal('modal-hw')">+ Add Homework</button>
+        </div>
+        <div class="card-body">
+          <div id="hw-list"><div class="empty"><div class="ei">📚</div><p>No homework posted yet.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ RESULTS ══════════ -->
+    <div class="panel" id="panel-results">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📊 Class Results</h3>
+          <div class="form-row" style="margin:0">
+            <select id="res-t-exam" onchange="loadTeacherResults()">
+              <option value="">All Exams</option>
+              <option>Monthly Test</option><option>Mid-Term</option>
+              <option>Final</option><option>Annual</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Roll No</th><th>Student</th><th>Exam</th><th>Year</th><th>Total</th><th>%</th><th>Grade</th></tr></thead>
+              <tbody id="tb-t-results">
+                <tr><td colspan="7" class="empty"><div class="ei">📊</div><p>Loading results...</p></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ STUDENTS ══════════ -->
+    <div class="panel" id="panel-students">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>👥 My Students</h3>
+          <span id="t-student-count" style="font-size:.82rem;color:var(--muted)"></span>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Roll No</th><th>Name</th><th>Father</th><th>Phone</th><th>Gender</th></tr></thead>
+              <tbody id="tb-t-students">
+                <tr><td colspan="5" class="empty"><div class="ei">👥</div><p>Loading...</p></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- ══════════════════ HOMEWORK MODAL ══════════════════ -->
+<div class="modal-bg" id="modal-hw">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>📚 Post Homework</h3>
+      <button class="modal-cls" onclick="closeModal('modal-hw')">✕</button>
+    </div>
+    <div class="modal-body">
+      <label>Subject</label>
+      <input type="text" id="hw-subject" placeholder="e.g. Mathematics">
+      <label>Description</label>
+      <textarea id="hw-desc" rows="3" placeholder="What students need to do..."></textarea>
+      <label>Due Date</label>
+      <input type="date" id="hw-due">
+      <button class="btn btn-nv" onclick="postHomework()" style="width:100%;margin-top:1rem">Post Homework</button>
+      <p id="hw-msg" style="font-size:.82rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let tToken   = localStorage.getItem('teacher_token') || '';
+let tTeacher = null;
+let tStudents = [];
+let tAttExisting = [];
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const username = document.getElementById('t-user').value.trim();
+  const password = document.getElementById('t-pass').value.trim();
+  const errEl    = document.getElementById('login-err');
+  errEl.textContent = '';
+  if (!username || !password) { errEl.textContent = 'Enter username and password.'; return; }
+
+  try {
+    const res  = await fetch('/api/teacher-auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!data.success) { errEl.textContent = data.message || 'Invalid credentials.'; return; }
+    tToken   = data.token;
+    tTeacher = data.teacher;
+    localStorage.setItem('teacher_token', tToken);
+    initApp();
+  } catch (e) { errEl.textContent = 'Server error. Try again.'; }
+}
+
+function doLogout() {
+  localStorage.removeItem('teacher_token');
+  location.reload();
+}
+
+async function checkAuth() {
+  if (!tToken) return false;
+  try {
+    const res  = await fetch('/api/teacher-auth/me', { headers: { Authorization: `Bearer ${tToken}` } });
+    const data = await res.json();
+    if (!data.success) return false;
+    tTeacher = data.teacher;
+    return true;
+  } catch { return false; }
+}
+
+// ── API Helper ────────────────────────────────────────────────────────────────
+async function tFetch(url, method = 'GET', body = null) {
+  const opts = { method, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tToken}` } };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const res  = await fetch(url, opts);
+    return await res.json();
+  } catch { return null; }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function initApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('t-namebadge').textContent   = tTeacher.name || tTeacher.username;
+  document.getElementById('t-classinfo').textContent   = tTeacher.assignedClass
+    ? `Class ${tTeacher.assignedClass} — Section ${tTeacher.assignedSection || 'A'}`
+    : 'No class assigned';
+  document.getElementById('att-t-date').value = new Date().toISOString().split('T')[0];
+  await loadTStudents();
+  loadTAttStudents();
+  loadHomework();
+  loadTeacherResults();
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(tab, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ── Students ──────────────────────────────────────────────────────────────────
+async function loadTStudents() {
+  const res = await tFetch('/api/teacher-panel/students');
+  tStudents = res?.data || [];
+  document.getElementById('t-student-count').textContent = `${tStudents.length} students`;
+  const tbody = document.getElementById('tb-t-students');
+  if (!tStudents.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty"><div class="ei">👥</div><p>No students found for your class.</p></td></tr>';
+    return;
+  }
+  tbody.innerHTML = tStudents.map(s => `
+    <tr>
+      <td><b>${s.rollNo}</b></td>
+      <td>${s.name}</td>
+      <td>${s.fatherName || '—'}</td>
+      <td>${s.fatherPhone || s.phone || '—'}</td>
+      <td>${s.gender}</td>
+    </tr>`).join('');
+}
+
+// ── Attendance ────────────────────────────────────────────────────────────────
+async function loadTAttStudents() {
+  const date = document.getElementById('att-t-date').value;
+  if (!date || !tStudents.length) return;
+
+  // Load existing for this date
+  const res    = await tFetch(`/api/teacher-panel/attendance?date=${date}`);
+  tAttExisting = res?.data || [];
+  renderTAttTable();
+}
+
+function renderTAttTable() {
+  const tbody = document.getElementById('tb-t-att');
+  if (!tStudents.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty"><div class="ei">👥</div><p>No students in your class.</p></td></tr>';
+    return;
+  }
+  tbody.innerHTML = tStudents.map((s, i) => {
+    const ex     = tAttExisting.find(a => a.rollNo === s.rollNo);
+    const status = ex?.status || 'Present';
+    const colors = { Present: '#2e7d32', Absent: '#c62828', Late: '#e65100' };
+    const bgs    = { Present: '#e8f5e9', Absent: '#fce4ec', Late: '#fff3e0' };
+    return `<tr>
+      <td>${i+1}</td>
+      <td><b>${s.rollNo}</b></td>
+      <td>${s.name}</td>
+      <td>
+        <div class="att-btns">
+          ${['Present','Absent','Late'].map(st => `
+            <button class="att-btn" id="tb-${st[0].toLowerCase()}-${s.rollNo}"
+              onclick="tSetStatus('${s.rollNo}','${st}')"
+              style="background:${status===st?bgs[st]:'#f0f0f0'};color:${status===st?colors[st]:'#888'};border:2px solid ${status===st?colors[st]:'transparent'}">
+              ${st==='Present'?'✅':st==='Absent'?'❌':'🕐'} ${st}
+            </button>`).join('')}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+  updateTCounts();
+}
+
+function tSetStatus(rollNo, status) {
+  const idx = tAttExisting.findIndex(a => a.rollNo === rollNo);
+  if (idx !== -1) tAttExisting[idx].status = status;
+  else tAttExisting.push({ rollNo, status });
+  const colors = { Present: '#2e7d32', Absent: '#c62828', Late: '#e65100' };
+  const bgs    = { Present: '#e8f5e9', Absent: '#fce4ec', Late: '#fff3e0' };
+  ['Present','Absent','Late'].forEach(st => {
+    const btn = document.getElementById(`tb-${st[0].toLowerCase()}-${rollNo}`);
+    if (!btn) return;
+    btn.style.background  = st===status ? bgs[st] : '#f0f0f0';
+    btn.style.color       = st===status ? colors[st] : '#888';
+    btn.style.border      = `2px solid ${st===status ? colors[st] : 'transparent'}`;
+  });
+  updateTCounts();
+}
+
+function markAllPresent() {
+  tStudents.forEach(s => tSetStatus(s.rollNo, 'Present'));
+}
+
+function updateTCounts() {
+  let p=0,a=0,l=0;
+  tStudents.forEach(s => {
+    const r  = tAttExisting.find(x => x.rollNo === s.rollNo);
+    const st = r?.status || 'Present';
+    if (st==='Present') p++; else if (st==='Absent') a++; else l++;
+  });
+  document.getElementById('t-cnt-p').textContent = p;
+  document.getElementById('t-cnt-a').textContent = a;
+  document.getElementById('t-cnt-l').textContent = l;
+}
+
+async function saveTeacherAttendance() {
+  const date = document.getElementById('att-t-date').value;
+  const msg  = document.getElementById('t-att-msg');
+  if (!date || !tStudents.length) return;
+  const records = tStudents.map(s => {
+    const r = tAttExisting.find(x => x.rollNo === s.rollNo);
+    return { rollNo: s.rollNo, studentName: s.name, status: r?.status || 'Present' };
+  });
+  const res = await tFetch('/api/teacher-panel/attendance', 'POST', { date, records });
+  if (res?.success) {
+    msg.textContent = '✅ ' + res.message; msg.style.color = '#2e7d32';
+    setTimeout(() => msg.textContent = '', 4000);
+  } else {
+    msg.textContent = '❌ Error saving'; msg.style.color = '#c62828';
+  }
+}
+
+// ── Homework ──────────────────────────────────────────────────────────────────
+async function loadHomework() {
+  const res  = await tFetch('/api/teacher-panel/homework');
+  const data = res?.data || [];
+  const div  = document.getElementById('hw-list');
+  if (!data.length) {
+    div.innerHTML = '<div class="empty"><div class="ei">📚</div><p>No homework posted yet.</p></div>'; return;
+  }
+  div.innerHTML = data.map(h => `
+    <div class="hw-card">
+      <div class="hw-top">
+        <span class="hw-subj">📖 ${h.subject}</span>
+        <button onclick="deleteHW('${h._id}')" style="background:#fce4ec;color:#c62828;border:none;border-radius:6px;padding:.2rem .6rem;cursor:pointer;font-size:.72rem;font-weight:700">Delete</button>
+      </div>
+      <div class="hw-desc">${h.description}</div>
+      ${h.dueDate ? `<div class="hw-due">📅 Due: ${h.dueDate}</div>` : ''}
+      <div class="hw-date" style="margin-top:.3rem">Posted: ${new Date(h.createdAt).toLocaleDateString()}</div>
+    </div>`).join('');
+}
+
+async function postHomework() {
+  const subject     = document.getElementById('hw-subject').value.trim();
+  const description = document.getElementById('hw-desc').value.trim();
+  const dueDate     = document.getElementById('hw-due').value;
+  const msg         = document.getElementById('hw-msg');
+  if (!subject || !description) { msg.textContent = '❌ Subject and description required.'; msg.style.color='#c62828'; return; }
+  const res = await tFetch('/api/teacher-panel/homework', 'POST', { subject, description, dueDate });
+  if (res?.success) {
+    msg.textContent = '✅ Posted!'; msg.style.color = '#2e7d32';
+    loadHomework();
+    setTimeout(() => { closeModal('modal-hw'); msg.textContent=''; }, 1200);
+  } else { msg.textContent = '❌ Error'; msg.style.color='#c62828'; }
+}
+
+async function deleteHW(id) {
+  if (!confirm('Delete this homework?')) return;
+  await tFetch(`/api/teacher-panel/homework/${id}`, 'DELETE');
+  loadHomework();
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+async function loadTeacherResults() {
+  const exam = document.getElementById('res-t-exam')?.value || '';
+  const res  = await tFetch(`/api/teacher-panel/results${exam ? '?exam=' + encodeURIComponent(exam) : ''}`);
+  const data = res?.data || [];
+  const tbody = document.getElementById('tb-t-results');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty"><div class="ei">📊</div><p>No results found.</p></td></tr>'; return;
+  }
+  tbody.innerHTML = data.map(r => {
+    const total    = r.subjects?.reduce((s,x) => s + (x.totalMarks||0), 0) || 0;
+    const obtained = r.subjects?.reduce((s,x) => s + (x.obtainedMarks||0), 0) || 0;
+    const pct      = total ? Math.round((obtained/total)*100) : 0;
+    const grade    = pct>=90?'A+':pct>=80?'A':pct>=70?'B':pct>=60?'C':pct>=50?'D':'F';
+    const gc       = pct>=60?'#2e7d32':pct>=40?'#e65100':'#c62828';
+    return `<tr>
+      <td><b>${r.rollNo}</b></td>
+      <td>${r.studentName}</td>
+      <td>${r.exam}</td>
+      <td>${r.year}</td>
+      <td>${obtained}/${total}</td>
+      <td style="color:${gc};font-weight:700">${pct}%</td>
+      <td style="color:${gc};font-weight:800">${grade}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+(async () => {
+  if (tToken && await checkAuth()) initApp();
+})();
+</script>
+</body>
+</html>

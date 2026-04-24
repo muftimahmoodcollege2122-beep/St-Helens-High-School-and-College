@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parent Portal — MMPC D.I. Khan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nv:#1a3a6b;--nv2:#2a5298;--gn:#2e7d32;--rd:#c62828;--gd:#e65100;
+  --wh:#fff;--bg:#f0f4f8;--card:#fff;--border:#e2e8f0;--txt:#1a202c;--muted:#718096;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,var(--nv) 0%,var(--nv2) 100%);padding:2.5rem 1.2rem 4rem;text-align:center;position:relative}
+.hero h1{color:#fff;font-size:clamp(1.4rem,4vw,2rem);font-weight:900}
+.hero p{color:rgba(255,255,255,.7);font-size:.88rem;margin-top:.4rem}
+.hero-wave{position:absolute;bottom:0;left:0;right:0;height:40px;background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0}
+
+/* ── Search Box ── */
+.search-box{max-width:500px;margin:-1rem auto 1.5rem;padding:0 1rem;position:relative;z-index:10}
+.search-card{background:#fff;border-radius:16px;padding:1.4rem;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.search-card h3{font-size:.9rem;font-weight:800;color:var(--nv);margin-bottom:.8rem;text-align:center}
+.search-row{display:flex;gap:.5rem}
+.search-row input{flex:1;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;font-family:inherit}
+.search-row input:focus{outline:none;border-color:var(--nv)}
+.search-btn{padding:.65rem 1.2rem;background:var(--nv);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:800;font-size:.88rem;white-space:nowrap}
+
+/* ── Student Card ── */
+.wrap{max-width:700px;margin:0 auto;padding:0 1rem 3rem}
+.student-card{background:#fff;border-radius:14px;padding:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+.stu-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--nv),var(--nv2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;flex-shrink:0;overflow:hidden}
+.stu-avatar img{width:100%;height:100%;object-fit:cover}
+.stu-info h3{font-size:1rem;font-weight:800;color:var(--nv)}
+.stu-info p{font-size:.8rem;color:var(--muted);margin-top:.1rem}
+.stu-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem}
+.stu-badge{background:#e3f2fd;color:#1565c0;font-size:.72rem;font-weight:700;padding:.2rem .6rem;border-radius:20px}
+
+/* ── Tabs ── */
+.tabs{display:flex;background:#fff;border-radius:12px;padding:.3rem;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:1rem;overflow-x:auto;gap:.2rem}
+.tab{flex:1;padding:.55rem;border:none;background:none;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:700;color:var(--muted);border-radius:8px;white-space:nowrap;transition:all .2s;text-align:center}
+.tab.active{background:var(--nv);color:#fff}
+
+/* ── Panel ── */
+.panel{display:none}.panel.active{display:block}
+
+/* ── Card ── */
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:1rem;overflow:hidden}
+.card-hdr{padding:.9rem 1.1rem;border-bottom:1px solid var(--border);font-weight:800;font-size:.88rem;color:var(--nv);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.card-body{padding:1.1rem}
+
+/* ── Stat chips ── */
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.chip{padding:.4rem .9rem;border-radius:20px;font-size:.8rem;font-weight:700}
+.chip-gn{background:#e8f5e9;color:#2e7d32}
+.chip-rd{background:#fce4ec;color:#c62828}
+.chip-gd{background:#fff3e0;color:#e65100}
+.chip-nv{background:#e3f2fd;color:#1565c0}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:#f7fafc;color:var(--muted);font-weight:700;font-size:.73rem;text-transform:uppercase;padding:.55rem .7rem;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:.5rem .7rem;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+
+/* ── Fee item ── */
+.fee-item{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0;border-bottom:1px solid #f5f5f5}
+.fee-item:last-child{border-bottom:none}
+.fee-month{font-weight:700;font-size:.88rem}
+.fee-amount{font-size:.82rem;color:var(--muted)}
+.fee-status{padding:.25rem .7rem;border-radius:20px;font-size:.73rem;font-weight:700}
+.fee-paid{background:#e8f5e9;color:#2e7d32}
+.fee-unpaid{background:#fce4ec;color:#c62828}
+.fee-partial{background:#fff3e0;color:#e65100}
+
+/* ── Homework card ── */
+.hw-item{background:#f7fafc;border-radius:10px;padding:.9rem;margin-bottom:.6rem;border-left:4px solid var(--nv)}
+.hw-subj{font-weight:800;color:var(--nv);font-size:.85rem}
+.hw-desc{font-size:.82rem;color:var(--txt);margin-top:.3rem}
+.hw-due{font-size:.75rem;color:var(--gd);font-weight:700;margin-top:.3rem}
+
+/* ── Notice ── */
+.notice-item{padding:.8rem 0;border-bottom:1px solid #f5f5f5}
+.notice-item:last-child{border-bottom:none}
+.notice-title{font-weight:700;font-size:.88rem}
+.notice-date{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+
+/* ── Empty ── */
+.empty{text-align:center;padding:2rem;color:var(--muted)}
+.empty .ei{font-size:2rem;margin-bottom:.5rem}
+
+/* ── Result card ── */
+.result-item{background:#f7fafc;border-radius:10px;padding:1rem;margin-bottom:.8rem}
+.result-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.7rem;flex-wrap:wrap;gap:.4rem}
+.result-exam{font-weight:800;color:var(--nv)}
+.result-grade{font-size:1.3rem;font-weight:900}
+.progress-bar{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden;margin-bottom:.5rem}
+.progress-fill{height:100%;border-radius:3px;transition:width .6s}
+
+/* ── Month picker ── */
+.picker-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.picker-row input,.picker-row select{padding:.4rem .7rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:inherit}
+.picker-row input:focus,.picker-row select:focus{outline:none;border-color:var(--nv)}
+.btn-sm{padding:.35rem .8rem;background:var(--nv);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:700}
+
+/* ── Hidden until student loaded ── */
+#main-content{display:none}
+#intro-msg{text-align:center;padding:2rem;color:var(--muted)}
+#intro-msg .ei{font-size:2.5rem;margin-bottom:.5rem}
+
+@media(max-width:500px){
+  .hero{padding:2rem 1rem 3.5rem}
+  .card-body{padding:.9rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <img src="/images/logo.jpg" alt="MMPC Logo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #c8a84b;display:block;margin:0 auto .8rem">
+  <h1>Parent & Student Portal</h1>
+  <p>Mufti Mahmood Public School & College — D.I. Khan</p>
+  <div class="hero-wave"></div>
+</div>
+
+<!-- ══ SEARCH ══ -->
+<div class="search-box">
+  <div class="search-card">
+    <h3>🔍 Enter Roll Number to View Your Child's Info</h3>
+    <div class="search-row">
+      <input type="text" id="p-rollno" placeholder="e.g. 1001" onkeydown="if(event.key==='Enter')loadStudent()">
+      <button class="search-btn" onclick="loadStudent()">View →</button>
+    </div>
+    <p id="p-err" style="font-size:.78rem;color:#c62828;margin-top:.5rem;text-align:center;min-height:.9rem"></p>
+  </div>
+</div>
+
+<!-- ══ CONTENT ══ -->
+<div class="wrap">
+
+  <div id="intro-msg">
+    <div class="ei">👨‍👩‍👧</div>
+    <p>Enter your child's roll number above to view<br>fees, attendance, results and homework.</p>
+  </div>
+
+  <div id="main-content">
+
+    <!-- Student Card -->
+    <div class="student-card" id="stu-card">
+      <div class="stu-avatar" id="stu-avatar">?</div>
+      <div class="stu-info">
+        <h3 id="stu-name">—</h3>
+        <p id="stu-father">—</p>
+        <div class="stu-badges">
+          <span class="stu-badge" id="stu-class">—</span>
+          <span class="stu-badge" id="stu-roll">—</span>
+          <span class="stu-badge" id="stu-gender">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('fees',this)">💰 Fees</button>
+      <button class="tab" onclick="showTab('attendance',this)">📋 Attendance</button>
+      <button class="tab" onclick="showTab('results',this)">📊 Results</button>
+      <button class="tab" onclick="showTab('homework',this)">📚 Homework</button>
+      <button class="tab" onclick="showTab('notices',this)">📢 Notices</button>
+    </div>
+
+    <!-- ══ FEES PANEL ══ -->
+    <div class="panel active" id="panel-fees">
+      <div class="card">
+        <div class="card-hdr">
+          💰 Fee Status
+          <div class="chips" style="margin:0">
+            <span class="chip chip-gn">Paid: <b id="f-paid">0</b></span>
+            <span class="chip chip-rd">Unpaid: <b id="f-unpaid">0</b></span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="fee-list"><div class="empty"><div class="ei">💰</div><p>Loading fees...</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ATTENDANCE PANEL ══ -->
+    <div class="panel" id="panel-attendance">
+      <div class="card">
+        <div class="card-hdr">
+          📋 Attendance
+          <div class="picker-row" style="margin:0">
+            <input type="month" id="p-att-month">
+            <button class="btn-sm" onclick="loadAttendance()">View</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chips" id="att-chips" style="display:none">
+            <span class="chip chip-gn">Present: <b id="p-cnt-p">0</b></span>
+            <span class="chip chip-rd">Absent: <b id="p-cnt-a">0</b></span>
+            <span class="chip chip-gd">Late: <b id="p-cnt-l">0</b></span>
+            <span class="chip chip-nv">Rate: <b id="p-att-rate">0%</b></span>
+          </div>
+          <div id="att-list"><div class="empty"><div class="ei">📋</div><p>Select month and click View.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RESULTS PANEL ══ -->
+    <div class="panel" id="panel-results">
+      <div class="card">
+        <div class="card-hdr">📊 Exam Results</div>
+        <div class="card-body">
+          <div id="results-list"><div class="empty"><div class="ei">📊</div><p>Loading results...</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HOMEWORK PANEL ══ -->
+    <div class="panel" id="panel-homework">
+      <div class="card">
+        <div class="card-hdr">📚 Homework</div>
+        <div class="card-body">
+          <div id="hw-list"><div class="empty"><div class="ei">📚</div><p>Loading homework...</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NOTICES PANEL ══ -->
+    <div class="panel" id="panel-notices">
+      <div class="card">
+        <div class="card-hdr">📢 School Notices</div>
+        <div class="card-body">
+          <div id="notice-list"><div class="empty"><div class="ei">📢</div><p>Loading notices...</p></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /wrap -->
+
+<script>
+let pStudent = null;
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(tab, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ── Load student ──────────────────────────────────────────────────────────────
+async function loadStudent() {
+  const rollNo = document.getElementById('p-rollno').value.trim();
+  const err    = document.getElementById('p-err');
+  err.textContent = '';
+  if (!rollNo) { err.textContent = 'Please enter a roll number.'; return; }
+
+  try {
+    const res  = await fetch(`/api/parent/student/${encodeURIComponent(rollNo)}`);
+    const data = await res.json();
+    if (!data.success) { err.textContent = data.message || 'Student not found.'; return; }
+    pStudent = data.data;
+    renderStudentCard();
+    document.getElementById('intro-msg').style.display    = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    loadFees(); loadResults(); loadHomework(); loadNotices();
+    // Set default month for attendance
+    const m = document.getElementById('p-att-month');
+    if (m && !m.value) m.value = new Date().toISOString().slice(0,7);
+    loadAttendance();
+  } catch (e) { err.textContent = 'Error loading student. Try again.'; }
+}
+
+function renderStudentCard() {
+  const s = pStudent;
+  document.getElementById('stu-name').textContent   = s.name;
+  document.getElementById('stu-father').textContent = s.fatherName ? `Father: ${s.fatherName}` : '';
+  document.getElementById('stu-class').textContent  = `Class ${s.class}${s.section ? '-'+s.section : ''}`;
+  document.getElementById('stu-roll').textContent   = `Roll: ${s.rollNo}`;
+  document.getElementById('stu-gender').textContent = s.gender;
+  const av = document.getElementById('stu-avatar');
+  if (s.photo) { av.innerHTML = `<img src="${s.photo}" alt="photo">`; }
+  else { av.textContent = s.name?.charAt(0)?.toUpperCase() || '?'; }
+}
+
+// ── Fees ──────────────────────────────────────────────────────────────────────
+async function loadFees() {
+  const res  = await fetch(`/api/parent/fees/${encodeURIComponent(pStudent.rollNo)}`);
+  const data = (await res.json())?.data || [];
+  const div  = document.getElementById('fee-list');
+  const paid   = data.filter(f => f.status === 'Paid').length;
+  const unpaid = data.filter(f => f.status === 'Unpaid').length;
+  document.getElementById('f-paid').textContent   = paid;
+  document.getElementById('f-unpaid').textContent = unpaid;
+  if (!data.length) { div.innerHTML = '<div class="empty"><div class="ei">💰</div><p>No fee records found.</p></div>'; return; }
+  div.innerHTML = data.map(f => {
+    const sc = f.status==='Paid'?'fee-paid':f.status==='Partial'?'fee-partial':'fee-unpaid';
+    return `<div class="fee-item">
+      <div>
+        <div class="fee-month">${f.month}</div>
+        <div class="fee-amount">Amount: PKR ${f.amount?.toLocaleString()}</div>
+        ${f.paidAmount>0 && f.status!=='Paid' ? `<div style="font-size:.75rem;color:var(--gn)">Paid: PKR ${f.paidAmount?.toLocaleString()}</div>` : ''}
+      </div>
+      <span class="fee-status ${sc}">${f.status}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── Attendance ────────────────────────────────────────────────────────────────
+async function loadAttendance() {
+  const month = document.getElementById('p-att-month').value;
+  if (!month || !pStudent) return;
+  const res  = await fetch(`/api/parent/attendance/${encodeURIComponent(pStudent.rollNo)}?month=${month}`);
+  const json = await res.json();
+  const data = json?.data || [];
+  const sum  = json?.summary || {};
+
+  document.getElementById('att-chips').style.display = data.length ? 'flex' : 'none';
+  document.getElementById('p-cnt-p').textContent  = sum.present || 0;
+  document.getElementById('p-cnt-a').textContent  = sum.absent  || 0;
+  document.getElementById('p-cnt-l').textContent  = sum.late    || 0;
+  const rate = sum.total ? Math.round((sum.present/sum.total)*100) : 0;
+  const rateEl = document.getElementById('p-att-rate');
+  rateEl.textContent = rate + '%';
+  rateEl.style.color = rate>=75?'#2e7d32':rate>=50?'#e65100':'#c62828';
+
+  const div = document.getElementById('att-list');
+  if (!data.length) { div.innerHTML = '<div class="empty"><div class="ei">📋</div><p>No attendance records for this month.</p></div>'; return; }
+
+  div.innerHTML = `<div class="tbl-wrap"><table>
+    <thead><tr><th>Date</th><th>Status</th></tr></thead>
+    <tbody>${data.map(a => {
+      const color = a.status==='Present'?'#2e7d32':a.status==='Absent'?'#c62828':'#e65100';
+      const icon  = a.status==='Present'?'✅':a.status==='Absent'?'❌':'🕐';
+      return `<tr><td>${a.date}</td><td style="color:${color};font-weight:700">${icon} ${a.status}</td></tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+async function loadResults() {
+  const res  = await fetch(`/api/parent/results/${encodeURIComponent(pStudent.rollNo)}`);
+  const data = (await res.json())?.data || [];
+  const div  = document.getElementById('results-list');
+  if (!data.length) { div.innerHTML = '<div class="empty"><div class="ei">📊</div><p>No results found.</p></div>'; return; }
+
+  div.innerHTML = data.map(r => {
+    const total    = r.subjects?.reduce((s,x) => s+(x.totalMarks||0), 0) || 0;
+    const obtained = r.subjects?.reduce((s,x) => s+(x.obtainedMarks||0), 0) || 0;
+    const pct      = total ? Math.round((obtained/total)*100) : 0;
+    const grade    = pct>=90?'A+':pct>=80?'A':pct>=70?'B':pct>=60?'C':pct>=50?'D':'F';
+    const gc       = pct>=60?'#2e7d32':pct>=40?'#e65100':'#c62828';
+    const subjects = r.subjects?.map(s => {
+      const sp = s.totalMarks ? Math.round((s.obtainedMarks/s.totalMarks)*100) : 0;
+      return `<tr>
+        <td>${s.name}</td>
+        <td style="font-weight:700">${s.obtainedMarks}/${s.totalMarks}</td>
+        <td style="color:${sp>=60?'#2e7d32':sp>=40?'#e65100':'#c62828'};font-weight:700">${sp}%</td>
+      </tr>`;
+    }).join('') || '';
+    return `<div class="result-item">
+      <div class="result-top">
+        <div>
+          <div class="result-exam">${r.exam} — ${r.year}</div>
+          <div style="font-size:.78rem;color:var(--muted)">Class ${r.class}${r.section?'-'+r.section:''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="result-grade" style="color:${gc}">${grade}</div>
+          <div style="font-size:.78rem;color:var(--muted)">${obtained}/${total} (${pct}%)</div>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${gc}"></div></div>
+      ${subjects ? `<div class="tbl-wrap" style="margin-top:.6rem"><table>
+        <thead><tr><th>Subject</th><th>Marks</th><th>%</th></tr></thead>
+        <tbody>${subjects}</tbody>
+      </table></div>` : ''}
+      ${r.remarks ? `<div style="font-size:.78rem;color:var(--muted);margin-top:.5rem;font-style:italic">${r.remarks}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ── Homework ──────────────────────────────────────────────────────────────────
+async function loadHomework() {
+  const res  = await fetch(`/api/parent/homework?class=${encodeURIComponent(pStudent.class)}&section=${encodeURIComponent(pStudent.section||'A')}`);
+  const data = (await res.json())?.data || [];
+  const div  = document.getElementById('hw-list');
+  if (!data.length) { div.innerHTML = '<div class="empty"><div class="ei">📚</div><p>No homework posted yet.</p></div>'; return; }
+  div.innerHTML = data.map(h => `
+    <div class="hw-item">
+      <div class="hw-subj">📖 ${h.subject}</div>
+      <div class="hw-desc">${h.description}</div>
+      ${h.dueDate ? `<div class="hw-due">📅 Due: ${h.dueDate}</div>` : ''}
+      <div style="font-size:.73rem;color:var(--muted);margin-top:.3rem">By ${h.postedBy} · ${new Date(h.createdAt).toLocaleDateString()}</div>
+    </div>`).join('');
+}
+
+// ── Notices ───────────────────────────────────────────────────────────────────
+async function loadNotices() {
+  const res  = await fetch('/api/parent/notices');
+  const data = (await res.json())?.data || [];
+  const div  = document.getElementById('notice-list');
+  if (!data.length) { div.innerHTML = '<div class="empty"><div class="ei">📢</div><p>No notices yet.</p></div>'; return; }
+  div.innerHTML = data.map(n => `
+    <div class="notice-item">
+      <div class="notice-title">📌 ${n.title || n.headline || 'Notice'}</div>
+      <div style="font-size:.82rem;color:var(--txt);margin-top:.3rem">${n.body || n.content || ''}</div>
+      <div class="notice-date">${n.createdAt ? new Date(n.createdAt).toLocaleDateString() : ''}</div>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>

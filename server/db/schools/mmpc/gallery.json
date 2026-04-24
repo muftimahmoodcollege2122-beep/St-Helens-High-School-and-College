@@ -1,0 +1,58 @@
+[
+  {
+    "_id": "mny75hjg995pk2",
+    "title": "Mufti Mahmood College – Main Building",
+    "imageUrl": "/images/campus8.png",
+    "category": "Campus",
+    "createdAt": "2026-04-14T05:44:27.148Z"
+  },
+  {
+    "_id": "mny75hjh2ovl7k",
+    "title": "College Entrance & Administration",
+    "imageUrl": "/images/campus2.webp",
+    "category": "Campus",
+    "createdAt": "2026-04-14T05:44:27.149Z"
+  },
+  {
+    "_id": "mny75hjh1zujw8",
+    "title": "Boys Senior Block",
+    "imageUrl": "/images/campus1.webp",
+    "category": "Campus",
+    "createdAt": "2026-04-14T05:44:27.149Z"
+  },
+  {
+    "_id": "mny75hjh6xdlk2",
+    "title": "College Hall",
+    "imageUrl": "/images/campus6.webp",
+    "category": "Events",
+    "createdAt": "2026-04-14T05:44:27.149Z"
+  },
+  {
+    "_id": "mny75hjh617r4k",
+    "title": "Campus Garden Area",
+    "imageUrl": "/images/campus3.webp",
+    "category": "Campus",
+    "createdAt": "2026-04-14T05:44:27.149Z"
+  },
+  {
+    "_id": "mny75hjhs5k5bb",
+    "title": "Arch Classrooms Block",
+    "imageUrl": "/images/campus4.webp",
+    "category": "Campus",
+    "createdAt": "2026-04-14T05:44:27.149Z"
+  },
+  {
+    "_id": "mny75hjhgnf5wn",
+    "title": "Art & Activity Block",
+    "imageUrl": "/images/campus5.webp",
+    "category": "Campus",
+    "createdAt": "2026-04-14T05:44:27.149Z"
+  },
+  {
+    "_id": "mny75hjhclbj7n",
+    "title": "Inauguration Stone – 2006",
+    "imageUrl": "/images/campus7.webp",
+    "category": "Campus",
+    "createdAt": "2026-04-14T05:44:27.149Z"
+  }
+]

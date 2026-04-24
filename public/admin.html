@@ -1,0 +1,3517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel – MMPC D.I. Khan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nv:#0d1f4a;--nv2:#1a3270;--nv3:#2a4494;
+  --gd:#c8952a;--gd2:#e8b84b;
+  --wh:#fff;--of:#f0f4ff;--gr:#6b7280;
+  --gn:#38a169;--rd:#e53e3e;--or:#dd6b20;--bl:#3182ce;
+  --sb-w:240px;--hdr-h:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:var(--of);color:#1a1a2e;overflow-x:hidden}
+
+/* ── Login Screen ── */
+#login-screen{min-height:100vh;background:linear-gradient(160deg,var(--nv) 0%,var(--nv2) 60%,#1e3d8f 100%);display:flex;align-items:center;justify-content:center}
+#login-screen::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 80px)}
+.lbox{background:rgba(255,255,255,.04);border:1px solid rgba(200,149,42,.25);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative;backdrop-filter:blur(10px)}
+.lbox-logo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--nv3),var(--nv));border:3px solid var(--gd);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--gd2);margin:0 auto 1.2rem}
+.lbox h2{text-align:center;font-family:'Playfair Display',serif;color:var(--wh);font-size:1.35rem;margin-bottom:.25rem}
+.lbox p{text-align:center;color:rgba(255,255,255,.5);font-size:.78rem;margin-bottom:1.8rem}
+.lf label{display:block;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.lf input{width:100%;padding:.75rem 1rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:var(--wh);font-family:'Nunito',sans-serif;font-size:.88rem;margin-bottom:1rem;outline:none;transition:.2s}
+.lf input:focus{border-color:var(--gd);background:rgba(255,255,255,.1)}
+.lf input::placeholder{color:rgba(255,255,255,.3)}
+.lf button{width:100%;padding:.85rem;background:var(--gd);color:var(--nv);border:none;border-radius:6px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;transition:.2s;letter-spacing:.04em}
+.lf button:hover{background:var(--gd2)}
+#l-err{color:#fc8181;font-size:.78rem;text-align:center;margin-bottom:.8rem;display:none}
+
+/* ── Admin Layout ── */
+#admin-app{display:none;min-height:100vh}
+
+/* Sidebar */
+.sb{position:fixed;top:0;left:0;width:var(--sb-w);height:100vh;background:var(--nv);display:flex;flex-direction:column;z-index:100;overflow-y:auto;transition:.3s}
+.sb-brand{padding:1.2rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.7rem}
+.sb-logo{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--nv3),var(--nv));border:2px solid var(--gd);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1rem;font-weight:900;color:var(--gd2);flex-shrink:0}
+.sb-brand-txt{font-size:.75rem;font-weight:800;color:var(--wh);line-height:1.2}
+.sb-brand-txt span{display:block;font-size:.6rem;color:rgba(255,255,255,.45);font-weight:600}
+.sb-nav{padding:.8rem 0;flex:1}
+.sb-section{font-size:.58rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:.6rem 1.1rem .3rem}
+.sb-link{display:flex;align-items:center;gap:.65rem;padding:.7rem 1.1rem;color:rgba(255,255,255,.7);text-decoration:none;font-size:.79rem;font-weight:700;cursor:pointer;border:none;background:none;width:100%;font-family:'Nunito',sans-serif;transition:.2s;border-left:3px solid transparent}
+.sb-link:hover{background:rgba(255,255,255,.06);color:var(--wh)}
+.sb-link.active{background:rgba(200,149,42,.12);color:var(--gd2);border-left-color:var(--gd)}
+.sb-link .ic{font-size:1rem;width:20px;text-align:center}
+.sb-badge{margin-left:auto;background:var(--rd);color:var(--wh);font-size:.58rem;font-weight:800;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sb-footer{padding:.9rem 1rem;border-top:1px solid rgba(255,255,255,.08)}
+.sb-user{display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.sb-av{width:30px;height:30px;border-radius:50%;background:var(--gd);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:900;color:var(--nv)}
+.sb-uname{font-size:.75rem;font-weight:700;color:var(--wh)}
+.sb-urole{font-size:.62rem;color:rgba(255,255,255,.4)}
+.sb-logout{width:100%;padding:.55rem;background:rgba(229,62,62,.15);border:1px solid rgba(229,62,62,.3);color:#fc8181;border-radius:5px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:.2s}
+.sb-logout:hover{background:rgba(229,62,62,.3)}
+
+/* Header */
+.adm-hdr{position:fixed;top:0;left:var(--sb-w);right:0;height:var(--hdr-h);background:var(--wh);border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:99;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.hdr-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--nv)}
+.hdr-title span{font-family:'Nunito',sans-serif;font-size:.75rem;color:var(--gr);font-weight:600;display:block}
+.hdr-right{display:flex;align-items:center;gap:1rem}
+.hdr-date{font-size:.73rem;color:var(--gr)}
+.hdr-notif{position:relative;background:none;border:none;cursor:pointer;font-size:1.1rem;padding:.3rem}
+.hdr-notif .dot{position:absolute;top:0;right:0;width:8px;height:8px;background:var(--rd);border-radius:50%}
+
+/* Main content */
+.adm-main{margin-left:var(--sb-w);margin-top:var(--hdr-h);padding:1.5rem;min-height:calc(100vh - var(--hdr-h))}
+
+/* Pages */
+.adm-page{display:none}
+.adm-page.active{display:block}
+
+/* Stat cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--wh);border-radius:10px;padding:1.2rem 1.1rem;box-shadow:0 2px 10px rgba(0,0,0,.06);border-left:4px solid var(--gd);display:flex;align-items:center;gap:1rem;transition:.2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
+.stat-ic{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.stat-n{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:var(--nv);line-height:1}
+.stat-l{font-size:.72rem;color:var(--gr);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:.15rem}
+
+/* Table card */
+.card{background:var(--wh);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden;margin-bottom:1.5rem}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;border-bottom:1px solid #f0f4ff}
+.card-hdr h3{font-size:.88rem;font-weight:800;color:var(--nv)}
+.card-body{padding:1.1rem}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+th{text-align:left;padding:.65rem .75rem;background:#f8faff;color:var(--gr);font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #e8eef8}
+td{padding:.65rem .75rem;border-bottom:1px solid #f0f4ff;color:#374151;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.tbl-wrap{overflow-x:auto}
+
+/* Badges */
+.badge{display:inline-block;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em}
+.badge-gn{background:rgba(56,161,105,.12);color:var(--gn)}
+.badge-rd{background:rgba(229,62,62,.12);color:var(--rd)}
+.badge-or{background:rgba(221,107,32,.12);color:var(--or)}
+.badge-bl{background:rgba(49,130,206,.12);color:var(--bl)}
+.badge-gd{background:rgba(200,149,42,.12);color:var(--gd)}
+
+/* Buttons */
+.btn{padding:.6rem 1rem;border-radius:5px;font-weight:800;font-size:.77rem;border:none;cursor:pointer;font-family:'Nunito',sans-serif;transition:.2s;display:inline-flex;align-items:center;gap:.35rem}
+.btn-gd{background:var(--gd);color:var(--nv)}
+.btn-gd:hover{background:var(--gd2)}
+.btn-nv{background:var(--nv);color:var(--wh)}
+.btn-nv:hover{background:var(--nv2)}
+.btn-rd{background:var(--rd);color:var(--wh)}
+.btn-rd:hover{background:#c53030}
+.btn-sm{padding:.38rem .75rem !important;font-size:.7rem !important}
+.btn-gn{background:var(--gn);color:var(--wh)}
+.btn-gn:hover{background:#2f855a}
+
+/* Form */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.9rem}
+.form-group{margin-bottom:.9rem}
+.fg1{grid-column:1/-1}
+label{display:block;font-size:.72rem;font-weight:700;color:var(--nv);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+input[type=text],input[type=email],input[type=password],input[type=tel],input[type=date],input[type=number],textarea,select{width:100%;padding:.65rem .85rem;border:2px solid #e2e8f0;border-radius:6px;font-family:'Nunito',sans-serif;font-size:.83rem;color:#1a1a2e;background:var(--wh);outline:none;transition:.2s}
+input:focus,textarea:focus,select:focus{border-color:var(--nv3);box-shadow:0 0 0 3px rgba(42,68,148,.08)}
+textarea{resize:vertical;min-height:90px}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--wh);border-radius:12px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.3rem;border-bottom:1px solid #e8eef8}
+.modal-hdr h3{font-size:.95rem;font-weight:800;color:var(--nv)}
+.modal-close{background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--gr);padding:.2rem .4rem;border-radius:4px;line-height:1}
+.modal-close:hover{background:#f0f4ff}
+.modal-body{padding:1.3rem}
+.modal-footer{padding:.9rem 1.3rem;border-top:1px solid #e8eef8;display:flex;gap:.6rem;justify-content:flex-end}
+
+/* Alert */
+.alert{padding:.75rem 1rem;border-radius:6px;font-size:.8rem;font-weight:700;margin-bottom:1rem;display:none}
+.alert-err{background:rgba(229,62,62,.08);border:1px solid rgba(229,62,62,.2);color:var(--rd)}
+.alert-ok{background:rgba(56,161,105,.08);border:1px solid rgba(56,161,105,.2);color:var(--gn)}
+
+/* Toast */
+.toast{position:fixed;bottom:1.2rem;right:1.2rem;z-index:9999;padding:.8rem 1.2rem;border-radius:8px;font-size:.8rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;max-width:300px;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.toast-ok{background:var(--gn);color:var(--wh)}
+.toast-err{background:var(--rd);color:var(--wh)}
+.toast-info{background:var(--nv);color:var(--wh)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--gr)}
+.empty-state .es-ic{font-size:2.5rem;margin-bottom:.6rem}
+.empty-state p{font-size:.82rem}
+
+/* Search bar */
+.search-bar{display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px;padding:.6rem .9rem;border:2px solid #e2e8f0;border-radius:6px;font-family:'Nunito',sans-serif;font-size:.82rem;outline:none}
+.search-bar input:focus{border-color:var(--nv3)}
+
+/* Recent activity */
+.act-item{display:flex;align-items:flex-start;gap:.75rem;padding:.7rem 0;border-bottom:1px solid #f0f4ff}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:8px;height:8px;border-radius:50%;background:var(--gd);flex-shrink:0;margin-top:.3rem}
+.act-txt{font-size:.77rem;color:#374151;line-height:1.4}
+.act-time{font-size:.68rem;color:var(--gr);margin-top:.1rem}
+
+/* Msg card */
+.msg-card{background:var(--wh);border-radius:8px;padding:1rem;border-left:3px solid var(--gd);box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:.8rem;transition:.2s}
+.msg-card:hover{transform:translateX(3px)}
+.msg-card.unread{border-left-color:var(--bl)}
+.msg-name{font-weight:800;font-size:.85rem;color:var(--nv);margin-bottom:.15rem}
+.msg-sub{font-size:.78rem;font-weight:700;color:var(--nv2);margin-bottom:.3rem}
+.msg-body{font-size:.76rem;color:var(--gr);line-height:1.5}
+.msg-meta{display:flex;gap:.8rem;margin-top:.5rem;flex-wrap:wrap;align-items:center}
+.msg-meta span{font-size:.68rem;color:var(--gr)}
+
+/* Responsive */
+/* Tablet (max 900px) */
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .card{border-radius:8px}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:500px}
+}
+
+/* Mobile sidebar + layout (max 768px) */
+@media(max-width:768px){
+  .sb{transform:translateX(-100%);transition:transform .25s ease;box-shadow:none}
+  .sb.open{transform:none;box-shadow:4px 0 24px rgba(0,0,0,.3)}
+  .adm-main,.adm-hdr{margin-left:0;left:0}
+  .adm-hdr{padding:0 .9rem;height:54px}
+  .adm-hdr h2{font-size:.88rem}
+  .form-row{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:.8rem}
+  .stat-card{padding:1rem}
+  .stat-n{font-size:1.6rem}
+  .modal{width:95vw;max-width:95vw;margin:1rem auto}
+  .modal-body{padding:1rem}
+  .card-body{padding:.9rem}
+  .card-hdr{padding:.9rem 1rem;flex-wrap:wrap;gap:.5rem}
+  .adm-main{padding:.8rem}
+  #sb-tog{display:flex!important}
+}
+
+/* Mobile (max 540px) */
+@media(max-width:540px){
+  .stats-grid{grid-template-columns:1fr 1fr;gap:.6rem}
+  .stat-card{padding:.85rem .7rem}
+  .stat-n{font-size:1.4rem}
+  .stat-l{font-size:.62rem}
+  table{min-width:400px;font-size:.78rem}
+  th,td{padding:8px 8px}
+  .btn{padding:8px 14px;font-size:.78rem}
+  .btn-sm{padding:4px 9px;font-size:.72rem}
+  .adm-hdr{height:50px}
+  .adm-hdr h2{font-size:.8rem}
+  .modal{width:98vw;max-height:90vh;overflow-y:auto}
+  .lbox{padding:1.8rem 1.3rem;width:92vw}
+  .lbox h2{font-size:1.3rem}
+}
+
+/* Small mobile (max 380px) */
+@media(max-width:380px){
+  .stats-grid{grid-template-columns:1fr}
+  table{min-width:320px;font-size:.73rem}
+  .adm-main{padding:.6rem}
+  .card-hdr h3{font-size:.85rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ LOGIN ════════════════════ -->
+<div id="login-screen">
+  <div class="lbox">
+    <div class="lbox-logo" style="background:none;padding:0;overflow:hidden"><img src="/images/logo.jpg" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+    <h2>Admin Panel</h2>
+    <p>Mufti Mahmood Public School &amp; College<br>D.I. Khan – Secure Access</p>
+    <div class="lf">
+      <div id="l-err">❌ Invalid username or password.</div>
+      <label>Username</label>
+      <input type="text" id="l-user" placeholder="Enter username" autocomplete="username">
+      <label>Password</label>
+      <input type="password" id="l-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button onclick="doLogin()" id="l-btn">🔐 Login to Admin Panel</button>
+    </div>
+    <p style="text-align:center;margin-top:1rem;font-size:.7rem;color:rgba(255,255,255,.3)">
+      <a href="/" style="color:rgba(255,255,255,.4);text-decoration:none">← Back to Website</a>
+    </p>
+  </div>
+</div>
+
+<!-- ════════════════════ ADMIN APP ════════════════════ -->
+<div id="admin-app">
+
+  <!-- Sidebar -->
+  <aside class="sb" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo" style="background:none;padding:0;overflow:hidden"><img src="/images/logo.jpg" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+      <div class="sb-brand-txt">MMPC Admin<span>D.I. Khan Control Panel</span></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Main</div>
+      <button class="sb-link active" onclick="showPage('dashboard',this)"><span class="ic">📊</span> Dashboard</button>
+
+      <div class="sb-section">Content</div>
+      <button class="sb-link" onclick="showPage('news',this)"><span class="ic">📰</span> News</button>
+      <button class="sb-link" onclick="showPage('events',this)"><span class="ic">📅</span> Events</button>
+      <button class="sb-link" onclick="showPage('gallery',this)"><span class="ic">🖼</span> Gallery</button>
+
+      <div class="sb-section">People</div>
+      <button class="sb-link" onclick="showPage('students',this)"><span class="ic">🎒</span> Students</button>
+      <button class="sb-link" onclick="showPage('admissions',this)"><span class="ic">📝</span> Admissions</button>
+      <button class="sb-link" onclick="showPage('attendance',this)"><span class="ic">📋</span> Attendance</button>
+      <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management</button>
+      <button class="sb-link" onclick="showPage('results',this)"><span class="ic">📊</span> Results</button>
+            <button class="sb-link" onclick="showPage('toppers',this)"><span class="ic">🏆</span> Toppers</button>
+      <button class="sb-link" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span> Teachers</button>
+      <button class="sb-link" onclick="showPage('teacher-accounts',this)"><span class="ic">🔑</span> Teacher Logins</button>
+      <button class="sb-link" onclick="dlDB()"><span class="ic">💾</span> Backup Database</button>
+
+      <div class="sb-section">Communication</div>
+      <button class="sb-link" onclick="showPage('messages',this)">
+        <span class="ic">✉️</span> Messages
+        <span class="sb-badge" id="msg-badge" style="display:none">0</span>
+      </button>
+
+      <div class="sb-section">Website Settings</div>
+      <button class="sb-link" onclick="showPage('principal-settings',this)"><span class="ic">👨‍💼</span> Principal</button>
+      <button class="sb-link" onclick="showPage('whatsapp-settings',this)"><span class="ic">💬</span> WhatsApp</button>
+      <button class="sb-link" onclick="showPage('ticker-settings',this)"><span class="ic">📢</span> Ticker &amp; Notice</button>
+      <button class="sb-link" onclick="showPage('why-settings',this)"><span class="ic">⭐</span> Why Choose Us</button>
+      <button class="sb-link" onclick="showPage('achievements-settings',this)"><span class="ic">🏅</span> Achievements</button>
+      <button class="sb-link" onclick="showPage('settings',this)"><span class="ic">🎨</span> Hero &amp; Stats</button>
+      <button class="sb-link" onclick="showPage('about-settings',this)"><span class="ic">🏫</span> About Section</button>
+      <button class="sb-link" onclick="showPage('contact-settings',this)"><span class="ic">📞</span> Contact Info</button>
+
+      <div class="sb-section">System</div>
+      <a class="sb-link" href="/" target="_blank"><span class="ic">🌐</span> View Website</a>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-av" id="sb-av">A</div>
+        <div><div class="sb-uname" id="sb-uname">Admin</div><div class="sb-urole">Administrator</div></div>
+      </div>
+      <button class="sb-logout" onclick="doLogout()">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="adm-hdr">
+    <div style="display:flex;align-items:center;gap:.8rem">
+      <button onclick="document.getElementById('sidebar').classList.toggle('open')" id="sb-tog"
+        style="display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:4px;padding:4px;align-items:center;justify-content:center">
+        <span style="display:block;width:20px;height:2px;background:var(--nv);border-radius:2px"></span>
+        <span style="display:block;width:20px;height:2px;background:var(--nv);border-radius:2px"></span>
+        <span style="display:block;width:20px;height:2px;background:var(--nv);border-radius:2px"></span>
+      </button>
+      <div class="hdr-title" id="hdr-title">Dashboard<span id="hdr-sub">Overview & Statistics</span></div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-date" id="hdr-date"></span>
+      <button class="hdr-notif" onclick="showPage('messages', document.querySelector('[onclick*=messages]'))">
+        ✉️<span class="dot" id="notif-dot" style="display:none"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="adm-main">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="adm-page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card" style="border-left-color:#3182ce">
+          <div class="stat-ic" style="background:rgba(49,130,206,.1)">🎒</div>
+          <div><div class="stat-n" id="ds-students">0</div><div class="stat-l">Total Students</div></div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--gn)">
+          <div class="stat-ic" style="background:rgba(56,161,105,.1)">👨‍🏫</div>
+          <div><div class="stat-n" id="ds-teachers">0</div><div class="stat-l">Teachers</div></div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--gd)">
+          <div class="stat-ic" style="background:rgba(200,149,42,.1)">📰</div>
+          <div><div class="stat-n" id="ds-news">0</div><div class="stat-l">News Items</div></div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--or)">
+          <div class="stat-ic" style="background:rgba(221,107,32,.1)">📅</div>
+          <div><div class="stat-n" id="ds-events">0</div><div class="stat-l">Events</div></div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--rd)">
+          <div class="stat-ic" style="background:rgba(229,62,62,.1)">✉️</div>
+          <div><div class="stat-n" id="ds-msgs">0</div><div class="stat-l">Messages</div></div>
+        </div>
+        <div class="stat-card" style="border-left-color:#805ad5">
+          <div class="stat-ic" style="background:rgba(128,90,213,.1)">🖼</div>
+          <div><div class="stat-n" id="ds-gallery">0</div><div class="stat-l">Gallery Images</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem">
+        <div class="card">
+          <div class="card-hdr"><h3>⚡ Recent Activity</h3></div>
+          <div class="card-body" id="dash-activity">
+            <div class="act-item"><div class="act-dot"></div><div><div class="act-txt">Admin panel loaded</div><div class="act-time">Just now</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>🔗 Quick Actions</h3></div>
+          <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+            <button class="btn btn-nv" onclick="showPage('news',null);openModal('modal-news')">+ Add News</button>
+            <button class="btn btn-gd" onclick="showPage('events',null);openModal('modal-event')">+ Add Event</button>
+            <button class="btn btn-gn" onclick="showPage('students',null);openModal('modal-student')">+ Add Student</button>
+            <button class="btn" style="background:#805ad5;color:#fff" onclick="showPage('teachers',null);openModal('modal-teacher')">+ Add Teacher</button>
+            <button class="btn" style="background:var(--bl);color:#fff;grid-column:1/-1" onclick="showPage('gallery',null);openModal('modal-gallery')">📸 Upload Image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NEWS ── -->
+    <div class="adm-page" id="page-news">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📰 All News</h3>
+          <button class="btn btn-gd" onclick="openModal('modal-news')">+ Add News</button>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="tb-news"><tr><td colspan="4" class="empty-state"><div class="es-ic">📰</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EVENTS ── -->
+    <div class="adm-page" id="page-events">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📅 All Events</h3>
+          <button class="btn btn-gd" onclick="openModal('modal-event')">+ Add Event</button>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Date</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="tb-events"><tr><td colspan="5" class="empty-state"><div class="es-ic">📅</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GALLERY ── -->
+    <div class="adm-page" id="page-gallery">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🖼 Gallery Images</h3>
+          <button class="btn btn-gd" onclick="openModal('modal-gallery')">📸 Upload Image</button>
+        </div>
+        <div class="card-body">
+          <div id="gal-admin-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem">
+            <p style="color:var(--gr);font-size:.82rem">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STUDENTS ── -->
+    <div class="adm-page" id="page-students">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🎒 All Students</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-gd" onclick="openModal('modal-student')">+ Add Student</button>
+            <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import-students')">📥 Bulk Import CSV</button>
+            <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllStudents()">🗑 Delete All</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="search-bar">
+            <input type="text" id="std-search" placeholder="Search by name or roll no…" oninput="searchStudents()">
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Roll No</th><th>Name</th><th>Father Name</th><th>Class</th><th>Gender</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="tb-students"><tr><td colspan="7" class="empty-state"><div class="es-ic">🎒</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RESULTS ── -->
+
+    <!-- FEE MANAGEMENT -->
+    
+    <!-- ═══════════════════════════ ATTENDANCE PAGE ═══════════════════════════ -->
+    <div class="adm-page" id="page-admissions">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📝 Admission Applications</h3>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Name</th><th>Class</th><th>Father</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="tb-admissions"><tr><td colspan="7" class="empty-state"><div class="es-ic">📝</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="adm-page" id="page-attendance">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📋 Attendance</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-gn" onclick="attTab('mark')">✏️ Mark Attendance</button>
+            <button class="btn btn-nv" onclick="attTab('report')">📊 Reports</button>
+            <button class="btn" style="background:#e53e3e;color:#fff" onclick="attTab('archive')">🗑 Delete by Year</button>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <!-- TAB: Mark Attendance -->
+          <div id="att-tab-mark">
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+              <select id="att-class" onchange="loadAttStudents()" style="padding:.4rem .7rem;border-radius:6px;border:1px solid #ddd;font-size:.85rem">
+                <option value="">Select Class</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+              <select id="att-section" onchange="loadAttStudents()" style="padding:.4rem .7rem;border-radius:6px;border:1px solid #ddd;font-size:.85rem">
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+              </select>
+              <input type="date" id="att-date" onchange="loadAttStudents()" style="padding:.4rem .7rem;border-radius:6px;border:1px solid #ddd;font-size:.85rem">
+              <button class="btn btn-gd" onclick="markAllPresent()" style="font-size:.8rem">✅ All Present</button>
+            </div>
+
+            <div id="att-student-list" style="display:none">
+              <div style="display:flex;gap:1rem;margin-bottom:.8rem;flex-wrap:wrap">
+                <span style="font-size:.82rem;background:#e8f5e9;color:#2e7d32;padding:.3rem .7rem;border-radius:20px">✅ Present: <b id="cnt-present">0</b></span>
+                <span style="font-size:.82rem;background:#fce4ec;color:#c62828;padding:.3rem .7rem;border-radius:20px">❌ Absent: <b id="cnt-absent">0</b></span>
+                <span style="font-size:.82rem;background:#fff3e0;color:#e65100;padding:.3rem .7rem;border-radius:20px">🕐 Late: <b id="cnt-late">0</b></span>
+              </div>
+              <div class="tbl-wrap">
+                <table>
+                  <thead><tr><th>#</th><th>Roll No</th><th>Student Name</th><th>Status</th></tr></thead>
+                  <tbody id="tb-att"></tbody>
+                </table>
+              </div>
+              <div style="margin-top:1rem;display:flex;gap:.5rem">
+                <button class="btn btn-gn" onclick="saveAttendance()">💾 Save Attendance</button>
+                <span id="att-save-msg" style="font-size:.83rem;color:#2e7d32;align-self:center"></span>
+              </div>
+            </div>
+            <div id="att-empty" style="text-align:center;padding:2rem;color:#aaa">
+              <div style="font-size:2rem">📋</div>
+              <p>Select class and date to mark attendance</p>
+            </div>
+          </div>
+
+          <!-- TAB: Reports -->
+          <div id="att-tab-report" style="display:none">
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+              <input type="text" id="att-report-roll" placeholder="Roll No" style="padding:.4rem .7rem;border-radius:6px;border:1px solid #ddd;font-size:.85rem;width:120px">
+              <input type="month" id="att-report-month" style="padding:.4rem .7rem;border-radius:6px;border:1px solid #ddd;font-size:.85rem">
+              <button class="btn btn-nv" onclick="loadAttReport()">🔍 Search</button>
+            </div>
+            <div id="att-report-result">
+              <div style="text-align:center;padding:2rem;color:#aaa">
+                <div style="font-size:2rem">📊</div>
+                <p>Enter roll number and month to view report</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: Archive / Delete by Year -->
+          <div id="att-tab-archive" style="display:none">
+            <div style="background:#fff5f5;border:1px solid #fed7d7;border-radius:10px;padding:1.2rem;margin-bottom:1rem">
+              <p style="font-size:.83rem;color:#c53030;font-weight:700;margin:0 0 .5rem">⚠️ Permanent Action</p>
+              <p style="font-size:.8rem;color:#742a2a;margin:0">Deleting a year's attendance is <strong>irreversible</strong>. Export or archive records before proceeding. Typically done at the end of each academic year.</p>
+            </div>
+
+            <div style="display:flex;gap:.8rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.2rem">
+              <div>
+                <label style="font-size:.78rem;font-weight:700;display:block;margin-bottom:.3rem">Select Year to Delete</label>
+                <select id="att-del-year" style="padding:.45rem .8rem;border-radius:6px;border:1.5px solid #e53e3e;font-size:.85rem;min-width:140px">
+                  <option value="">Loading years...</option>
+                </select>
+              </div>
+              <button class="btn" style="background:#e53e3e;color:#fff;font-weight:700" onclick="deleteAttendanceYear()">🗑 Delete This Year's Records</button>
+            </div>
+
+            <div id="att-year-stats" style="margin-top:.5rem"></div>
+            <div id="att-del-result" style="margin-top:1rem"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+<div class="adm-page" id="page-fees">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>💰 Fee Management</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-gd" onclick="openModal('modal-fee')">+ Add Fee</button>
+            <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import-fees')">📥 Bulk Import CSV</button>
+            <button class="btn" style="background:#25d366;color:#fff" onclick="openModal('modal-fee-remind')">📲 Remind Defaulters</button>
+            <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllFees()">🗑 Delete All</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="search-bar" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+            <select id="fee-filter-status" onchange="loadFees()" style="padding:.4rem .7rem;border-radius:6px;border:1px solid #ddd;font-size:.8rem">
+              <option value="">All Status</option>
+              <option value="Unpaid">Unpaid</option>
+              <option value="Paid">Paid</option>
+              <option value="Partial">Partial</option>
+            </select>
+            <input type="text" id="fee-filter-month" placeholder="Month e.g. April 2025" oninput="loadFees()" style="padding:.4rem .7rem;border-radius:6px;border:1px solid #ddd;font-size:.8rem;min-width:160px">
+          </div>
+          <div class="tbl-wrap" style="margin-top:.8rem">
+            <table>
+              <thead><tr><th>Roll No</th><th>Student</th><th>Father</th><th>Class</th><th>Month</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="tb-fees"><tr><td colspan="8" class="empty-state"><div class="es-ic">💰</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal: add fee -->
+    </div>
+
+    <!-- modal: add fee -->
+    <div class="modal-bg" id="modal-fee">
+      <div class="modal">
+        <div class="modal-hdr"><h3>💰 Add Fee Record</h3><button class="modal-close" onclick="closeModal('modal-fee')">✕</button></div>
+        <div class="modal-body">
+          <div class="form-group"><label>Roll No</label><input type="text" id="fee-rollno" placeholder="e.g. 1001"></div>
+          <div class="form-group"><label>Month</label><input type="text" id="fee-month" placeholder="e.g. April 2025"></div>
+          <div class="form-group"><label>Amount (Rs)</label><input type="number" id="fee-amount" placeholder="e.g. 2500"></div>
+          <div class="form-group"><label>Due Date</label><input type="date" id="fee-due"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal('modal-fee')">Cancel</button>
+          <button class="btn btn-gd" onclick="submitFee()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal: remind defaulters -->
+    <div class="modal-bg" id="modal-fee-remind">
+      <div class="modal">
+        <div class="modal-hdr"><h3>📲 Remind Defaulters</h3><button class="modal-close" onclick="closeModal('modal-fee-remind')">✕</button></div>
+        <div class="modal-body">
+          <div class="form-group"><label>Month</label><input type="text" id="remind-month" placeholder="e.g. April 2025"></div>
+          <div class="form-group"><label>Message Template</label><textarea id="remind-msg" rows="4">Dear Parent, fee of {name} for {month} (Rs. {amount}) is due. Please pay. Thank you.</textarea></div>
+          <small style="color:#888">Placeholders: {name} {month} {amount}</small>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal('modal-fee-remind')">Cancel</button>
+          <button class="btn" style="background:#25d366;color:#fff" onclick="remindAllDefaulters()">Send to All Defaulters</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal: mark paid -->
+    <div class="modal-bg" id="modal-fee-pay">
+      <div class="modal">
+        <div class="modal-hdr"><h3>💵 Mark Fee Paid</h3><button class="modal-close" onclick="closeModal('modal-fee-pay')">✕</button></div>
+        <div class="modal-body">
+          <input type="hidden" id="pay-fee-id">
+          <div class="form-group"><label>Paid Amount (Rs)</label><input type="number" id="pay-amount"></div>
+          <div class="form-group"><label>Paid Date</label><input type="date" id="pay-date"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal('modal-fee-pay')">Cancel</button>
+          <button class="btn btn-gd" onclick="submitMarkPaid()">Confirm Payment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal: whatsapp single -->
+    <div class="modal-bg" id="modal-wa-single">
+      <div class="modal">
+        <div class="modal-hdr"><h3>💬 Send WhatsApp</h3><button class="modal-close" onclick="closeModal('modal-wa-single')">✕</button></div>
+        <div class="modal-body">
+          <input type="hidden" id="wa-fee-id">
+          <input type="hidden" id="wa-phone">
+          <p id="wa-to-info" style="font-size:.83rem;color:#555;margin-bottom:.5rem"></p>
+          <div class="form-group"><label>Message</label><textarea id="wa-msg" rows="4"></textarea></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal('modal-wa-single')">Cancel</button>
+          <button class="btn" style="background:#25d366;color:#fff" onclick="sendWASingle()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="adm-page" id="page-results">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📊 Student Results</h3>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="btn btn-gd" onclick="openModal('modal-result')">+ Add Result</button>
+            <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import')">📥 Bulk Import CSV</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="downloadTemplate()">⬇ Download Template</button>
+            <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllResults()">🗑 Delete All</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem">
+            <input type="text" id="res-search" placeholder="Search by name or roll no…" oninput="searchResults()"
+              style="flex:2;min-width:180px;padding:8px 12px;border:1.5px solid var(--bd);border-radius:6px;font-family:'Nunito',sans-serif;font-size:.85rem">
+            <select id="res-filter-exam" onchange="searchResults()"
+              style="flex:1;min-width:150px;padding:8px 12px;border:1.5px solid var(--bd);border-radius:6px;font-family:'Nunito',sans-serif;font-size:.85rem">
+              <option value="">All Exams</option>
+              <option>Annual 2025</option>
+              <option>Mid-Term 2025</option>
+              <option>Annual 2024</option>
+              <option>Mid-Term 2024</option>
+              <option>Annual 2023</option>
+            </select>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Roll No</th><th>Student Name</th><th>Class</th><th>Exam</th><th>Year</th><th>Total %</th><th>Grade</th><th>Actions</th></tr></thead>
+              <tbody id="tb-results"><tr><td colspan="8" class="empty-state"><div class="es-ic">📊</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TEACHERS ── -->
+    <div class="adm-page" id="page-teachers">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>👨‍🏫 All Teachers</h3>
+          <button class="btn btn-gd" onclick="openModal('modal-teacher')">+ Add Teacher</button>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Subject</th><th>Qualification</th><th>Experience</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="tb-teachers"><tr><td colspan="6" class="empty-state"><div class="es-ic">👨‍🏫</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MESSAGES ── -->
+    <div class="adm-page" id="page-messages">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>✉️ Contact Messages</h3>
+          <button class="btn btn-sm btn-nv" onclick="loadMessages()">🔄 Refresh</button>
+        </div>
+        <div class="card-body" id="msgs-list">
+          <p style="color:var(--gr);font-size:.82rem">Loading messages…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS: Hero & Banner ── -->
+    <div class="adm-page" id="page-settings">
+      <div style="display:grid;gap:1.2rem">
+
+        <!-- Notice Banner Card -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>📢 Notice Banner</h3>
+            <span style="font-size:.72rem;color:var(--gr)">Shown at top of website when active</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Banner Status</label>
+                <select id="s-noticeActive">
+                  <option value="false">🔴 Hidden (Off)</option>
+                  <option value="true">🟢 Visible (On)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Banner Type</label>
+                <select id="s-noticeType">
+                  <option value="info">ℹ️ Info (Blue)</option>
+                  <option value="warning">⚠️ Warning (Orange)</option>
+                  <option value="success">✅ Success (Green)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Banner Message Text</label>
+              <input type="text" id="s-noticeText" placeholder="e.g. Admissions Open for 2026-27 — Apply Now!">
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Section Card -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>🏠 Hero Section</h3>
+            <span style="font-size:.72rem;color:var(--gr)">Main banner at top of homepage</span>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>Tagline (small text above title)</label>
+              <input type="text" id="s-heroTagline" placeholder="⭐ Established 2006 — D.I. Khan">
+            </div>
+            <div class="form-group">
+              <label>Main Title</label>
+              <input type="text" id="s-heroTitle" placeholder="Mufti Mahmood Public School & College">
+            </div>
+            <div class="form-group">
+              <label>Subtitle / Location</label>
+              <input type="text" id="s-heroSubtitle" placeholder="Dera Ismail Khan, Khyber Pakhtunkhwa, Pakistan">
+            </div>
+            <div class="form-group">
+              <label>Motto / Quote</label>
+              <input type="text" id="s-heroMotto" placeholder='"Knowledge is the Light that Illuminates the Path"'>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Bar Card -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>📊 Stats Bar</h3>
+            <span style="font-size:.72rem;color:var(--gr)">Gold bar below hero with key numbers</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Total Students</label>
+                <input type="text" id="s-statStudents" placeholder="2000+">
+              </div>
+              <div class="form-group">
+                <label>Faculty Count</label>
+                <input type="text" id="s-statFaculty" placeholder="80+">
+              </div>
+              <div class="form-group">
+                <label>Years of Excellence</label>
+                <input type="text" id="s-statYears" placeholder="40+">
+              </div>
+              <div class="form-group">
+                <label>Pass Rate</label>
+                <input type="text" id="s-statPassRate" placeholder="95%">
+              </div>
+            </div>
+            <div class="form-group" style="max-width:260px">
+              <label>Number of Programmes</label>
+              <input type="text" id="s-statPrograms" placeholder="15+">
+            </div>
+          </div>
+        </div>
+
+        <!-- Admissions Toggle -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>🎓 Admissions Button</h3>
+            <span style="font-size:.72rem;color:var(--gr)">Hero button label & admissions status</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Admissions Status</label>
+                <select id="s-admissionsOpen">
+                  <option value="true">🟢 Open</option>
+                  <option value="false">🔴 Closed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Admissions Button / Banner Text</label>
+                <input type="text" id="s-admissionsText" placeholder="Admissions Open for 2026-27 Session">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:right">
+          <button class="btn btn-gd" onclick="saveSettings('hero')" id="save-hero-btn">💾 Save Hero & Banner Settings</button>
+        </div>
+      </div>
+    </div><!-- /page-settings -->
+
+    <!-- ── SETTINGS: About Section ── -->
+    <div class="adm-page" id="page-about-settings">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🏫 About Section Content</h3>
+          <span style="font-size:.72rem;color:var(--gr)">Edit all text in the About Our School section</span>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>About Paragraph 1</label>
+            <textarea id="s-aboutPara1" rows="4" placeholder="Main description paragraph..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>About Paragraph 2</label>
+            <textarea id="s-aboutPara2" rows="3" placeholder="Second paragraph..."></textarea>
+          </div>
+          <div style="border-top:1px solid #eee;padding-top:1rem;margin-top:.5rem">
+            <p style="font-size:.75rem;font-weight:800;color:var(--nv);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem">Value Cards</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>🎯 Our Mission</label>
+                <textarea id="s-aboutMission" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>🔭 Our Vision</label>
+                <textarea id="s-aboutVision" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>📖 Academics</label>
+                <textarea id="s-aboutAcademics" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>🌟 Co-Curricular</label>
+                <textarea id="s-aboutCoCurr" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:right;margin-top:.5rem">
+            <button class="btn btn-gd" onclick="saveSettings('about')" id="save-about-btn">💾 Save About Section</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-about-settings -->
+
+    <!-- ── SETTINGS: Contact Info ── -->
+    <div class="adm-page" id="page-contact-settings">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📞 Contact Information</h3>
+          <span style="font-size:.72rem;color:var(--gr)">Phone, email, address shown on website</span>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone Number 1</label>
+              <input type="text" id="s-contactPhone1" placeholder="+92-966-123456">
+            </div>
+            <div class="form-group">
+              <label>Phone Number 2</label>
+              <input type="text" id="s-contactPhone2" placeholder="+92-300-9876543">
+            </div>
+            <div class="form-group">
+              <label>Email 1 (Main)</label>
+              <input type="text" id="s-contactEmail1" placeholder="info@mmpc.edu.pk">
+            </div>
+            <div class="form-group">
+              <label>Email 2 (Admissions)</label>
+              <input type="text" id="s-contactEmail2" placeholder="admissions@mmpc.edu.pk">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Full Address</label>
+            <input type="text" id="s-contactAddress" placeholder="Kacheri Road, Dera Ismail Khan, KPK, Pakistan">
+          </div>
+          <div class="form-group">
+            <label>Office Hours</label>
+            <input type="text" id="s-contactHours" placeholder="Mon–Sat: 7:30 AM – 2:30 PM">
+          </div>
+          <div style="text-align:right;margin-top:.5rem">
+            <button class="btn btn-gd" onclick="saveSettings('contact')" id="save-contact-btn">💾 Save Contact Info</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-contact-settings -->
+
+    <!-- ── PRINCIPAL SETTINGS ── -->
+    <div class="adm-page" id="page-principal-settings">
+      <!-- Principal Card -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-hdr"><h3>👨‍💼 Principal's Message</h3></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group"><label>Principal Name</label><input type="text" id="s-principalName" placeholder="Prof. Muhammad Khalid"></div>
+            <div class="form-group"><label>Designation</label><input type="text" id="s-principalDesignation" placeholder="Principal"></div>
+          </div>
+          <div class="form-group"><label>Message / Speech</label><textarea id="s-principalMessage" rows="5" placeholder="Welcome message from the principal..."></textarea></div>
+          <div class="form-group">
+            <label>Principal Photo</label>
+            <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+              <div id="principal-photo-preview" style="width:80px;height:80px;border-radius:50%;background:var(--of);border:2px solid var(--bd);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2rem">👨‍💼</div>
+              <div>
+                <input type="file" id="principal-photo-file" accept="image/*" style="display:none" onchange="uploadStaffPhoto('principal')">
+                <button class="btn btn-gn" onclick="document.getElementById('principal-photo-file').click()">📷 Upload Photo</button>
+                <input type="hidden" id="s-principalPhoto">
+                <div id="principal-upload-status" style="font-size:.78rem;color:var(--gr);margin-top:.3rem"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
+            <input type="checkbox" id="s-principalEnabled" style="width:auto;accent-color:var(--gd)">
+            <label for="s-principalEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Show Principal section on website</label>
+          </div>
+          <button class="btn btn-gd" onclick="savePrincipalSettings()">💾 Save Principal Settings</button>
+        </div>
+      </div>
+      <!-- Secretary Card -->
+      <div class="card">
+        <div class="card-hdr"><h3>🎓 Education Secretary's Message</h3></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group"><label>Secretary Name</label><input type="text" id="s-secretaryName" placeholder="Mr. Muhammad Khalid"></div>
+            <div class="form-group"><label>Designation</label><input type="text" id="s-secretaryDesignation" placeholder="Province education secretary"></div>
+          </div>
+          <div class="form-group"><label>Message / Speech</label><textarea id="s-secretaryMessage" rows="5" placeholder="Message from the Education Secretary..."></textarea></div>
+          <div class="form-group">
+            <label>Secretary Photo</label>
+            <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+              <div id="secretary-photo-preview" style="width:80px;height:80px;border-radius:50%;background:var(--of);border:2px solid var(--bd);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2rem">🎓</div>
+              <div>
+                <input type="file" id="secretary-photo-file" accept="image/*" style="display:none" onchange="uploadStaffPhoto('secretary')">
+                <button class="btn btn-gn" onclick="document.getElementById('secretary-photo-file').click()">📷 Upload Photo</button>
+                <input type="hidden" id="s-secretaryPhoto">
+                <div id="secretary-upload-status" style="font-size:.78rem;color:var(--gr);margin-top:.3rem"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
+            <input type="checkbox" id="s-secretaryEnabled" style="width:auto;accent-color:var(--gd)">
+            <label for="s-secretaryEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Show Education Secretary section on website</label>
+          </div>
+          <button class="btn btn-gd" onclick="saveSecretarySettings()">💾 Save Secretary Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TOPPERS MANAGEMENT ── -->
+    <div class="adm-page" id="page-toppers">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🏆 Top Achievers</h3>
+          <button class="btn btn-gd" onclick="openModal('modal-topper')">+ Add Topper</button>
+        </div>
+        <div class="card-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Class</th><th>Exam</th><th>Percentage</th><th>Position</th><th>Actions</th></tr></thead>
+              <tbody id="tb-toppers"><tr><td colspan="6" class="empty-state"><div class="es-ic">🏆</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── WHATSAPP SETTINGS ── -->
+    <div class="adm-page" id="page-whatsapp-settings">
+      <div class="card">
+        <div class="card-hdr"><h3>💬 WhatsApp Integration</h3></div>
+        <div class="card-body">
+          <div style="background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.3);border-radius:8px;padding:1rem;margin-bottom:1.2rem;font-size:.82rem;color:#276749">
+            💡 <strong>How it works:</strong> Enter your WhatsApp number with country code (e.g. 923001234567). A floating green button will appear on the website so parents can contact you directly.
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>WhatsApp Number (with country code)</label><input type="text" id="s-whatsappNumber" placeholder="923001234567"></div>
+          </div>
+          <div class="form-group"><label>Default Message (shown when they open WhatsApp)</label><input type="text" id="s-whatsappMessage" placeholder="Assalamu Alaikum! I would like to get information about MMPC."></div>
+          <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
+            <input type="checkbox" id="s-whatsappEnabled" style="width:auto;accent-color:var(--gd)">
+            <label for="s-whatsappEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Enable WhatsApp button on website</label>
+          </div>
+          <button class="btn btn-gd" onclick="saveWhatsappSettings()">💾 Save WhatsApp Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TICKER & NOTICE SETTINGS ── -->
+    <div class="adm-page" id="page-ticker-settings">
+      <div class="card">
+        <div class="card-hdr"><h3>📢 Ticker &amp; Notice Banner</h3></div>
+        <div class="card-body">
+          <h4 style="margin-bottom:.8rem;color:var(--nv);font-size:.9rem">📌 Scrolling Ticker</h4>
+          <div class="form-group"><label>Ticker Items (separate with | pipe symbol)</label><input type="text" id="s-tickerText" placeholder="Admissions Open 2026-27 | Annual Exams from March 15 | Science Fair on April 5"></div>
+          <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
+            <input type="checkbox" id="s-tickerEnabled" style="width:auto;accent-color:var(--gd)">
+            <label for="s-tickerEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Show scrolling ticker at top of website</label>
+          </div>
+          <hr style="margin:1.4rem 0;border:none;border-top:1px solid var(--bd)">
+          <h4 style="margin-bottom:.8rem;color:var(--nv);font-size:.9rem">🔔 Notice Banner</h4>
+          <div class="form-group"><label>Notice Message</label><input type="text" id="s-noticeText" placeholder="e.g. School closed on Friday due to public holiday"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Banner Type</label>
+              <select id="s-noticeType">
+                <option value="info">ℹ️ Info (Blue)</option>
+                <option value="warning">⚠️ Warning (Orange)</option>
+                <option value="success">✅ Success (Green)</option>
+              </select>
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:1rem">
+              <div style="display:flex;align-items:center;gap:.8rem">
+                <input type="checkbox" id="s-noticeActive" style="width:auto;accent-color:var(--gd)">
+                <label for="s-noticeActive" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Show notice banner on website</label>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-gd" onclick="saveTickerSettings()">💾 Save Ticker &amp; Notice Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── WHY CHOOSE US SETTINGS ── -->
+    <div class="adm-page" id="page-why-settings">
+      <div class="card">
+        <div class="card-hdr"><h3>⭐ Why Choose Us Section</h3></div>
+        <div class="card-body">
+          <div class="form-group" style="display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem">
+            <input type="checkbox" id="s-whyEnabled" style="width:auto;accent-color:var(--gd)">
+            <label for="s-whyEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Show "Why Choose Us" section on website</label>
+          </div>
+          <div id="why-cards-admin"></div>
+          <button class="btn btn-gd" onclick="saveWhySettings()">💾 Save Why Choose Us</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACHIEVEMENTS SETTINGS ── -->
+    <div class="adm-page" id="page-achievements-settings">
+      <div class="card">
+        <div class="card-hdr"><h3>🏅 Achievements Section</h3></div>
+        <div class="card-body">
+          <div class="form-group" style="display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem">
+            <input type="checkbox" id="s-achievementsEnabled" style="width:auto;accent-color:var(--gd)">
+            <label for="s-achievementsEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Show Achievements section on website</label>
+          </div>
+          <div class="form-group"><label>Achievement 1</label><input type="text" id="s-ach1" placeholder="🏆 Board Position – 2024 Annual Exams"></div>
+          <div class="form-group"><label>Achievement 2</label><input type="text" id="s-ach2" placeholder="🥇 District Science Fair Champions 2024"></div>
+          <div class="form-group"><label>Achievement 3</label><input type="text" id="s-ach3" placeholder="📚 100% Result in FA/FSc 2023"></div>
+          <div class="form-group"><label>Achievement 4</label><input type="text" id="s-ach4" placeholder="🎖 Best School Award – D.I. Khan 2023"></div>
+          <button class="btn btn-gd" onclick="saveAchievementsSettings()">💾 Save Achievements</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ TEACHER ACCOUNTS PAGE ══════════════════ -->
+    <div class="adm-page" id="page-teacher-accounts">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🔑 Teacher Login Accounts</h3>
+          <button class="btn btn-gn" onclick="openModal('modal-teacher-account')">+ Create Login</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:.83rem;color:#666;margin-bottom:1rem">Create login credentials for teachers. They will use these to access the Teacher Panel.</p>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Username</th><th>Class</th><th>Section</th><th>Last Login</th><th>Actions</th></tr></thead>
+              <tbody id="tb-teacher-accounts"><tr><td colspan="6" class="empty-state"><div class="es-ic">🔑</div><p>Loading...</p></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </main><!-- /adm-main -->
+</div><!-- /admin-app -->
+
+<!-- Toast -->
+
+<!-- Admission Detail Modal -->
+<div class="modal-bg" id="modal-admission-detail">
+  <div class="modal" style="max-width:750px;max-height:90vh;overflow-y:auto">
+    <div class="modal-hdr">
+      <h3>📝 Admission Application Details</h3>
+      <button class="modal-close" onclick="closeModal('modal-admission-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="admission-detail-body">
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Teacher Account Modal -->
+<div class="modal-bg" id="modal-teacher-account">
+  <div class="modal">
+    <div class="modal-hdr"><h3>🔑 Create Teacher Login</h3><button class="modal-close" onclick="closeModal('modal-teacher-account')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Teacher Name</label><input type="text" id="ta-name" placeholder="e.g. Mr. Ahmed Ali"></div>
+      <div class="form-group"><label>Username</label><input type="text" id="ta-username" placeholder="e.g. teacher_ahmed"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="ta-password" placeholder="Set a password"></div>
+      <div class="form-group"><label>Assigned Class</label>
+        <select id="ta-class">
+          <option value="">Select Class</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Section</label>
+        <select id="ta-section">
+          <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-teacher-account')">Cancel</button>
+      <button class="btn btn-gn" onclick="createTeacherAccount()">Create Login</button>
+    </div>
+    <p id="ta-msg" style="font-size:.82rem;padding:.5rem 1.5rem;text-align:center;min-height:1.4rem"></p>
+  </div>
+</div>
+
+<!-- ════════════════════ MODALS ════════════════════ -->
+
+<!-- Add News Modal -->
+<div class="modal-bg" id="modal-news">
+  <div class="modal">
+    <div class="modal-hdr"><h3>📰 Add News</h3><button class="modal-close" onclick="closeModal('modal-news')">✕</button></div>
+    <div class="modal-body">
+      <div id="news-alert" class="alert alert-err"></div>
+      <div class="form-group"><label>Title *</label><input type="text" id="nw-title" placeholder="News headline"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Category</label>
+          <select id="nw-cat">
+            <option>General</option><option>Announcement</option><option>Academic</option>
+            <option>Sports</option><option>Event</option><option>Admission</option><option>Exam</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Featured</label>
+          <select id="nw-featured"><option value="false">No</option><option value="true">Yes</option></select>
+        </div>
+      </div>
+      <div class="form-group fg1"><label>Content *</label><textarea id="nw-body" placeholder="Write news content…"></textarea></div>
+      <div class="form-group"><label>Image (optional)</label><input type="file" id="nw-img" accept="image/*"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-news')">Cancel</button>
+      <button class="btn btn-gd" onclick="addNews()">Publish News</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Event Modal -->
+<div class="modal-bg" id="modal-event">
+  <div class="modal">
+    <div class="modal-hdr"><h3>📅 Add Event</h3><button class="modal-close" onclick="closeModal('modal-event')">✕</button></div>
+    <div class="modal-body">
+      <div id="evt-alert" class="alert alert-err"></div>
+      <div class="form-group"><label>Title *</label><input type="text" id="ev-title" placeholder="Event name"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Date *</label><input type="date" id="ev-date"></div>
+        <div class="form-group"><label>Time</label><input type="text" id="ev-time" placeholder="e.g. 9:00 AM"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Type</label>
+          <select id="ev-type">
+            <option>Academic</option><option>Sports</option><option>Cultural</option>
+            <option>Religious</option><option>Exam</option><option>Holiday</option><option>Meeting</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Location</label><input type="text" id="ev-loc" placeholder="School Campus"></div>
+      </div>
+      <div class="form-group"><label>Description *</label><textarea id="ev-desc" placeholder="Describe the event…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-event')">Cancel</button>
+      <button class="btn btn-gd" onclick="addEvent()">Add Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal-bg" id="modal-student">
+  <div class="modal">
+    <div class="modal-hdr"><h3>🎒 Add Student</h3><button class="modal-close" onclick="closeModal('modal-student')">✕</button></div>
+    <div class="modal-body">
+      <div id="std-alert" class="alert alert-err"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Roll No *</label><input type="text" id="st-roll" placeholder="2024-001"></div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="st-name" placeholder="Student name"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Father's Name</label><input type="text" id="st-fname" placeholder="Father name"></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="st-phone" placeholder="+92-xxx-xxxxxxx"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Class *</label>
+          <select id="st-class">
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Section</label>
+          <select id="st-section">
+            <option value="A">A</option><option value="B">B</option>
+            <option value="C">C</option><option value="D">D</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Gender *</label>
+          <select id="st-gender"><option>Male</option><option>Female</option></select>
+        </div>
+        <div class="form-group"><label>Address</label><input type="text" id="st-addr" placeholder="Home address"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-student')">Cancel</button>
+      <button class="btn btn-gd" onclick="addStudent()">Add Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Teacher Modal -->
+<div class="modal-bg" id="modal-teacher">
+  <div class="modal">
+    <div class="modal-hdr"><h3>👨‍🏫 Add Teacher</h3><button class="modal-close" onclick="closeModal('modal-teacher')">✕</button></div>
+    <div class="modal-body">
+      <div id="tch-alert" class="alert alert-err"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Full Name *</label><input type="text" id="tc-name" placeholder="Teacher name"></div>
+        <div class="form-group"><label>Subject *</label><input type="text" id="tc-subject" placeholder="e.g. Mathematics"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Qualification</label><input type="text" id="tc-qual" placeholder="e.g. M.Sc Physics"></div>
+        <div class="form-group"><label>Designation</label><input type="text" id="tc-desg" placeholder="e.g. Senior Teacher"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Experience</label><input type="text" id="tc-exp" placeholder="e.g. 10 years"></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="tc-phone" placeholder="+92-xxx-xxxxxxx"></div>
+      </div>
+      <div class="form-group"><label>Bio / Note</label><textarea id="tc-bio" placeholder="Short biography…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-teacher')">Cancel</button>
+      <button class="btn btn-gd" onclick="addTeacher()">Add Teacher</button>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery Upload Modal -->
+<!-- Add Result Modal -->
+<div class="modal-bg" id="modal-result">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-hdr"><h3>📊 Add Student Result</h3><button class="modal-close" onclick="closeModal('modal-result')">✕</button></div>
+    <div class="modal-body">
+      <div id="res-alert" class="alert alert-err"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+        <div class="form-group"><label>Roll Number *</label><input type="text" id="rs-roll" placeholder="e.g. 1001"></div>
+        <div class="form-group"><label>Student Name *</label><input type="text" id="rs-name" placeholder="Full name"></div>
+        <div class="form-group"><label>Class *</label>
+          <select id="rs-class">
+            <option value="">Select Class</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Section</label>
+          <select id="rs-section"><option>A</option><option>B</option><option>C</option><option>D</option></select>
+        </div>
+        <div class="form-group"><label>Exam *</label>
+          <select id="rs-exam">
+            <option>Annual 2025</option><option>Mid-Term 2025</option>
+            <option>Annual 2024</option><option>Mid-Term 2024</option><option>Annual 2023</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Year *</label>
+          <input type="text" id="rs-year" placeholder="e.g. 2025" value="2025">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:.5rem">
+        <label>Remarks / Teacher's Note</label>
+        <input type="text" id="rs-remarks" placeholder="e.g. Excellent performance, Keep it up!">
+      </div>
+
+      <div style="margin-top:1.2rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem">
+          <label style="margin:0;font-size:.8rem">Subjects &amp; Marks *</label>
+          <button class="btn btn-sm" onclick="addSubjectRow()" style="padding:4px 12px;font-size:.75rem;background:var(--nv);color:#fff;border:none;border-radius:4px;cursor:pointer">+ Add Subject</button>
+        </div>
+        <div id="subjects-container">
+          <!-- rows added dynamically -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-result')">Cancel</button>
+      <button class="btn btn-gd" onclick="addResult()">Save Result</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-gallery">
+  <div class="modal">
+    <div class="modal-hdr"><h3>📸 Upload Gallery Image</h3><button class="modal-close" onclick="closeModal('modal-gallery')">✕</button></div>
+    <div class="modal-body">
+      <div id="gal-alert" class="alert alert-err"></div>
+      <div class="form-group"><label>Title *</label><input type="text" id="gl-title" placeholder="Image title"></div>
+      <div class="form-group"><label>Category</label>
+        <select id="gl-cat">
+          <option>Other</option><option>Students</option><option>Campus</option>
+          <option>Events</option><option>Labs</option><option>Sports</option><option>Academics</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Description</label><input type="text" id="gl-desc" placeholder="Brief description"></div>
+      <div class="form-group"><label>Image File *</label><input type="file" id="gl-img" accept="image/*" required></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-gallery')">Cancel</button>
+      <button class="btn btn-gd" onclick="uploadGallery()" id="gl-btn">Upload Image</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Topper Modal -->
+<div class="modal-bg" id="modal-topper">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hdr"><h3>🏆 Add Top Achiever</h3><button class="modal-close" onclick="closeModal('modal-topper')">✕</button></div>
+    <div class="modal-body">
+      <div id="tp-alert" class="alert alert-err"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Student Name *</label><input type="text" id="tp-name" placeholder="Full name"></div>
+        <div class="form-group"><label>Class *</label>
+          <select id="tp-class">
+            <option value="">Select Class</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Exam *</label>
+          <select id="tp-exam">
+            <option>Annual 2025</option><option>Mid-Term 2025</option>
+            <option>Annual 2024</option><option>Mid-Term 2024</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Year</label><input type="text" id="tp-year" value="2025" placeholder="2025"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Percentage</label><input type="text" id="tp-pct" placeholder="e.g. 91.4%"></div>
+        <div class="form-group"><label>Position</label><input type="text" id="tp-pos" placeholder="e.g. 1st Position"></div>
+      </div>
+      <div class="form-group"><label>Subject Group</label><input type="text" id="tp-subject" placeholder="e.g. Science Group, Arts Group"></div>
+      <div class="form-group"><label>Photo File (optional)</label><input type="file" id="tp-photo" accept="image/*"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-topper')">Cancel</button>
+      <button class="btn btn-gd" onclick="addTopper()">Save Topper</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Import Modal -->
+<div class="modal-bg" id="modal-bulk-import">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-hdr">
+      <h3>📥 Bulk Import Results</h3>
+      <button class="modal-close" onclick="closeModal('modal-bulk-import')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Instructions -->
+      <div style="background:rgba(44,108,176,.08);border:1px solid rgba(44,108,176,.25);border-radius:8px;padding:1rem;margin-bottom:1.2rem;font-size:.8rem;color:#2b4c7e;line-height:1.7">
+        <strong>📋 How to use:</strong><br>
+        1. Click <strong>"⬇ Download Template"</strong> to get the sample Excel/CSV file.<br>
+        2. Fill in student results — one student per row.<br>
+        3. Subject columns: use <code>SubjectName_Total</code> and <code>SubjectName_Obtained</code> (e.g. <code>Urdu_Total</code>, <code>Urdu_Obtained</code>).<br>
+        4. Or simply put subject names as column headers with marks as values (total assumed 100).<br>
+        5. Select the exam, year, upload the CSV and click Import.
+      </div>
+
+      <div id="bulk-alert" class="alert alert-err" style="display:none"></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Exam *</label>
+          <select id="bulk-exam">
+            <option>Annual 2025</option><option>Mid-Term 2025</option>
+            <option>Annual 2024</option><option>Mid-Term 2024</option><option>Annual 2023</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Year *</label>
+          <input type="text" id="bulk-year" value="2025" placeholder="2025">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>CSV / Excel File *</label>
+        <input type="file" id="bulk-file" accept=".csv,.xlsx,.xls">
+        <small style="color:var(--gr);font-size:.72rem">Supported: .csv files. For Excel, save as CSV first (File → Save As → CSV).</small>
+      </div>
+
+      <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
+        <input type="checkbox" id="bulk-overwrite" style="width:auto;accent-color:var(--gd)">
+        <label for="bulk-overwrite" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Overwrite existing results for same Roll No + Exam + Year</label>
+      </div>
+
+      <!-- Preview area -->
+      <div id="bulk-preview" style="display:none;margin-top:1rem">
+        <div style="font-size:.78rem;font-weight:700;color:var(--nv);margin-bottom:.5rem">📋 Preview (first 5 rows):</div>
+        <div style="overflow-x:auto;border-radius:6px;border:1px solid var(--bd)">
+          <table id="bulk-preview-table" style="width:100%;border-collapse:collapse;font-size:.74rem">
+            <thead id="bulk-preview-head" style="background:var(--of)"></thead>
+            <tbody id="bulk-preview-body"></tbody>
+          </table>
+        </div>
+        <div id="bulk-row-count" style="font-size:.75rem;color:var(--gr);margin-top:.4rem"></div>
+      </div>
+
+      <!-- Result area -->
+      <div id="bulk-result" style="display:none;margin-top:1rem;padding:1rem;border-radius:8px;font-size:.82rem;line-height:1.7"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-bulk-import')">Close</button>
+      <button class="btn" style="background:#2b6cb0;color:#fff" onclick="previewCSV()" id="btn-preview">👁 Preview</button>
+      <button class="btn btn-gd" onclick="runBulkImport()" id="btn-import" disabled>📥 Import Results</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let authToken = localStorage.getItem('mmpc_token');
+let currentUser = null;
+
+// ── Auth Helpers ─────────────────────────────────────────────────────────────
+function apiHeaders(isFormData = false) {
+  const h = { Authorization: `Bearer ${authToken}` };
+  if (!isFormData) h['Content-Type'] = 'application/json';
+  return h;
+}
+
+async function apiFetch(url, method = 'GET', body = null) {
+  const opts = { method, headers: apiHeaders() };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch(url, opts);
+    return await res.json();
+  } catch (e) { console.error('apiFetch error:', e); return null; }
+}
+
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast toast-${type}`;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3200);
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-PK', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const btn = document.getElementById('l-btn');
+  const errEl = document.getElementById('l-err');
+  errEl.style.display = 'none';
+  btn.textContent = 'Logging in…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: document.getElementById('l-user').value.trim(),
+        password: document.getElementById('l-pass').value
+      })
+    });
+    const json = await res.json();
+    if (json.success) {
+      authToken = json.token;
+      currentUser = json.user;
+      localStorage.setItem('mmpc_token', authToken);
+      startApp();
+    } else {
+      errEl.textContent = json.message || 'Invalid credentials.';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Server connection failed. Is the backend running?';
+    errEl.style.display = 'block';
+  }
+  btn.textContent = '🔐 Login to Admin Panel';
+  btn.disabled = false;
+}
+
+function doLogout() {
+  if (!confirm('Are you sure you want to logout?')) return;
+  localStorage.removeItem('mmpc_token');
+  authToken = null;
+  currentUser = null;
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+async function checkAuth() {
+  if (!authToken) return false;
+  try {
+    const res = await fetch(`${API}/api/auth/me`, { headers: apiHeaders() });
+    const json = await res.json();
+    if (json.success) { currentUser = json.user; return true; }
+  } catch {}
+  localStorage.removeItem('mmpc_token');
+  authToken = null;
+  return false;
+}
+
+// ── App Init ──────────────────────────────────────────────────────────────────
+async function init() {
+  // Teacher accounts loader hook
+  document.addEventListener('click', e => {
+    if (e.target.closest('[onclick*="teacher-accounts"]')) setTimeout(loadTeacherAccounts, 100);
+  });
+  const ok = await checkAuth();
+  if (ok) {
+    startApp();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+}
+
+function startApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-app').style.display = 'block';
+  // Update sidebar user info
+  if (currentUser) {
+    document.getElementById('sb-uname').textContent = currentUser.name || currentUser.username;
+    document.getElementById('sb-av').textContent = (currentUser.name || currentUser.username)[0].toUpperCase();
+  }
+  document.getElementById('hdr-date').textContent = new Date().toDateString();
+  loadDashboard();
+  loadMessages(true); // silent check for badge
+}
+
+// ── Page Navigation ───────────────────────────────────────────────────────────
+const pageTitles = {
+  dashboard: ['Dashboard', 'Overview & Statistics'],
+  news: ['News', 'Manage Announcements & News'],
+  events: ['Events', 'School Calendar & Events'],
+  gallery: ['Gallery', 'Photo Gallery Management'],
+  students: ['Students', 'Student Records'],
+  results: ['Results', 'Student Exam Results'],
+  toppers: ['Top Achievers', 'Hall of Fame & Position Holders'],
+  teachers: ['Teachers', 'Faculty Management'],
+  messages: ['Messages', 'Contact Form Inbox'],
+  settings: ['Hero & Banner', 'Edit Homepage Hero, Stats & Notice Banner'],
+  'about-settings': ['About Section', 'Edit About School Content'],
+  'contact-settings': ['Contact Info', 'Edit Phone, Email & Address'],
+  'principal-settings': ["Principal's Message", 'Edit Principal Info & Message'],
+  'whatsapp-settings': ['WhatsApp', 'Configure WhatsApp Contact Button'],
+  'ticker-settings': ['Ticker & Notice', 'Scrolling Ticker & Notice Banner'],
+  'why-settings': ['Why Choose Us', 'Edit Strengths & Highlights Section'],
+  'achievements-settings': ['Achievements', 'Edit School Achievements Section'],
+  'teacher-accounts': ['Teacher Logins', 'Manage Teacher Panel Access'],
+  fees: ['Fee Management', 'Track & Collect Student Fees'],
+  admissions: ['Admissions', 'Student Admission Applications'],
+};
+
+function showPage(name, btn) {
+  document.querySelectorAll('.adm-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const [title, sub] = pageTitles[name] || [name, ''];
+  document.getElementById('hdr-title').innerHTML = title + `<span>${sub}</span>`;
+
+  const loaders = {
+    news: loadNews,
+    events: loadEvents,
+    students: loadStudents,
+    results: loadResults,
+    toppers: loadTopperAdmin,
+    teachers: loadTeachers,
+    gallery: loadGalleryAdmin,
+    messages: loadMessages,
+    dashboard: loadDashboard,
+    settings: loadSiteSettings,
+    'about-settings': loadSiteSettings,
+    'contact-settings': loadSiteSettings,
+    'principal-settings': loadPrincipalSettings,
+    'whatsapp-settings': loadWhatsappSettings,
+    'ticker-settings': loadTickerSettings,
+    'why-settings': loadWhySettings,
+    'achievements-settings': loadAchievementsSettings,
+    'teacher-accounts': loadTeacherAccounts,
+    fees: loadFees,
+    admissions: loadAdmissions
+  };
+  if (loaders[name]) loaders[name]();
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+// Close modal on backdrop click
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+});
+
+function showAlert(id, msg, type = 'err') {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `alert alert-${type}`;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [news, events, students, teachers, msgs, gallery] = await Promise.all([
+      fetch(`${API}/api/news?limit=1`, { headers: apiHeaders() }).then(r => r.json()),
+      fetch(`${API}/api/events?limit=1`, { headers: apiHeaders() }).then(r => r.json()),
+      fetch(`${API}/api/students?limit=1`, { headers: apiHeaders() }).then(r => r.json()),
+      fetch(`${API}/api/teachers/all`, { headers: apiHeaders() }).then(r => r.json()),
+      fetch(`${API}/api/contact`, { headers: apiHeaders() }).then(r => r.json()),
+      fetch(`${API}/api/gallery?limit=1`).then(r => r.json())
+    ]);
+    document.getElementById('ds-students').textContent = students.total || 0;
+    document.getElementById('ds-teachers').textContent = teachers.data ? teachers.data.length : 0;
+    document.getElementById('ds-news').textContent = news.total || 0;
+    document.getElementById('ds-events').textContent = events.total || 0;
+    document.getElementById('ds-msgs').textContent = msgs.total || 0;
+    document.getElementById('ds-gallery').textContent = gallery.total || 0;
+
+    const unread = msgs.data ? msgs.data.filter(m => m.status === 'unread').length : 0;
+    if (unread > 0) {
+      document.getElementById('msg-badge').textContent = unread;
+      document.getElementById('msg-badge').style.display = 'inline-block';
+      document.getElementById('notif-dot').style.display = 'block';
+    }
+  } catch (e) { console.error('Dashboard load error:', e); }
+}
+
+// ── News ──────────────────────────────────────────────────────────────────────
+async function loadNews() {
+  try {
+    const res = await fetch(`${API}/api/news?limit=50`, { headers: apiHeaders() });
+    const json = await res.json();
+    const tb = document.getElementById('tb-news');
+    if (!json.data || json.data.length === 0) {
+      tb.innerHTML = `<tr><td colspan="4"><div class="empty-state"><div class="es-ic">📰</div><p>No news yet. Add some!</p></div></td></tr>`;
+      return;
+    }
+    tb.innerHTML = json.data.map(n => `
+      <tr>
+        <td style="max-width:280px"><strong>${n.title}</strong></td>
+        <td><span class="badge badge-gd">${n.category}</span></td>
+        <td>${fmtDate(n.createdAt)}</td>
+        <td><button class="btn btn-sm btn-rd" onclick="deleteRecord('news','${n._id}','tb-news')">🗑 Delete</button></td>
+      </tr>`).join('');
+  } catch { showToast('Failed to load news', 'err'); }
+}
+
+async function addNews() {
+  const title = document.getElementById('nw-title').value.trim();
+  const body = document.getElementById('nw-body').value.trim();
+  if (!title || !body) { showAlert('news-alert', 'Title and content are required.'); return; }
+
+  const fd = new FormData();
+  fd.append('title', title);
+  fd.append('body', body);
+  fd.append('category', document.getElementById('nw-cat').value);
+  fd.append('featured', document.getElementById('nw-featured').value);
+  const img = document.getElementById('nw-img').files[0];
+  if (img) fd.append('image', img);
+
+  try {
+    const res = await fetch(`${API}/api/news`, { method: 'POST', headers: { Authorization: `Bearer ${authToken}` }, body: fd });
+    const json = await res.json();
+    if (json.success) {
+      closeModal('modal-news');
+      showToast('News published!', 'ok');
+      loadNews();
+      document.getElementById('nw-title').value = '';
+      document.getElementById('nw-body').value = '';
+    } else { showAlert('news-alert', json.message || 'Failed to add news.'); }
+  } catch { showAlert('news-alert', 'Network error.'); }
+}
+
+// ── Events ────────────────────────────────────────────────────────────────────
+async function loadEvents() {
+  try {
+    const res = await fetch(`${API}/api/events?limit=50`, { headers: apiHeaders() });
+    const json = await res.json();
+    const tb = document.getElementById('tb-events');
+    if (!json.data || json.data.length === 0) {
+      tb.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="es-ic">📅</div><p>No events yet.</p></div></td></tr>`;
+      return;
+    }
+    tb.innerHTML = json.data.map(e => `
+      <tr>
+        <td><strong>${e.title}</strong></td>
+        <td>${fmtDate(e.date)}</td>
+        <td><span class="badge badge-bl">${e.type}</span></td>
+        <td><span class="badge ${e.status === 'upcoming' ? 'badge-gn' : 'badge-or'}">${e.status}</span></td>
+        <td><button class="btn btn-sm btn-rd" onclick="deleteRecord('events','${e._id}','tb-events')">🗑 Delete</button></td>
+      </tr>`).join('');
+  } catch { showToast('Failed to load events', 'err'); }
+}
+
+async function addEvent() {
+  const title = document.getElementById('ev-title').value.trim();
+  const desc = document.getElementById('ev-desc').value.trim();
+  const date = document.getElementById('ev-date').value;
+  if (!title || !desc || !date) { showAlert('evt-alert', 'Title, description and date are required.'); return; }
+  try {
+    const res = await fetch(`${API}/api/events`, {
+      method: 'POST', headers: apiHeaders(),
+      body: JSON.stringify({
+        title, description: desc, date,
+        time: document.getElementById('ev-time').value,
+        type: document.getElementById('ev-type').value,
+        location: document.getElementById('ev-loc').value || 'School Campus'
+      })
+    });
+    const json = await res.json();
+    if (json.success) { closeModal('modal-event'); showToast('Event added!', 'ok'); loadEvents(); }
+    else showAlert('evt-alert', json.message || 'Failed.');
+  } catch { showAlert('evt-alert', 'Network error.'); }
+}
+
+// ── Gallery Admin ─────────────────────────────────────────────────────────────
+async function loadGalleryAdmin() {
+  try {
+    const res = await fetch(`${API}/api/gallery?limit=50`);
+    const json = await res.json();
+    const grid = document.getElementById('gal-admin-grid');
+    if (!json.data || json.data.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-ic">🖼</div><p>No images yet. Upload some!</p></div>`;
+      return;
+    }
+    grid.innerHTML = json.data.map(item => `
+      <div style="border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1);position:relative;background:var(--nv2)">
+        <img src="${item.imageUrl}" alt="${item.title}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">
+        <div style="padding:.5rem .6rem;background:var(--wh)">
+          <div style="font-size:.72rem;font-weight:700;color:var(--nv);margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.title}</div>
+          <span class="badge badge-gd" style="font-size:.58rem">${item.category}</span>
+        </div>
+        <button class="btn btn-sm btn-rd" onclick="deleteRecord('gallery','${item._id}','gal-reload')"
+          style="position:absolute;top:.4rem;right:.4rem;padding:3px 7px;font-size:.65rem">✕</button>
+      </div>`).join('');
+  } catch { showToast('Failed to load gallery', 'err'); }
+}
+
+async function uploadGallery() {
+  const title = document.getElementById('gl-title').value.trim();
+  const file = document.getElementById('gl-img').files[0];
+  if (!title) { showAlert('gal-alert', 'Title is required.'); return; }
+  if (!file) { showAlert('gal-alert', 'Please select an image.'); return; }
+
+  const btn = document.getElementById('gl-btn');
+  btn.textContent = 'Uploading…'; btn.disabled = true;
+
+  const fd = new FormData();
+  fd.append('title', title);
+  fd.append('category', document.getElementById('gl-cat').value);
+  fd.append('description', document.getElementById('gl-desc').value);
+  fd.append('image', file);
+
+  try {
+    const res = await fetch(`${API}/api/gallery`, {
+      method: 'POST', headers: { Authorization: `Bearer ${authToken}` }, body: fd
+    });
+    const json = await res.json();
+    if (json.success) { closeModal('modal-gallery'); showToast('Image uploaded!', 'ok'); loadGalleryAdmin(); }
+    else showAlert('gal-alert', json.message || 'Upload failed.');
+  } catch { showAlert('gal-alert', 'Network error.'); }
+  btn.textContent = 'Upload Image'; btn.disabled = false;
+}
+
+// ── Students ──────────────────────────────────────────────────────────────────
+let allStudents = [];
+async function loadStudents() {
+  try {
+    const res = await fetch(`${API}/api/students?limit=5000`, { headers: apiHeaders() });
+    const json = await res.json();
+    allStudents = json.data || [];
+    renderStudents(allStudents);
+  } catch { showToast('Failed to load students', 'err'); }
+}
+
+function renderStudents(data) {
+  const tb = document.getElementById('tb-students');
+  if (!data || data.length === 0) {
+    tb.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="es-ic">🎒</div><p>No students yet.</p></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = data.map(s => `
+    <tr>
+      <td><strong>${s.rollNo}</strong></td>
+      <td>${s.name}</td>
+      <td>${s.fatherName || '—'}</td>
+      <td>${s.class}</td>
+      <td>${s.gender}</td>
+      <td><span class="badge ${s.status === 'Active' ? 'badge-gn' : 'badge-or'}">${s.status}</span></td>
+      <td><button class="btn btn-sm btn-rd" onclick="deleteRecord('students','${s._id}','std-reload')">🗑</button></td>
+    </tr>`).join('');
+}
+
+function searchStudents() {
+  const q = document.getElementById('std-search').value.toLowerCase();
+  const filtered = allStudents.filter(s =>
+    s.name.toLowerCase().includes(q) || s.rollNo.toLowerCase().includes(q)
+  );
+  renderStudents(filtered);
+}
+
+async function addStudent() {
+  const roll = document.getElementById('st-roll').value.trim();
+  const name = document.getElementById('st-name').value.trim();
+  if (!roll || !name) { showAlert('std-alert', 'Roll number and name are required.'); return; }
+  try {
+    const res = await fetch(`${API}/api/students`, {
+      method: 'POST', headers: apiHeaders(),
+      body: JSON.stringify({
+        rollNo: roll, name,
+        fatherName: document.getElementById('st-fname').value,
+        phone: document.getElementById('st-phone').value,
+        class: document.getElementById('st-class').value,
+        section: document.getElementById('st-section').value,
+        gender: document.getElementById('st-gender').value,
+        address: document.getElementById('st-addr').value
+      })
+    });
+    const json = await res.json();
+    if (json.success) { closeModal('modal-student'); showToast('Student added!', 'ok'); loadStudents(); }
+    else showAlert('std-alert', json.message || 'Failed.');
+  } catch { showAlert('std-alert', 'Network error.'); }
+}
+
+// ── Teachers ──────────────────────────────────────────────────────────────────
+async function loadTeachers() {
+  try {
+    const res = await fetch(`${API}/api/teachers/all`, { headers: apiHeaders() });
+    const json = await res.json();
+    const tb = document.getElementById('tb-teachers');
+    if (!json.data || json.data.length === 0) {
+      tb.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="es-ic">👨‍🏫</div><p>No teachers yet.</p></div></td></tr>`;
+      return;
+    }
+    tb.innerHTML = json.data.map(t => `
+      <tr>
+        <td><strong>${t.name}</strong></td>
+        <td>${t.subject}</td>
+        <td>${t.qualification || '—'}</td>
+        <td>${t.experience || '—'}</td>
+        <td><span class="badge ${t.status === 'Active' ? 'badge-gn' : 'badge-or'}">${t.status}</span></td>
+        <td><button class="btn btn-sm btn-rd" onclick="deleteRecord('teachers','${t._id}','tch-reload')">🗑</button></td>
+      </tr>`).join('');
+  } catch { showToast('Failed to load teachers', 'err'); }
+}
+
+async function addTeacher() {
+  const name = document.getElementById('tc-name').value.trim();
+  const subject = document.getElementById('tc-subject').value.trim();
+  if (!name || !subject) { showAlert('tch-alert', 'Name and subject are required.'); return; }
+  try {
+    const res = await fetch(`${API}/api/teachers`, {
+      method: 'POST', headers: apiHeaders(),
+      body: JSON.stringify({
+        name, subject,
+        qualification: document.getElementById('tc-qual').value,
+        designation: document.getElementById('tc-desg').value,
+        experience: document.getElementById('tc-exp').value,
+        phone: document.getElementById('tc-phone').value,
+        bio: document.getElementById('tc-bio').value
+      })
+    });
+    const json = await res.json();
+    if (json.success) { closeModal('modal-teacher'); showToast('Teacher added!', 'ok'); loadTeachers(); }
+    else showAlert('tch-alert', json.message || 'Failed.');
+  } catch { showAlert('tch-alert', 'Network error.'); }
+}
+
+// ── Messages ──────────────────────────────────────────────────────────────────
+async function loadMessages(silent = false) {
+  try {
+    const res = await fetch(`${API}/api/contact?limit=50`, { headers: apiHeaders() });
+    const json = await res.json();
+    const unread = json.data ? json.data.filter(m => m.status === 'unread').length : 0;
+
+    if (unread > 0) {
+      document.getElementById('msg-badge').textContent = unread;
+      document.getElementById('msg-badge').style.display = 'inline-block';
+      document.getElementById('notif-dot').style.display = 'block';
+    } else {
+      document.getElementById('msg-badge').style.display = 'none';
+      document.getElementById('notif-dot').style.display = 'none';
+    }
+
+    if (silent) return;
+
+    const container = document.getElementById('msgs-list');
+    if (!json.data || json.data.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="es-ic">✉️</div><p>No messages yet.</p></div>`;
+      return;
+    }
+    container.innerHTML = json.data.map(m => `
+      <div class="msg-card ${m.status === 'unread' ? 'unread' : ''}">
+        <div style="display:flex;align-items:start;justify-content:space-between;gap:.5rem">
+          <div>
+            <div class="msg-name">${m.name} <span style="font-size:.68rem;color:var(--gr);font-weight:600">&lt;${m.email}&gt;</span></div>
+            <div class="msg-sub">${m.subject}</div>
+            <div class="msg-body">${m.message}</div>
+            <div class="msg-meta">
+              <span>📅 ${fmtDate(m.createdAt)}</span>
+              ${m.phone ? `<span>📞 ${m.phone}</span>` : ''}
+              <span class="badge ${m.status === 'unread' ? 'badge-rd' : m.status === 'replied' ? 'badge-gn' : 'badge-or'}">${m.status}</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0">
+            ${m.status === 'unread' ? `<button class="btn btn-sm btn-gn" onclick="markMsg('${m._id}','read')">✓ Mark Read</button>` : ''}
+            <button class="btn btn-sm btn-rd" onclick="deleteRecord('contact','${m._id}','msg-reload')">🗑</button>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    if (!silent) showToast('Failed to load messages', 'err');
+  }
+}
+
+async function markMsg(id, status) {
+  try {
+    await fetch(`${API}/api/contact/${id}`, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify({ status }) });
+    loadMessages();
+  } catch {}
+}
+
+// ── Generic Delete ────────────────────────────────────────────────────────────
+async function deleteRecord(type, id, reloadTarget) {
+  if (!confirm('Delete this record permanently?')) return;
+  try {
+    const res = await fetch(`${API}/api/${type}/${id}`, { method: 'DELETE', headers: apiHeaders() });
+    const json = await res.json();
+    if (json.success) {
+      showToast('Deleted successfully!', 'ok');
+      const reloaders = { 'tb-news': loadNews, 'tb-events': loadEvents, 'tb-students': loadStudents, 'tch-reload': loadTeachers, 'gal-reload': loadGalleryAdmin, 'std-reload': loadStudents, 'msg-reload': loadMessages, 'res-reload': loadResults, 'top-reload': loadTopperAdmin };
+      if (reloaders[reloadTarget]) reloaders[reloadTarget]();
+      loadDashboard();
+    } else showToast(json.message || 'Failed to delete.', 'err');
+  } catch { showToast('Network error.', 'err'); }
+}
+
+// ── Site Settings ────────────────────────────────────────────────────────────
+let siteSettingsCache = null;
+
+async function loadSiteSettings() {
+  try {
+    const res = await fetch(`${API}/api/settings`, { headers: apiHeaders() });
+    const json = await res.json();
+    if (!json.success) { showToast('Failed to load settings', 'err'); return; }
+    const s = json.data;
+    siteSettingsCache = s;
+
+    // Hero & Banner
+    setVal('s-noticeActive', String(s.noticeActive));
+    setVal('s-noticeType', s.noticeType);
+    setVal('s-noticeText', s.noticeText);
+    setVal('s-heroTagline', s.heroTagline);
+    setVal('s-heroTitle', s.heroTitle);
+    setVal('s-heroSubtitle', s.heroSubtitle);
+    setVal('s-heroMotto', s.heroMotto);
+    setVal('s-statStudents', s.statStudents);
+    setVal('s-statFaculty', s.statFaculty);
+    setVal('s-statYears', s.statYears);
+    setVal('s-statPassRate', s.statPassRate);
+    setVal('s-statPrograms', s.statPrograms);
+    setVal('s-admissionsOpen', String(s.admissionsOpen));
+    setVal('s-admissionsText', s.admissionsText);
+
+    // About
+    setVal('s-aboutPara1', s.aboutPara1);
+    setVal('s-aboutPara2', s.aboutPara2);
+    setVal('s-aboutMission', s.aboutMission);
+    setVal('s-aboutVision', s.aboutVision);
+    setVal('s-aboutAcademics', s.aboutAcademics);
+    setVal('s-aboutCoCurr', s.aboutCoCurr);
+
+    // Contact
+    setVal('s-contactPhone1', s.contactPhone1);
+    setVal('s-contactPhone2', s.contactPhone2);
+    setVal('s-contactEmail1', s.contactEmail1);
+    setVal('s-contactEmail2', s.contactEmail2);
+    setVal('s-contactAddress', s.contactAddress);
+    setVal('s-contactHours', s.contactHours);
+  } catch(e) { showToast('Network error loading settings', 'err'); }
+}
+
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.tagName === 'SELECT') el.value = val;
+  else el.value = val || '';
+}
+
+async function saveSettings(section) {
+  const btnMap = { hero: 'save-hero-btn', about: 'save-about-btn', contact: 'save-contact-btn' };
+  const btn = document.getElementById(btnMap[section]);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Saving…'; }
+
+  const payload = {};
+
+  if (section === 'hero') {
+    payload.noticeActive  = document.getElementById('s-noticeActive').value === 'true';
+    payload.noticeType    = document.getElementById('s-noticeType').value;
+    payload.noticeText    = document.getElementById('s-noticeText').value.trim();
+    payload.heroTagline   = document.getElementById('s-heroTagline').value.trim();
+    payload.heroTitle     = document.getElementById('s-heroTitle').value.trim();
+    payload.heroSubtitle  = document.getElementById('s-heroSubtitle').value.trim();
+    payload.heroMotto     = document.getElementById('s-heroMotto').value.trim();
+    payload.statStudents  = document.getElementById('s-statStudents').value.trim();
+    payload.statFaculty   = document.getElementById('s-statFaculty').value.trim();
+    payload.statYears     = document.getElementById('s-statYears').value.trim();
+    payload.statPassRate  = document.getElementById('s-statPassRate').value.trim();
+    payload.statPrograms  = document.getElementById('s-statPrograms').value.trim();
+    payload.admissionsOpen = document.getElementById('s-admissionsOpen').value === 'true';
+    payload.admissionsText = document.getElementById('s-admissionsText').value.trim();
+  } else if (section === 'about') {
+    payload.aboutPara1    = document.getElementById('s-aboutPara1').value.trim();
+    payload.aboutPara2    = document.getElementById('s-aboutPara2').value.trim();
+    payload.aboutMission  = document.getElementById('s-aboutMission').value.trim();
+    payload.aboutVision   = document.getElementById('s-aboutVision').value.trim();
+    payload.aboutAcademics= document.getElementById('s-aboutAcademics').value.trim();
+    payload.aboutCoCurr   = document.getElementById('s-aboutCoCurr').value.trim();
+  } else if (section === 'contact') {
+    payload.contactPhone1 = document.getElementById('s-contactPhone1').value.trim();
+    payload.contactPhone2 = document.getElementById('s-contactPhone2').value.trim();
+    payload.contactEmail1 = document.getElementById('s-contactEmail1').value.trim();
+    payload.contactEmail2 = document.getElementById('s-contactEmail2').value.trim();
+    payload.contactAddress= document.getElementById('s-contactAddress').value.trim();
+    payload.contactHours  = document.getElementById('s-contactHours').value.trim();
+  }
+
+  try {
+    const res = await fetch(`${API}/api/settings`, {
+      method: 'PUT', headers: apiHeaders(),
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast('✅ Settings saved! Website updated.', 'ok');
+    } else {
+      showToast(json.message || 'Save failed', 'err');
+    }
+  } catch(e) { showToast('Network error', 'err'); }
+  finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Save ' + (section === 'hero' ? 'Hero & Banner' : section === 'about' ? 'About Section' : 'Contact Info') + ' Settings'; }
+  }
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+let allResults = [];
+
+function getGradeAdmin(obtained, total) {
+  const pct = (obtained / total) * 100;
+  if (pct >= 80) return 'A';
+  if (pct >= 65) return 'B';
+  if (pct >= 50) return 'C';
+  return 'F';
+}
+
+async function loadResults() {
+  try {
+    const res = await fetch(`${API}/api/results`, { headers: apiHeaders() });
+    const json = await res.json();
+    allResults = json.data || [];
+    renderResults(allResults);
+  } catch { showToast('Failed to load results', 'err'); }
+}
+
+function renderResults(data) {
+  const tb = document.getElementById('tb-results');
+  if (!data.length) {
+    tb.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="es-ic">📊</div><p>No results yet. Click "+ Add Result" to get started.</p></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = data.map(r => {
+    const totalObt = (r.subjects || []).reduce((s, sub) => s + Number(sub.obtainedMarks), 0);
+    const totalMax = (r.subjects || []).reduce((s, sub) => s + Number(sub.totalMarks), 0);
+    const pct = totalMax > 0 ? ((totalObt / totalMax) * 100).toFixed(1) : 0;
+    const grade = getGradeAdmin(totalObt, totalMax);
+    const gradeColor = { A:'#38a169', B:'#2c7a7b', C:'#c8952a', F:'#e53e3e' }[grade] || '#666';
+    return `<tr>
+      <td><strong>${r.rollNo}</strong></td>
+      <td>${r.studentName}</td>
+      <td>Class ${r.class}${r.section ? ' – ' + r.section : ''}</td>
+      <td>${r.exam}</td>
+      <td>${r.year}</td>
+      <td>${pct}%</td>
+      <td><span style="font-weight:800;color:${gradeColor}">${grade}</span></td>
+      <td><button class="btn btn-sm btn-rd" onclick="deleteRecord('results','${r._id}','res-reload')">🗑</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function searchResults() {
+  const q    = (document.getElementById('res-search').value || '').toLowerCase();
+  const exam = document.getElementById('res-filter-exam').value;
+  let filtered = allResults;
+  if (q)    filtered = filtered.filter(r => (r.rollNo||'').toLowerCase().includes(q) || (r.studentName||'').toLowerCase().includes(q));
+  if (exam) filtered = filtered.filter(r => r.exam === exam);
+  renderResults(filtered);
+}
+
+// ── Subject rows in modal ──────────────────────────────────────────────────────
+const DEFAULT_SUBJECTS = ['Urdu', 'English', 'Mathematics', 'Science', 'Islamiyat', 'Social Studies'];
+
+function initSubjectRows() {
+  const c = document.getElementById('subjects-container');
+  c.innerHTML = '';
+  DEFAULT_SUBJECTS.forEach(s => addSubjectRow(s));
+}
+
+function addSubjectRow(name = '') {
+  const c = document.getElementById('subjects-container');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:.5rem;margin-bottom:.5rem;align-items:center';
+  row.innerHTML = `
+    <input type="text" placeholder="Subject name" value="${name}"
+      style="padding:7px 10px;border:1.5px solid var(--bd);border-radius:5px;font-family:'Nunito',sans-serif;font-size:.82rem">
+    <input type="number" placeholder="Total" min="1" value="100"
+      style="padding:7px 10px;border:1.5px solid var(--bd);border-radius:5px;font-family:'Nunito',sans-serif;font-size:.82rem">
+    <input type="number" placeholder="Obtained" min="0" value=""
+      style="padding:7px 10px;border:1.5px solid var(--bd);border-radius:5px;font-family:'Nunito',sans-serif;font-size:.82rem">
+    <button onclick="this.closest('div').remove()" title="Remove"
+      style="padding:6px 10px;background:var(--rd);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.8rem">✕</button>`;
+  c.appendChild(row);
+}
+
+function getSubjectsFromModal() {
+  const rows = document.querySelectorAll('#subjects-container > div');
+  const subjects = [];
+  let valid = true;
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const name    = inputs[0].value.trim();
+    const total   = Number(inputs[1].value);
+    const obtained = Number(inputs[2].value);
+    if (!name || isNaN(total) || isNaN(obtained)) { valid = false; return; }
+    if (obtained > total) { valid = false; return; }
+    subjects.push({ name, totalMarks: total, obtainedMarks: obtained });
+  });
+  return valid ? subjects : null;
+}
+
+async function addResult() {
+  const alert  = document.getElementById('res-alert');
+  alert.style.display = 'none';
+
+  const rollNo      = document.getElementById('rs-roll').value.trim();
+  const studentName = document.getElementById('rs-name').value.trim();
+  const cls         = document.getElementById('rs-class').value;
+  const section     = document.getElementById('rs-section').value;
+  const exam        = document.getElementById('rs-exam').value;
+  const year        = document.getElementById('rs-year').value.trim();
+  const remarks     = document.getElementById('rs-remarks').value.trim();
+
+  if (!rollNo || !studentName || !cls || !year) {
+    alert.textContent = 'Roll No, Student Name, Class and Year are required.';
+    alert.style.display = 'block'; return;
+  }
+
+  const subjects = getSubjectsFromModal();
+  if (!subjects || subjects.length === 0) {
+    alert.textContent = 'Please fill all subject rows correctly. Obtained marks cannot exceed Total marks.';
+    alert.style.display = 'block'; return;
+  }
+
+  try {
+    const res = await fetch(`${API}/api/results`, {
+      method: 'POST', headers: apiHeaders(),
+      body: JSON.stringify({ rollNo, studentName, class: cls, section, exam, year, subjects, remarks })
+    });
+    const json = await res.json();
+    if (json.success) {
+      closeModal('modal-result');
+      showToast('✅ Result saved!', 'ok');
+      loadResults();
+    } else {
+      alert.textContent = json.message || 'Failed to save result.';
+      alert.style.display = 'block';
+    }
+  } catch { alert.textContent = 'Network error.'; alert.style.display = 'block'; }
+}
+
+// Init subjects when modal opens — patch openModal
+// ── Merged openModal patch ────────────────────────────────────────────────────
+const _origOpenModal = window.openModal;
+window.openModal = function(id) {
+  _origOpenModal(id);
+  if (id === 'modal-result') initSubjectRows();
+  if (id === 'modal-bulk-import') {
+    document.getElementById('bulk-alert').style.display = 'none';
+    document.getElementById('bulk-result').style.display = 'none';
+    document.getElementById('bulk-preview').style.display = 'none';
+    document.getElementById('btn-import').disabled = true;
+    document.getElementById('bulk-file').value = '';
+    parsedCSVRows = [];
+  }
+  if (id === 'modal-bulk-import-students') {
+    document.getElementById('bulk-students-alert').style.display = 'none';
+    document.getElementById('bulk-students-result').style.display = 'none';
+    document.getElementById('bulk-students-preview').style.display = 'none';
+    document.getElementById('btn-import-students').disabled = true;
+    document.getElementById('bulk-students-file').value = '';
+    parsedStudentCSVRows = [];
+  }
+  if (id === 'modal-bulk-import-fees') {
+    document.getElementById('bulk-fees-alert').style.display = 'none';
+    document.getElementById('bulk-fees-result').style.display = 'none';
+    document.getElementById('bulk-fees-preview').style.display = 'none';
+    document.getElementById('btn-import-fees').disabled = true;
+    document.getElementById('bulk-fees-file').value = '';
+    parsedFeeCSVRows = [];
+  }
+};
+
+// ── Toppers Admin ─────────────────────────────────────────────────────────────
+let allToppers = [];
+
+async function loadTopperAdmin() {
+  try {
+    const res = await fetch(`${API}/api/toppers`, { headers: apiHeaders() });
+    const json = await res.json();
+    allToppers = json.data || [];
+    renderToppers(allToppers);
+  } catch { showToast('Failed to load toppers', 'err'); }
+}
+
+function renderToppers(data) {
+  const tb = document.getElementById('tb-toppers');
+  if (!data.length) {
+    tb.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="es-ic">🏆</div><p>No toppers yet. Click "+ Add Topper" to get started.</p></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML = data.map(t => `<tr>
+    <td><strong>${t.name}</strong></td>
+    <td>${t.class}</td>
+    <td>${t.exam} ${t.year}</td>
+    <td><strong style="color:var(--gd)">${t.percentage || '—'}</strong></td>
+    <td>${t.position || '—'}</td>
+    <td><button class="btn btn-sm btn-rd" onclick="deleteRecord('toppers','${t._id}','top-reload')">🗑</button></td>
+  </tr>`).join('');
+}
+
+async function addTopper() {
+  const alert = document.getElementById('tp-alert');
+  alert.style.display = 'none';
+  const name    = document.getElementById('tp-name').value.trim();
+  const cls     = document.getElementById('tp-class').value;
+  const exam    = document.getElementById('tp-exam').value;
+  const year    = document.getElementById('tp-year').value.trim();
+  const pct     = document.getElementById('tp-pct').value.trim();
+  const pos     = document.getElementById('tp-pos').value.trim();
+  const subject = document.getElementById('tp-subject').value.trim();
+  const photoFile = document.getElementById('tp-photo').files[0];
+
+  if (!name || !cls) { alert.textContent = 'Name and Class are required.'; alert.style.display = 'block'; return; }
+
+  const fd = new FormData();
+  fd.append('name', name); fd.append('class', cls); fd.append('exam', exam);
+  fd.append('year', year); fd.append('percentage', pct); fd.append('position', pos);
+  fd.append('subject', subject);
+  if (photoFile) fd.append('photo', photoFile);
+
+  try {
+    const res = await fetch(`${API}/api/toppers`, { method: 'POST', headers: { 'Authorization': `Bearer ${authToken}` }, body: fd });
+    const json = await res.json();
+    if (json.success) { closeModal('modal-topper'); showToast('✅ Topper added!', 'ok'); loadTopperAdmin(); }
+    else { alert.textContent = json.message || 'Failed.'; alert.style.display = 'block'; }
+  } catch { alert.textContent = 'Network error.'; alert.style.display = 'block'; }
+}
+
+// ── Principal Settings ────────────────────────────────────────────────────────
+async function loadPrincipalSettings() {
+  try {
+    const res = await fetch(`${API}/api/settings`); const json = await res.json();
+    if (!json.success) return; const s = json.data;
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+    setVal('s-principalName', s.principalName);
+    setVal('s-principalDesignation', s.principalDesignation);
+    setVal('s-principalMessage', s.principalMessage);
+    setVal('s-principalPhoto', s.principalPhoto);
+    const chk = document.getElementById('s-principalEnabled');
+    if (chk) chk.checked = s.principalEnabled !== false;
+    if (s.principalPhoto) {
+      document.getElementById('principal-photo-preview').innerHTML = `<img src="${s.principalPhoto}" style="width:100%;height:100%;object-fit:cover">`;
+    }
+    // Secretary
+    setVal('s-secretaryName', s.secretaryName);
+    setVal('s-secretaryDesignation', s.secretaryDesignation);
+    setVal('s-secretaryMessage', s.secretaryMessage);
+    setVal('s-secretaryPhoto', s.secretaryPhoto);
+    const chk2 = document.getElementById('s-secretaryEnabled');
+    if (chk2) chk2.checked = s.secretaryEnabled !== false;
+    if (s.secretaryPhoto) {
+      document.getElementById('secretary-photo-preview').innerHTML = `<img src="${s.secretaryPhoto}" style="width:100%;height:100%;object-fit:cover">`;
+    }
+  } catch { showToast('Failed to load settings', 'err'); }
+}
+
+async function savePrincipalSettings() {
+  try {
+    const payload = {
+      principalName: document.getElementById('s-principalName').value.trim(),
+      principalDesignation: document.getElementById('s-principalDesignation').value.trim(),
+      principalMessage: document.getElementById('s-principalMessage').value.trim(),
+      principalPhoto: document.getElementById('s-principalPhoto').value.trim(),
+      principalEnabled: document.getElementById('s-principalEnabled').checked
+    };
+    const res = await fetch(`${API}/api/settings`, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.success) showToast('✅ Principal settings saved!', 'ok');
+    else showToast(json.message || 'Save failed', 'err');
+  } catch { showToast('Network error', 'err'); }
+}
+
+async function saveSecretarySettings() {
+  try {
+    const payload = {
+      secretaryName: document.getElementById('s-secretaryName').value.trim(),
+      secretaryDesignation: document.getElementById('s-secretaryDesignation').value.trim(),
+      secretaryMessage: document.getElementById('s-secretaryMessage').value.trim(),
+      secretaryPhoto: document.getElementById('s-secretaryPhoto').value.trim(),
+      secretaryEnabled: document.getElementById('s-secretaryEnabled').checked
+    };
+    const res = await fetch(`${API}/api/settings`, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.success) showToast('✅ Secretary settings saved!', 'ok');
+    else showToast(json.message || 'Save failed', 'err');
+  } catch { showToast('Network error', 'err'); }
+}
+
+async function uploadStaffPhoto(role) {
+  const fileInput = document.getElementById(role + '-photo-file');
+  const file = fileInput.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById(role + '-upload-status');
+  statusEl.textContent = '⏳ Uploading...';
+  const formData = new FormData();
+  formData.append('photo', file);
+  formData.append('field', role + 'Photo');
+  try {
+    const token = localStorage.getItem('mmpc_token');
+    const res = await fetch('/api/settings/upload-photo', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData
+    });
+    const json = await res.json();
+    if (json.success) {
+      document.getElementById('s-' + role + 'Photo').value = json.url;
+      document.getElementById(role + '-photo-preview').innerHTML = `<img src="${json.url}" style="width:100%;height:100%;object-fit:cover">`;
+      statusEl.textContent = '✅ Uploaded!';
+      showToast('Photo uploaded successfully', 'ok');
+    } else {
+      statusEl.textContent = '❌ ' + json.message;
+      showToast(json.message, 'err');
+    }
+  } catch(e) {
+    statusEl.textContent = '❌ Upload failed';
+    showToast('Upload failed', 'err');
+  }
+}
+
+// ── WhatsApp Settings ─────────────────────────────────────────────────────────
+async function loadWhatsappSettings() {
+  try {
+    const res = await fetch(`${API}/api/settings`); const json = await res.json();
+    if (!json.success) return; const s = json.data;
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+    setVal('s-whatsappNumber', s.whatsappNumber);
+    setVal('s-whatsappMessage', s.whatsappMessage);
+    const chk = document.getElementById('s-whatsappEnabled');
+    if (chk) chk.checked = s.whatsappEnabled === true;
+  } catch { showToast('Failed to load settings', 'err'); }
+}
+
+async function saveWhatsappSettings() {
+  try {
+    const payload = {
+      whatsappNumber: document.getElementById('s-whatsappNumber').value.trim(),
+      whatsappMessage: document.getElementById('s-whatsappMessage').value.trim(),
+      whatsappEnabled: document.getElementById('s-whatsappEnabled').checked
+    };
+    const res = await fetch(`${API}/api/settings`, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.success) showToast('✅ WhatsApp settings saved!', 'ok');
+    else showToast(json.message || 'Save failed', 'err');
+  } catch { showToast('Network error', 'err'); }
+}
+
+// ── Ticker & Notice Settings ──────────────────────────────────────────────────
+async function loadTickerSettings() {
+  try {
+    const res = await fetch(`${API}/api/settings`); const json = await res.json();
+    if (!json.success) return; const s = json.data;
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+    setVal('s-tickerText', s.tickerText);
+    setVal('s-noticeText', s.noticeText);
+    setVal('s-noticeType', s.noticeType);
+    document.getElementById('s-tickerEnabled').checked = s.tickerEnabled === true;
+    document.getElementById('s-noticeActive').checked = s.noticeActive === true;
+  } catch { showToast('Failed to load settings', 'err'); }
+}
+
+async function saveTickerSettings() {
+  try {
+    const payload = {
+      tickerText: document.getElementById('s-tickerText').value.trim(),
+      tickerEnabled: document.getElementById('s-tickerEnabled').checked,
+      noticeText: document.getElementById('s-noticeText').value.trim(),
+      noticeType: document.getElementById('s-noticeType').value,
+      noticeActive: document.getElementById('s-noticeActive').checked
+    };
+    const res = await fetch(`${API}/api/settings`, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.success) showToast('✅ Ticker & Notice settings saved!', 'ok');
+    else showToast(json.message || 'Save failed', 'err');
+  } catch { showToast('Network error', 'err'); }
+}
+
+// ── Why Choose Us Settings ────────────────────────────────────────────────────
+async function loadWhySettings() {
+  try {
+    const res = await fetch(`${API}/api/settings`); const json = await res.json();
+    if (!json.success) return; const s = json.data;
+    document.getElementById('s-whyEnabled').checked = s.whyEnabled !== false;
+    const container = document.getElementById('why-cards-admin');
+    container.innerHTML = '';
+    for (let i = 1; i <= 6; i++) {
+      container.innerHTML += `
+        <div style="background:var(--of);border-radius:8px;padding:1rem;margin-bottom:.8rem;border-left:3px solid var(--gd)">
+          <div style="font-size:.75rem;font-weight:800;color:var(--nv);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.05em">Card ${i}</div>
+          <div style="display:grid;grid-template-columns:80px 1fr 2fr;gap:.6rem">
+            <div class="form-group" style="margin:0"><label>Icon</label><input type="text" id="s-why${i}Icon" value="${s['why'+i+'Icon']||''}" placeholder="🏆"></div>
+            <div class="form-group" style="margin:0"><label>Title</label><input type="text" id="s-why${i}Title" value="${s['why'+i+'Title']||''}" placeholder="Title"></div>
+            <div class="form-group" style="margin:0"><label>Description</label><input type="text" id="s-why${i}Text" value="${s['why'+i+'Text']||''}" placeholder="Description"></div>
+          </div>
+        </div>`;
+    }
+  } catch { showToast('Failed to load settings', 'err'); }
+}
+
+async function saveWhySettings() {
+  try {
+    const payload = { whyEnabled: document.getElementById('s-whyEnabled').checked };
+    for (let i = 1; i <= 6; i++) {
+      payload[`why${i}Icon`]  = document.getElementById(`s-why${i}Icon`).value.trim();
+      payload[`why${i}Title`] = document.getElementById(`s-why${i}Title`).value.trim();
+      payload[`why${i}Text`]  = document.getElementById(`s-why${i}Text`).value.trim();
+    }
+    const res = await fetch(`${API}/api/settings`, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.success) showToast('✅ Why Choose Us saved!', 'ok');
+    else showToast(json.message || 'Save failed', 'err');
+  } catch { showToast('Network error', 'err'); }
+}
+
+// ── Achievements Settings ─────────────────────────────────────────────────────
+async function loadAchievementsSettings() {
+  try {
+    const res = await fetch(`${API}/api/settings`); const json = await res.json();
+    if (!json.success) return; const s = json.data;
+    document.getElementById('s-achievementsEnabled').checked = s.achievementsEnabled !== false;
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+    setVal('s-ach1', s.ach1); setVal('s-ach2', s.ach2);
+    setVal('s-ach3', s.ach3); setVal('s-ach4', s.ach4);
+  } catch { showToast('Failed to load settings', 'err'); }
+}
+
+async function saveAchievementsSettings() {
+  try {
+    const payload = {
+      achievementsEnabled: document.getElementById('s-achievementsEnabled').checked,
+      ach1: document.getElementById('s-ach1').value.trim(),
+      ach2: document.getElementById('s-ach2').value.trim(),
+      ach3: document.getElementById('s-ach3').value.trim(),
+      ach4: document.getElementById('s-ach4').value.trim(),
+    };
+    const res = await fetch(`${API}/api/settings`, { method: 'PUT', headers: apiHeaders(), body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.success) showToast('✅ Achievements saved!', 'ok');
+    else showToast(json.message || 'Save failed', 'err');
+  } catch { showToast('Network error', 'err'); }
+}
+
+// ── Bulk Import ───────────────────────────────────────────────────────────────
+let parsedCSVRows = [];
+
+// ── Fast CSV parser (handles 5000+ rows) ─────────────────────────────────────
+function parseCSV(text) {
+  const raw = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim();
+  if (!raw) return [];
+  const delim = (raw.indexOf(';') !== -1 && raw.indexOf(',') === -1) ? ';' : ',';
+  const rows = [];
+  let pos = 0, len = raw.length;
+
+  function nextField() {
+    if (pos >= len) return '';
+    if (raw[pos] === '"') {
+      pos++;
+      let f = '';
+      while (pos < len) {
+        if (raw[pos] === '"') {
+          pos++;
+          if (pos < len && raw[pos] === '"') { f += '"'; pos++; }
+          else break;
+        } else { f += raw[pos++]; }
+      }
+      return f;
+    }
+    let f = '';
+    while (pos < len && raw[pos] !== delim && raw[pos] !== '\n') f += raw[pos++];
+    return f.trim();
+  }
+
+  const headers = [];
+  while (pos < len && raw[pos] !== '\n') {
+    headers.push(nextField().replace(/^\uFEFF/, '').trim());
+    if (pos < len && raw[pos] === delim) pos++;
+  }
+  if (pos < len) pos++;
+  if (!headers.length) return [];
+
+  while (pos < len) {
+    const row = {}; let hasVal = false;
+    for (let i = 0; i < headers.length; i++) {
+      const v = nextField();
+      if (v) hasVal = true;
+      row[headers[i]] = v;
+      if (pos < len && raw[pos] === delim) pos++;
+    }
+    while (pos < len && raw[pos] !== '\n') pos++;
+    if (pos < len) pos++;
+    if (hasVal) rows.push(row);
+  }
+  return rows;
+}
+
+// ── Chunked import — sends 500 rows at a time to avoid request size limits ────
+async function sendChunked(url, rows, extraBody, btnEl) {
+  const CHUNK = 500;
+  let added = 0, skipped = 0, errors = [];
+  for (let i = 0; i < rows.length; i += CHUNK) {
+    const chunk = rows.slice(i, i + CHUNK);
+    const pct = Math.round(((i + chunk.length) / rows.length) * 100);
+    if (btnEl) btnEl.textContent = `⏳ ${pct}% (${i + chunk.length}/${rows.length})`;
+    const res = await fetch(`${API}${url}`, {
+      method: 'POST', headers: apiHeaders(),
+      body: JSON.stringify({ rows: chunk, ...extraBody })
+    });
+    if (!res.ok) { const t = await res.text(); throw new Error(`Server error ${res.status}: ${t.substring(0,200)}`); }
+    const j = await res.json();
+    if (!j.success) throw new Error(j.message || 'Import failed');
+    added   += j.added   || 0;
+    skipped += j.skipped || 0;
+    if (j.errors) errors = errors.concat(j.errors);
+  }
+  return { added, skipped, errors };
+}
+function previewCSV() {
+  const file = document.getElementById('bulk-file').files[0];
+  const alert = document.getElementById('bulk-alert');
+  alert.style.display = 'none';
+
+  if (!file) { alert.textContent = 'Please select a CSV file first.'; alert.style.display = 'block'; return; }
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    alert.textContent = 'Only .csv files are supported. Please save your Excel file as CSV first.';
+    alert.style.display = 'block'; return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      parsedCSVRows = parseCSV(e.target.result);
+      if (parsedCSVRows.length === 0) {
+        alert.textContent = 'File is empty or could not be parsed. Make sure it has a header row.';
+        alert.style.display = 'block'; return;
+      }
+
+      // Show preview table
+      const headers = Object.keys(parsedCSVRows[0]);
+      const preview = parsedCSVRows.slice(0, 5);
+
+      document.getElementById('bulk-preview-head').innerHTML =
+        '<tr>' + headers.map(h => `<th style="padding:6px 8px;text-align:left;font-size:.7rem;white-space:nowrap">${h}</th>`).join('') + '</tr>';
+
+      document.getElementById('bulk-preview-body').innerHTML =
+        preview.map(row =>
+          '<tr>' + headers.map(h => `<td style="padding:5px 8px;border-top:1px solid var(--bd);font-size:.72rem;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis">${row[h]||''}</td>`).join('') + '</tr>'
+        ).join('');
+
+      document.getElementById('bulk-row-count').textContent =
+        `Total rows to import: ${parsedCSVRows.length}`;
+
+      document.getElementById('bulk-preview').style.display = 'block';
+      document.getElementById('bulk-result').style.display = 'none';
+      document.getElementById('btn-import').disabled = false;
+      showToast(`✅ ${parsedCSVRows.length} rows loaded. Click Import to proceed.`, 'ok');
+    } catch (err) {
+      alert.textContent = 'Failed to parse file: ' + err.message;
+      alert.style.display = 'block';
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function runBulkImport() {
+  const exam      = document.getElementById('bulk-exam').value;
+  const year      = document.getElementById('bulk-year').value.trim();
+  const overwrite = document.getElementById('bulk-overwrite').checked;
+  const resultBox = document.getElementById('bulk-result');
+  const btn       = document.getElementById('btn-import');
+  const alert     = document.getElementById('bulk-alert');
+  alert.style.display = 'none';
+  if (!parsedCSVRows.length) { alert.textContent = 'Please preview a file first.'; alert.style.display = 'block'; return; }
+  if (!year) { alert.textContent = 'Year is required.'; alert.style.display = 'block'; return; }
+  btn.disabled = true; resultBox.style.display = 'none';
+  try {
+    const { added, skipped, errors } = await sendChunked('/api/results/bulk', parsedCSVRows, { exam, year, overwrite }, btn);
+    let html = `<div style="background:rgba(56,161,105,.1);border:1px solid var(--gn);border-radius:6px;padding:.8rem;margin-bottom:.5rem">✅ <strong>Import complete. Added: ${added}, Skipped: ${skipped}, Errors: ${errors.length}</strong></div>`;
+    if (added)   html += `<div style="color:var(--gn);font-weight:700">✅ Added: ${added}</div>`;
+    if (skipped) html += `<div style="color:var(--gd);font-weight:700">⚠️ Skipped: ${skipped}</div>`;
+    if (errors.length) html += `<div style="color:var(--rd);font-weight:700;margin-top:.5rem">❌ Errors (${errors.length}):</div><ul style="margin:.3rem 0 0 1rem;font-size:.76rem;color:var(--rd)">${errors.slice(0,10).map(e=>`<li>${e}</li>`).join('')}${errors.length>10?`<li>...and ${errors.length-10} more</li>`:''}</ul>`;
+    resultBox.innerHTML = html; resultBox.style.display = 'block';
+    loadResults(); parsedCSVRows = []; document.getElementById('bulk-file').value = ''; document.getElementById('bulk-preview').style.display = 'none'; btn.disabled = true;
+  } catch (err) {
+    resultBox.innerHTML = `<div style="color:var(--rd)">❌ ${err.message}</div>`; resultBox.style.display = 'block';
+  } finally { btn.textContent = '📥 Import Results'; if (parsedCSVRows.length) btn.disabled = false; }
+}
+
+function downloadTemplate() {
+  const csv = [
+    'rollNo,studentName,class,section,exam,year,Urdu_Total,Urdu_Obtained,English_Total,English_Obtained,Mathematics_Total,Mathematics_Obtained,Physics_Total,Physics_Obtained,Chemistry_Total,Chemistry_Obtained,Islamiyat_Total,Islamiyat_Obtained,PakStudies_Total,PakStudies_Obtained,remarks',
+    '1001,Ahmed Raza Khan,10 (Matric),A,Annual 2025,2025,100,88,100,82,100,91,100,85,100,78,50,44,50,41,Excellent performance',
+    '1002,Sara Bibi,10 (Matric),A,Annual 2025,2025,100,79,100,85,100,61,100,70,100,68,50,43,50,38,Good work',
+    '1003,Usman Tariq,9,B,Annual 2025,2025,100,65,100,58,100,72,100,54,100,60,50,35,50,32,Satisfactory',
+  ].join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'MMPC_Results_Template.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Template downloaded!', 'ok');
+}
+
+// Reset bulk import modal when opened
+// ── Mobile sidebar close ──────────────────────────────────────────────────────
+document.addEventListener('click', function(e) {
+  const sb  = document.getElementById('sidebar');
+  const tog = document.getElementById('sb-tog');
+  if (sb && sb.classList.contains('open') && !sb.contains(e.target) && e.target !== tog && !tog.contains(e.target)) {
+    sb.classList.remove('open');
+  }
+});
+document.querySelectorAll('.sb-link').forEach(link => {
+  link.addEventListener('click', () => {
+    if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+  });
+});
+
+// ── FEE MANAGEMENT ────────────────────────────────────────────────────────────
+let _feeStudentId = null;
+
+async function loadFees() {
+  const status = document.getElementById('fee-filter-status').value;
+  const month  = document.getElementById('fee-filter-month').value.trim();
+  let url = '/api/fees?';
+  if (status) url += 'status=' + encodeURIComponent(status) + '&';
+  if (month)  url += 'month='  + encodeURIComponent(month);
+  const tbody = document.getElementById('tb-fees');
+  tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><p>Loading...</p></td></tr>';
+  try {
+    const d = await apiFetch(url);
+    if (!d.success || !d.data.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><div class="es-ic">💰</div><p>No fee records found</p></td></tr>';
+      return;
+    }
+    tbody.innerHTML = d.data.map(f => {
+      const s = f.student || {};
+      const badge = f.status === 'Paid' ? 'background:#d4edda;color:#155724'
+                  : f.status === 'Partial' ? 'background:#fff3cd;color:#856404'
+                  : 'background:#f8d7da;color:#721c24';
+      return `<tr>
+        <td>${s.rollNo || '-'}</td>
+        <td>${s.name || '-'}</td>
+        <td>${s.fatherName || '-'}</td>
+        <td>${s.class || '-'} ${s.section || ''}</td>
+        <td>${f.month}</td>
+        <td>Rs. ${f.amount.toLocaleString()}</td>
+        <td><span style="padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700;${badge}">${f.status}</span></td>
+        <td style="display:flex;gap:.3rem;flex-wrap:wrap">
+          ${f.status !== 'Paid' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:var(--gd);color:#fff" onclick="openPayModal('${f._id}',${f.amount})">💵 Pay</button>` : ''}
+          ${s.fatherPhone ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#25d366;color:#fff" onclick="openWAModal('${f._id}','${s.fatherPhone}','${s.name}','${f.month}',${f.amount})">📲</button>` : ''}
+          <button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#e53e3e;color:#fff" onclick="deleteFee('${f._id}')">🗑</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="8">Error loading fees</td></tr>'; }
+}
+
+async function submitFee() {
+  const rollNo = document.getElementById('fee-rollno').value.trim();
+  const month  = document.getElementById('fee-month').value.trim();
+  const amount = parseFloat(document.getElementById('fee-amount').value);
+  const dueDate = document.getElementById('fee-due').value;
+  if (!rollNo || !month || !amount || !dueDate) return alert('Fill all fields');
+
+  // find student by rollNo
+  const sd = await apiFetch('/api/students?search=' + encodeURIComponent(rollNo));
+  const student = (sd.data || []).find(s => s.rollNo === rollNo);
+  if (!student) return alert('Student not found for roll no: ' + rollNo);
+
+  const d = await apiFetch('/api/fees', 'POST', { student: student._id, month, amount, dueDate });
+  if (d.success) { closeModal('modal-fee'); loadFees(); }
+  else alert(d.message);
+}
+
+function openPayModal(feeId, amount) {
+  document.getElementById('pay-fee-id').value = feeId;
+  document.getElementById('pay-amount').value = amount;
+  document.getElementById('pay-date').value = new Date().toISOString().split('T')[0];
+  openModal('modal-fee-pay');
+}
+
+async function submitMarkPaid() {
+  const id = document.getElementById('pay-fee-id').value;
+  const paidAmount = parseFloat(document.getElementById('pay-amount').value);
+  const paidDate = document.getElementById('pay-date').value;
+  if (!paidAmount || !paidDate) return alert('Fill all fields');
+  const d = await apiFetch('/api/fees/' + id, 'PATCH', {
+    paidAmount, paidDate,
+    status: 'Paid'
+  });
+  if (d.success) { closeModal('modal-fee-pay'); loadFees(); }
+  else alert(d.message);
+}
+
+async function deleteFee(id) {
+  if (!confirm('Delete this fee record?')) return;
+  const d = await apiFetch('/api/fees/' + id, 'DELETE');
+  if (d.success) loadFees();
+  else alert(d.message);
+}
+
+function openWAModal(feeId, phone, name, month, amount) {
+  document.getElementById('wa-fee-id').value = feeId;
+  document.getElementById('wa-phone').value = phone;
+  document.getElementById('wa-to-info').textContent = 'To: ' + name + ' (' + phone + ')';
+  document.getElementById('wa-msg').value = `Dear Parent, fee of ${name} for ${month} (Rs. ${amount}) is due. Please pay at school. Thank you.`;
+  openModal('modal-wa-single');
+}
+
+async function sendWASingle() {
+  const feeId   = document.getElementById('wa-fee-id').value;
+  const phone   = document.getElementById('wa-phone').value;
+  const message = document.getElementById('wa-msg').value.trim();
+  if (!message) return alert('Enter a message');
+  const d = await apiFetch('/api/fees/whatsapp/send', 'POST', { feeId, phone, message });
+  if (d.success) { alert('Message sent!'); closeModal('modal-wa-single'); }
+  else alert('Error: ' + d.message);
+}
+
+async function remindAllDefaulters() {
+  const month   = document.getElementById('remind-month').value.trim();
+  const messageTemplate = document.getElementById('remind-msg').value.trim();
+  if (!month || !messageTemplate) return alert('Fill month and message');
+  if (!confirm('Send WhatsApp to ALL unpaid parents for ' + month + '?')) return;
+  const d = await apiFetch('/api/fees/whatsapp/remind-all', 'POST', { month, messageTemplate });
+  if (d.success) { alert(d.message); closeModal('modal-fee-remind'); }
+  else alert('Error: ' + d.message);
+}
+
+// ── Bulk Delete Helpers ───────────────────────────────────────────────────────
+async function deleteAllStudents() {
+  const total = allStudents.length;
+  if (!total) return alert('No students to delete.');
+  if (!confirm(`⚠️ DELETE ALL ${total} STUDENTS?\n\nThis will permanently delete all student records. This cannot be undone.\n\nType OK to confirm.`)) return;
+  const d = await apiFetch('/api/students/bulk/delete', 'DELETE', { deleteAll: true });
+  if (d.success) { showToast(`🗑 ${d.deleted} students deleted.`, 'ok'); loadStudents(); }
+  else alert('Error: ' + d.message);
+}
+
+async function deleteAllFees() {
+  const month = document.getElementById('fee-filter-month').value.trim();
+  const label = month ? `all fees for "${month}"` : 'ALL fee records';
+  if (!confirm(`⚠️ DELETE ${label.toUpperCase()}?\n\nThis cannot be undone.`)) return;
+  const body = month ? { month } : { deleteAll: true };
+  const d = await apiFetch('/api/fees/bulk/delete', 'DELETE', body);
+  if (d.success) { showToast(`🗑 ${d.deleted} fee records deleted.`, 'ok'); loadFees(); }
+  else alert('Error: ' + d.message);
+}
+
+async function deleteAllResults() {
+  const exam = document.getElementById('res-filter-exam').value;
+  const total = allResults.length;
+  if (!total) return alert('No results to delete.');
+  const label = exam ? `all results for "${exam}"` : `ALL ${total} result records`;
+  if (!confirm(`⚠️ DELETE ${label.toUpperCase()}?\n\nThis cannot be undone.`)) return;
+  const body = exam ? { exam, year: exam.split(' ')[1] || '' } : { deleteAll: true };
+  // if exam filter active, delete by exam+year; else delete all
+  const finalBody = exam ? { exam: allResults.filter(r=>r.exam===exam)[0]?.exam, year: allResults.filter(r=>r.exam===exam)[0]?.year, deleteAll: !exam } : { deleteAll: true };
+  const d = await apiFetch('/api/results/bulk/delete', 'DELETE', exam ? { exam } : { deleteAll: true });
+  if (d.success) { showToast(`🗑 ${d.deleted} results deleted.`, 'ok'); loadResults(); }
+  else alert('Error: ' + d.message);
+}
+
+// ── Bulk Import Students ──────────────────────────────────────────────────────
+let parsedStudentCSVRows = [];
+
+async function previewStudentCSV() {
+  const file = document.getElementById('bulk-students-file').files[0];
+  const alert = document.getElementById('bulk-students-alert');
+  alert.style.display = 'none';
+  if (!file) { alert.textContent = 'Please select a CSV file first.'; alert.style.display = 'block'; return; }
+  if (!file.name.toLowerCase().endsWith('.csv')) { alert.textContent = 'Only .csv files supported.'; alert.style.display = 'block'; return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      parsedStudentCSVRows = parseCSV(e.target.result);
+      if (!parsedStudentCSVRows.length) { alert.textContent = 'Empty or unparseable file.'; alert.style.display = 'block'; return; }
+      const headers = Object.keys(parsedStudentCSVRows[0]);
+      const preview = parsedStudentCSVRows.slice(0, 5);
+      document.getElementById('bulk-students-preview-head').innerHTML = '<tr>' + headers.map(h => `<th style="padding:5px 8px;font-size:.7rem">${h}</th>`).join('') + '</tr>';
+      document.getElementById('bulk-students-preview-body').innerHTML = preview.map(row => '<tr>' + headers.map(h => `<td style="padding:4px 8px;border-top:1px solid var(--bd);font-size:.72rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${row[h]||''}</td>`).join('') + '</tr>').join('');
+      document.getElementById('bulk-students-row-count').textContent = `Total rows: ${parsedStudentCSVRows.length}`;
+      document.getElementById('bulk-students-preview').style.display = 'block';
+      document.getElementById('bulk-students-result').style.display = 'none';
+      document.getElementById('btn-import-students').disabled = false;
+      showToast(`✅ ${parsedStudentCSVRows.length} rows loaded.`, 'ok');
+    } catch (err) { alert.textContent = 'Parse error: ' + err.message; alert.style.display = 'block'; }
+  };
+  reader.readAsText(file);
+}
+
+async function runBulkImportStudents() {
+  const overwrite = document.getElementById('bulk-students-overwrite').checked;
+  const btn = document.getElementById('btn-import-students');
+  const resultBox = document.getElementById('bulk-students-result');
+  if (!parsedStudentCSVRows.length) return;
+  btn.disabled = true; resultBox.style.display = 'none';
+  try {
+    const { added, skipped, errors } = await sendChunked('/api/students/bulk/import', parsedStudentCSVRows, { overwrite }, btn);
+    let html = `<div style="background:rgba(56,161,105,.1);border:1px solid var(--gn);border-radius:6px;padding:.8rem;margin-bottom:.5rem">✅ <strong>Import complete. Added: ${added}, Skipped: ${skipped}, Errors: ${errors.length}</strong></div>`;
+    if (errors.length) html += `<div style="color:var(--rd);font-weight:700;margin-top:.5rem">❌ Errors (${errors.length}):</div><ul style="margin:.3rem 0 0 1rem;font-size:.76rem;color:var(--rd)">${errors.slice(0,10).map(e=>`<li>${e}</li>`).join('')}${errors.length>10?`<li>...and ${errors.length-10} more</li>`:''}</ul>`;
+    resultBox.innerHTML = html; resultBox.style.display = 'block';
+    loadStudents(); parsedStudentCSVRows = []; document.getElementById('bulk-students-file').value = ''; document.getElementById('bulk-students-preview').style.display = 'none'; btn.disabled = true;
+  } catch (err) { resultBox.innerHTML = `<div style="color:var(--rd)">❌ ${err.message}</div>`; resultBox.style.display = 'block'; }
+  finally { btn.textContent = '📥 Import Students'; if (parsedStudentCSVRows.length) btn.disabled = false; }
+}
+
+function downloadStudentTemplate() {
+  const csv = ['rollNo,name,fatherName,phone,fatherPhone,class,section,gender,address,status',
+    '1001,Ahmed Ali,Ali Khan,0300-1234567,0301-7654321,10,A,Male,House 5 Street 2 DIKhan,Active',
+    '1002,Sara Bibi,Usman Bibi,0312-9876543,0312-1234567,9,B,Female,Mohallah Qasim DIKhan,Active',
+    '1003,Zain Tariq,Tariq Mehmood,,0333-5551234,8,A,Male,,Active'].join('\n');
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})), download: 'MMPC_Students_Template.csv' });
+  a.click(); showToast('✅ Template downloaded!', 'ok');
+}
+
+// ── Bulk Import Fees ──────────────────────────────────────────────────────────
+let parsedFeeCSVRows = [];
+
+async function previewFeeCSV() {
+  const file = document.getElementById('bulk-fees-file').files[0];
+  const alert = document.getElementById('bulk-fees-alert');
+  alert.style.display = 'none';
+  if (!file) { alert.textContent = 'Please select a CSV file first.'; alert.style.display = 'block'; return; }
+  if (!file.name.toLowerCase().endsWith('.csv')) { alert.textContent = 'Only .csv files supported.'; alert.style.display = 'block'; return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      parsedFeeCSVRows = parseCSV(e.target.result);
+      if (!parsedFeeCSVRows.length) { alert.textContent = 'Empty or unparseable file.'; alert.style.display = 'block'; return; }
+      const headers = Object.keys(parsedFeeCSVRows[0]);
+      const preview = parsedFeeCSVRows.slice(0, 5);
+      document.getElementById('bulk-fees-preview-head').innerHTML = '<tr>' + headers.map(h => `<th style="padding:5px 8px;font-size:.7rem">${h}</th>`).join('') + '</tr>';
+      document.getElementById('bulk-fees-preview-body').innerHTML = preview.map(row => '<tr>' + headers.map(h => `<td style="padding:4px 8px;border-top:1px solid var(--bd);font-size:.72rem;white-space:nowrap">${row[h]||''}</td>`).join('') + '</tr>').join('');
+      document.getElementById('bulk-fees-row-count').textContent = `Total rows: ${parsedFeeCSVRows.length}`;
+      document.getElementById('bulk-fees-preview').style.display = 'block';
+      document.getElementById('bulk-fees-result').style.display = 'none';
+      document.getElementById('btn-import-fees').disabled = false;
+      showToast(`✅ ${parsedFeeCSVRows.length} rows loaded.`, 'ok');
+    } catch (err) { alert.textContent = 'Parse error: ' + err.message; alert.style.display = 'block'; }
+  };
+  reader.readAsText(file);
+}
+
+async function runBulkImportFees() {
+  const overwrite = document.getElementById('bulk-fees-overwrite').checked;
+  const btn = document.getElementById('btn-import-fees');
+  const resultBox = document.getElementById('bulk-fees-result');
+  if (!parsedFeeCSVRows.length) return;
+  btn.disabled = true; resultBox.style.display = 'none';
+  try {
+    const { added, skipped, errors } = await sendChunked('/api/fees/bulk/import', parsedFeeCSVRows, { overwrite }, btn);
+    let html = `<div style="background:rgba(56,161,105,.1);border:1px solid var(--gn);border-radius:6px;padding:.8rem;margin-bottom:.5rem">✅ <strong>Import complete. Added: ${added}, Skipped: ${skipped}, Errors: ${errors.length}</strong></div>`;
+    if (errors.length) html += `<div style="color:var(--rd);font-weight:700;margin-top:.5rem">❌ Errors (${errors.length}):</div><ul style="margin:.3rem 0 0 1rem;font-size:.76rem;color:var(--rd)">${errors.slice(0,10).map(e=>`<li>${e}</li>`).join('')}${errors.length>10?`<li>...and ${errors.length-10} more</li>`:''}</ul>`;
+    resultBox.innerHTML = html; resultBox.style.display = 'block';
+    loadFees(); parsedFeeCSVRows = []; document.getElementById('bulk-fees-file').value = ''; document.getElementById('bulk-fees-preview').style.display = 'none'; btn.disabled = true;
+  } catch (err) { resultBox.innerHTML = `<div style="color:var(--rd)">❌ ${err.message}</div>`; resultBox.style.display = 'block'; }
+  finally { btn.textContent = '📥 Import Fees'; if (parsedFeeCSVRows.length) btn.disabled = false; }
+}
+
+function downloadFeeTemplate() {
+  const csv = ['rollNo,month,amount,dueDate,note',
+    '1001,April 2025,2500,2025-04-10,',
+    '1002,April 2025,2500,2025-04-10,Partial payment allowed',
+    '1003,April 2025,2000,2025-04-10,'].join('\n');
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})), download: 'MMPC_Fees_Template.csv' });
+  a.click(); showToast('✅ Template downloaded!', 'ok');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+init();
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  ATTENDANCE MODULE
+// ══════════════════════════════════════════════════════════════════════════════
+
+let attStudents = []; // loaded students for current class
+let attExisting = []; // already saved records for this date/class
+
+function attTab(tab) {
+  document.getElementById('att-tab-mark').style.display    = tab === 'mark'    ? '' : 'none';
+  document.getElementById('att-tab-report').style.display  = tab === 'report'  ? '' : 'none';
+  document.getElementById('att-tab-archive').style.display = tab === 'archive' ? '' : 'none';
+  if (tab === 'archive') loadAttYears();
+}
+
+// Set today's date on page load
+// ── Attendance Archive ────────────────────────────────────────────────────────
+async function loadAttYears() {
+  const sel    = document.getElementById('att-del-year');
+  const stats  = document.getElementById('att-year-stats');
+  try {
+    const d = await apiFetch('/api/attendance/years');
+    if (!d.success || !d.data.length) {
+      sel.innerHTML = '<option value="">No records found</option>';
+      stats.innerHTML = '<p style="color:#aaa;font-size:.82rem">No attendance records in the database yet.</p>';
+      return;
+    }
+    sel.innerHTML = d.data.map(r => `<option value="${r.year}">${r.year} — ${r.total.toLocaleString()} records</option>`).join('');
+    stats.innerHTML = `<div style="font-size:.8rem;color:#555;background:#f9f9f9;border-radius:8px;padding:.8rem;border:1px solid #eee">
+      <strong>Records by year:</strong><br>
+      ${d.data.map(r => `<span style="display:inline-block;margin:.2rem .5rem .2rem 0;padding:.2rem .6rem;background:#fff;border:1px solid #ddd;border-radius:20px;font-size:.75rem">${r.year}: <b>${r.total.toLocaleString()}</b></span>`).join('')}
+    </div>`;
+  } catch (e) {
+    sel.innerHTML = '<option value="">Error loading</option>';
+  }
+}
+
+async function deleteAttendanceYear() {
+  const year = document.getElementById('att-del-year').value;
+  const resultBox = document.getElementById('att-del-result');
+  if (!year) return alert('Please select a year first.');
+  const sel = document.getElementById('att-del-year');
+  const count = sel.options[sel.selectedIndex]?.text.match(/[\d,]+(?= records)/)?.[0] || '?';
+  if (!confirm(`⚠️ DELETE ALL ATTENDANCE FOR YEAR ${year}?\n\n${count} records will be permanently deleted.\n\nThis cannot be undone. Proceed?`)) return;
+  try {
+    const d = await apiFetch(`/api/attendance/year/${year}`, 'DELETE');
+    if (d.success) {
+      resultBox.innerHTML = `<div style="background:rgba(56,161,105,.1);border:1px solid var(--gn);border-radius:8px;padding:1rem;color:#276749;font-weight:700">✅ ${d.message}</div>`;
+      showToast(`🗑 ${d.deleted} attendance records deleted for ${year}`, 'ok');
+      loadAttYears();
+    } else {
+      resultBox.innerHTML = `<div style="color:var(--rd)">❌ ${d.message}</div>`;
+    }
+  } catch (e) {
+    resultBox.innerHTML = `<div style="color:var(--rd)">❌ Network error: ${e.message}</div>`;
+  }
+}
+
+function initAttDate() {
+  const d = document.getElementById('att-date');
+  if (d && !d.value) d.value = new Date().toISOString().split('T')[0];
+  const m = document.getElementById('att-report-month');
+  if (m && !m.value) m.value = new Date().toISOString().slice(0,7);
+}
+
+async function loadAttStudents() {
+  const cls     = document.getElementById('att-class').value;
+  const section = document.getElementById('att-section').value;
+  const date    = document.getElementById('att-date').value;
+
+  if (!cls || !date) {
+    document.getElementById('att-student-list').style.display = 'none';
+    document.getElementById('att-empty').style.display = '';
+    return;
+  }
+
+  // Load students for this class using the dedicated attendance/students endpoint
+  const res = await apiFetch(`/api/attendance/students?class=${encodeURIComponent(cls)}&section=${encodeURIComponent(section)}`);
+  attStudents = (res?.data || []);
+
+  // Load existing attendance for this date+class
+  const attRes = await apiFetch(`/api/attendance?date=${date}&class=${encodeURIComponent(cls)}&section=${encodeURIComponent(section)}`);
+  attExisting = attRes?.data || [];
+
+  renderAttTable();
+  document.getElementById('att-student-list').style.display = '';
+  document.getElementById('att-empty').style.display = 'none';
+}
+
+function renderAttTable() {
+  const tbody = document.getElementById('tb-att');
+  if (!attStudents.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="es-ic">👥</div><p>No active students in this class</p></td></tr>';
+    updateAttCounts(); return;
+  }
+
+  tbody.innerHTML = attStudents.map((s, i) => {
+    const existing = attExisting.find(a => a.rollNo === s.rollNo);
+    const status   = existing?.status || 'Present';
+    return `<tr id="att-row-${s.rollNo}">
+      <td>${i + 1}</td>
+      <td><b>${s.rollNo}</b></td>
+      <td>${s.name}</td>
+      <td>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <button onclick="setStatus('${s.rollNo}','Present')"
+            id="btn-p-${s.rollNo}"
+            style="padding:.3rem .7rem;border-radius:20px;border:none;cursor:pointer;font-size:.78rem;font-weight:600;
+                   background:${status==='Present'?'#2e7d32':'#e0e0e0'};
+                   color:${status==='Present'?'#fff':'#555'}">✅ Present</button>
+          <button onclick="setStatus('${s.rollNo}','Absent')"
+            id="btn-a-${s.rollNo}"
+            style="padding:.3rem .7rem;border-radius:20px;border:none;cursor:pointer;font-size:.78rem;font-weight:600;
+                   background:${status==='Absent'?'#c62828':'#e0e0e0'};
+                   color:${status==='Absent'?'#fff':'#555'}">❌ Absent</button>
+          <button onclick="setStatus('${s.rollNo}','Late')"
+            id="btn-l-${s.rollNo}"
+            style="padding:.3rem .7rem;border-radius:20px;border:none;cursor:pointer;font-size:.78rem;font-weight:600;
+                   background:${status==='Late'?'#e65100':'#e0e0e0'};
+                   color:${status==='Late'?'#fff':'#555'}">🕐 Late</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  updateAttCounts();
+}
+
+function setStatus(rollNo, status) {
+  const s = attStudents.find(s => s.rollNo === rollNo);
+  if (!s) return;
+
+  // Update existing or add
+  const idx = attExisting.findIndex(a => a.rollNo === rollNo);
+  if (idx !== -1) attExisting[idx].status = status;
+  else attExisting.push({ rollNo, status });
+
+  // Update button styles
+  ['Present','Absent','Late'].forEach(st => {
+    const btn = document.getElementById(`btn-${st[0].toLowerCase()}-${rollNo}`);
+    if (!btn) return;
+    const colors = { Present: '#2e7d32', Absent: '#c62828', Late: '#e65100' };
+    btn.style.background = st === status ? colors[st] : '#e0e0e0';
+    btn.style.color      = st === status ? '#fff' : '#555';
+  });
+
+  updateAttCounts();
+}
+
+function updateAttCounts() {
+  let p = 0, a = 0, l = 0;
+  attStudents.forEach(s => {
+    const rec = attExisting.find(r => r.rollNo === s.rollNo);
+    const st  = rec?.status || 'Present';
+    if (st === 'Present') p++;
+    else if (st === 'Absent') a++;
+    else if (st === 'Late') l++;
+  });
+  document.getElementById('cnt-present').textContent = p;
+  document.getElementById('cnt-absent').textContent  = a;
+  document.getElementById('cnt-late').textContent    = l;
+}
+
+function markAllPresent() {
+  attStudents.forEach(s => setStatus(s.rollNo, 'Present'));
+}
+
+async function saveAttendance() {
+  const cls     = document.getElementById('att-class').value;
+  const section = document.getElementById('att-section').value;
+  const date    = document.getElementById('att-date').value;
+  const msg     = document.getElementById('att-save-msg');
+
+  if (!cls || !date || !attStudents.length) return;
+
+  // Build records — default Present for anyone not clicked
+  const records = attStudents.map(s => {
+    const rec = attExisting.find(r => r.rollNo === s.rollNo);
+    return { rollNo: s.rollNo, studentName: s.name, status: rec?.status || 'Present' };
+  });
+
+  const res = await apiFetch('/api/attendance/bulk', 'POST', { date, class: cls, section, records });
+  if (res?.success) {
+    msg.textContent = `✅ Saved! ${res.message}`;
+    setTimeout(() => msg.textContent = '', 4000);
+  } else {
+    msg.textContent = '❌ Error saving';
+    msg.style.color = '#c62828';
+  }
+}
+
+// ── Report: single student monthly attendance ─────────────────────────────────
+async function loadAttReport() {
+  const rollNo = document.getElementById('att-report-roll').value.trim();
+  const month  = document.getElementById('att-report-month').value;
+  const div    = document.getElementById('att-report-result');
+
+  if (!rollNo || !month) { div.innerHTML = '<p style="color:#e53935">Please enter roll number and month.</p>'; return; }
+
+  div.innerHTML = '<p style="color:#aaa">Loading...</p>';
+  const res = await apiFetch(`/api/attendance/student/${encodeURIComponent(rollNo)}?month=${month}`);
+  const data = res?.data || [];
+
+  if (!data.length) { div.innerHTML = '<p style="color:#aaa">No attendance records found.</p>'; return; }
+
+  const present = data.filter(a => a.status === 'Present').length;
+  const absent  = data.filter(a => a.status === 'Absent').length;
+  const late    = data.filter(a => a.status === 'Late').length;
+  const total   = data.length;
+  const pct     = total ? Math.round((present / total) * 100) : 0;
+
+  const calRows = data.map(a => {
+    const color = a.status === 'Present' ? '#2e7d32' : a.status === 'Absent' ? '#c62828' : '#e65100';
+    const icon  = a.status === 'Present' ? '✅' : a.status === 'Absent' ? '❌' : '🕐';
+    return `<tr>
+      <td>${a.date}</td>
+      <td>${a.studentName}</td>
+      <td style="color:${color};font-weight:600">${icon} ${a.status}</td>
+    </tr>`;
+  }).join('');
+
+  div.innerHTML = `
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem">
+      <div style="background:#e8f5e9;padding:.6rem 1.2rem;border-radius:10px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:700;color:#2e7d32">${present}</div>
+        <div style="font-size:.75rem;color:#555">Present</div>
+      </div>
+      <div style="background:#fce4ec;padding:.6rem 1.2rem;border-radius:10px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:700;color:#c62828">${absent}</div>
+        <div style="font-size:.75rem;color:#555">Absent</div>
+      </div>
+      <div style="background:#fff3e0;padding:.6rem 1.2rem;border-radius:10px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:700;color:#e65100">${late}</div>
+        <div style="font-size:.75rem;color:#555">Late</div>
+      </div>
+      <div style="background:#e3f2fd;padding:.6rem 1.2rem;border-radius:10px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:700;color:#1565c0">${pct}%</div>
+        <div style="font-size:.75rem;color:#555">Attendance</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Student</th><th>Status</th></tr></thead>
+        <tbody>${calRows}</tbody>
+      </table>
+    </div>`;
+}
+
+// init attendance date when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initAttDate, 500);
+});
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  TEACHER ACCOUNTS MODULE
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadTeacherAccounts() {
+  const res  = await apiFetch('/api/teacher-auth/accounts');
+  const data = res?.data || [];
+  const tbody = document.getElementById('tb-teacher-accounts');
+  if (!tbody) return;
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="es-ic">🔑</div><p>No teacher logins yet. Create one above.</p></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(t => `
+    <tr>
+      <td><b>${t.name || '—'}</b></td>
+      <td><code style="background:#f5f5f5;padding:.2rem .5rem;border-radius:4px">${t.username}</code></td>
+      <td>${t.assignedClass || '—'}</td>
+      <td>${t.assignedSection || '—'}</td>
+      <td style="font-size:.78rem;color:#888">${t.lastLogin ? new Date(t.lastLogin).toLocaleDateString() : 'Never'}</td>
+      <td>
+        <button onclick="deleteTeacherAccount('${t._id}')" style="background:#e53935;color:#fff;border:none;border-radius:6px;padding:.3rem .7rem;cursor:pointer;font-size:.78rem">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function createTeacherAccount() {
+  const name     = document.getElementById('ta-name').value.trim();
+  const username = document.getElementById('ta-username').value.trim();
+  const password = document.getElementById('ta-password').value.trim();
+  const cls      = document.getElementById('ta-class').value;
+  const section  = document.getElementById('ta-section').value;
+  const msg      = document.getElementById('ta-msg');
+
+  if (!username || !password) { msg.textContent = '❌ Username and password required.'; msg.style.color='#e53935'; return; }
+
+  const res = await apiFetch('/api/teacher-auth/accounts', 'POST', { name, username, password, assignedClass: cls, assignedSection: section });
+  if (res?.success) {
+    msg.textContent = '✅ Login created!'; msg.style.color = '#2e7d32';
+    loadTeacherAccounts();
+    setTimeout(() => { closeModal('modal-teacher-account'); msg.textContent=''; }, 1500);
+  } else {
+    msg.textContent = '❌ ' + (res?.message || 'Error'); msg.style.color = '#e53935';
+  }
+}
+
+async function deleteTeacherAccount(id) {
+  if (!confirm('Delete this teacher login?')) return;
+  await apiFetch(`/api/teacher-auth/accounts/${id}`, 'DELETE');
+  loadTeacherAccounts();
+}
+
+// Auto-load teacher accounts when page shown
+const _origShowPage = typeof showPage === 'function' ? showPage : null;
+
+
+async function loadAdmissions() {
+  const tbody = document.getElementById('tb-admissions');
+  tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="es-ic">⏳</div><p>Loading...</p></td></tr>';
+  try {
+    const token = localStorage.getItem('mmpc_token');
+    const res = await fetch('/api/admissions', { headers: { 'Authorization': 'Bearer ' + token } });
+    const data = await res.json();
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="es-ic">📝</div><p>No applications yet</p></td></tr>'; return; }
+    // Store globally for modal access
+    window._admissions = data;
+    const statusBg = s => s==='Approved'?'#c6f6d5':s==='Rejected'?'#fed7d7':'#fefcbf';
+    const statusClr = s => s==='Approved'?'#276749':s==='Rejected'?'#9b2c2c':'#744210';
+    tbody.innerHTML = data.map((a,i) => `
+      <tr>
+        <td>${new Date(a.createdAt).toLocaleDateString()}</td>
+        <td><strong>${a.studentName||''}</strong></td>
+        <td>${a.applyingClass||''} ${a.section||''}</td>
+        <td>${a.fatherName||''}</td>
+        <td>${a.phone1||''}</td>
+        <td><span style="padding:2px 8px;border-radius:10px;font-size:.78rem;background:${statusBg(a.status)};color:${statusClr(a.status)}">${a.status||'Pending'}</span></td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn btn-gn" style="font-size:.75rem;padding:3px 8px" onclick="showAdmissionDetail(${i})">👁 View</button>
+          <select onchange="updateAdmissionStatus('${a._id}',this.value)" style="font-size:.78rem;padding:3px 6px;border-radius:4px;border:1px solid #ddd">
+            <option ${a.status==='Pending'?'selected':''}>Pending</option>
+            <option ${a.status==='Approved'?'selected':''}>Approved</option>
+            <option ${a.status==='Rejected'?'selected':''}>Rejected</option>
+          </select>
+          <button class="btn btn-rd" style="font-size:.75rem;padding:3px 8px" onclick="deleteAdmission('${a._id}')">🗑</button>
+        </td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="7">Error loading</td></tr>'; }
+}
+
+function showAdmissionDetail(idx) {
+  const a = window._admissions[idx];
+  if (!a) return;
+  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f4f6fb;width:40%;border-bottom:1px solid #e2e8f0;color:#1a4a2e">${label}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${val}</td></tr>` : '';
+  const sec = (title) => `<tr><td colspan="2" style="background:#1a4a2e;color:#fff;padding:7px 10px;font-weight:700;font-size:.82rem">${title}</td></tr>`;
+  const statusBg = a.status==='Approved'?'#c6f6d5':a.status==='Rejected'?'#fed7d7':'#fefcbf';
+  const statusClr = a.status==='Approved'?'#276749':a.status==='Rejected'?'#9b2c2c':'#744210';
+  document.getElementById('admission-detail-body').innerHTML = `
+    <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;color:#1a4a2e">${a.studentName||''}</div>
+        <div style="font-size:.82rem;color:#6b7280">Applied: ${new Date(a.createdAt).toLocaleDateString('en-PK')} &nbsp;|&nbsp; ID: ${a._id}</div>
+      </div>
+      <span style="padding:4px 14px;border-radius:12px;font-size:.82rem;font-weight:700;background:${statusBg};color:${statusClr}">${a.status||'Pending'}</span>
+    </div>
+    <table style="width:100%;border-collapse:collapse;border:1px solid #e2e8f0;margin-bottom:1rem">
+      ${sec('A — Student Information')}
+      ${row('Full Name', a.studentName)}
+      ${row('Gender', a.gender)}
+      ${row('Date of Birth', a.dob)}
+      ${row('B-Form Number', a.bForm)}
+      ${row('Religion', a.religion)}
+      ${row('Applying Class', a.applyingClass)}
+      ${row('Section', a.section)}
+      ${sec('B — Father / Guardian')}
+      ${row("Father's Name", a.fatherName)}
+      ${row("Father's CNIC", a.fatherCnic)}
+      ${row('Occupation', a.fatherOccupation)}
+      ${sec('C — Mother')}
+      ${row("Mother's Name", a.motherName)}
+      ${row("Mother's CNIC", a.motherCnic)}
+      ${sec('D — Contact')}
+      ${row('Address', a.address)}
+      ${row('Phone 1', a.phone1)}
+      ${row('Phone 2 / WhatsApp', a.phone2)}
+      ${row('Email', a.email)}
+      ${sec('E — Previous School')}
+      ${row('School Name', a.prevSchool)}
+      ${row('Last Class', a.prevClass)}
+      ${row('Result / Grades', a.prevResult)}
+      ${sec('F — Emergency & Medical')}
+      ${row('Emergency Contact', a.emergencyContact)}
+      ${row('Emergency Phone', a.emergencyPhone)}
+      ${row('Medical Info', a.medicalInfo)}
+      ${sec('G — Transport & Documents')}
+      ${row('Transport Required', a.transport)}
+      ${row('Documents Submitted', a.documents)}
+    </table>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn btn-gn" onclick="updateAdmissionStatus('${a._id}','Approved');closeModal('modal-admission-detail');loadAdmissions()">✅ Approve</button>
+      <button class="btn btn-rd" onclick="updateAdmissionStatus('${a._id}','Rejected');closeModal('modal-admission-detail');loadAdmissions()">❌ Reject</button>
+      <button class="btn" style="background:#6b7280;color:#fff" onclick="closeModal('modal-admission-detail')">Close</button>
+    </div>`;
+  document.getElementById('modal-admission-detail').classList.add('active');
+}
+
+async function updateAdmissionStatus(id, status) {
+  const token = localStorage.getItem('mmpc_token');
+  await fetch('/api/admissions/' + id + '/status', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ status })
+  });
+  showToast('Status updated');
+}
+
+async function deleteAdmission(id) {
+  if (!confirm('Delete this application?')) return;
+  const token = localStorage.getItem('mmpc_token');
+  await fetch('/api/admissions/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+  showToast('Deleted');
+  loadAdmissions();
+}
+
+
+function dlDB(){
+  const token=localStorage.getItem('mmpc_token');
+  if(!token){showToast('Not logged in','err');return;}
+  showToast('Preparing backup...');
+  fetch('/api/auth/backup-db',{headers:{'Authorization':'Bearer '+token}})
+  .then(r=>{
+    if(!r.ok) return r.json().then(d=>{throw new Error(d.message||'Failed');});
+    return r.blob();
+  })
+  .then(blob=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='mmpc_backup_'+new Date().toISOString().slice(0,10)+'.db';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('Backup downloaded ✅');
+  }).catch(e=>showToast('Backup failed: '+e.message,'err'));
+}
+</script>
+
+<!-- ── Bulk Import Students Modal ─────────────────────────────────────────── -->
+<div class="modal-bg" id="modal-bulk-import-students">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-hdr">
+      <h3>📥 Bulk Import Students</h3>
+      <button class="modal-close" onclick="closeModal('modal-bulk-import-students')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(44,108,176,.08);border:1px solid rgba(44,108,176,.25);border-radius:8px;padding:1rem;margin-bottom:1.2rem;font-size:.8rem;color:#2b4c7e;line-height:1.7">
+        <strong>📋 How to use:</strong><br>
+        1. Click <strong>"⬇ Download Template"</strong> to get the sample CSV.<br>
+        2. Fill student data — one row per student.<br>
+        3. Required columns: <code>rollNo</code>, <code>name</code>, <code>class</code>, <code>gender</code>.<br>
+        4. Optional: <code>fatherName</code>, <code>phone</code>, <code>fatherPhone</code>, <code>section</code>, <code>address</code>, <code>status</code>.<br>
+        5. Upload the CSV and click Import. Supports 5000+ records.
+      </div>
+      <div id="bulk-students-alert" class="alert alert-err" style="display:none"></div>
+      <div class="form-group">
+        <label>CSV File *</label>
+        <input type="file" id="bulk-students-file" accept=".csv">
+        <small style="color:var(--gr);font-size:.72rem">Only .csv files. For Excel, save as CSV first.</small>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
+        <input type="checkbox" id="bulk-students-overwrite" style="width:auto;accent-color:var(--gd)">
+        <label for="bulk-students-overwrite" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Overwrite existing students with same Roll No</label>
+      </div>
+      <div id="bulk-students-preview" style="display:none;margin-top:1rem">
+        <div style="font-size:.78rem;font-weight:700;color:var(--nv);margin-bottom:.5rem">📋 Preview (first 5 rows):</div>
+        <div style="overflow-x:auto;border-radius:6px;border:1px solid var(--bd)">
+          <table style="width:100%;border-collapse:collapse;font-size:.74rem">
+            <thead id="bulk-students-preview-head" style="background:var(--of)"></thead>
+            <tbody id="bulk-students-preview-body"></tbody>
+          </table>
+        </div>
+        <div id="bulk-students-row-count" style="font-size:.75rem;color:var(--gr);margin-top:.4rem"></div>
+      </div>
+      <div id="bulk-students-result" style="display:none;margin-top:1rem;padding:1rem;border-radius:8px;font-size:.82rem;line-height:1.7"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-bulk-import-students')">Close</button>
+      <button class="btn" style="background:#2b6cb0;color:#fff" onclick="downloadStudentTemplate()">⬇ Template</button>
+      <button class="btn" style="background:#2b6cb0;color:#fff" onclick="previewStudentCSV()">👁 Preview</button>
+      <button class="btn btn-gd" onclick="runBulkImportStudents()" id="btn-import-students" disabled>📥 Import Students</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Bulk Import Fees Modal ─────────────────────────────────────────────── -->
+<div class="modal-bg" id="modal-bulk-import-fees">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-hdr">
+      <h3>📥 Bulk Import Fees</h3>
+      <button class="modal-close" onclick="closeModal('modal-bulk-import-fees')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(44,108,176,.08);border:1px solid rgba(44,108,176,.25);border-radius:8px;padding:1rem;margin-bottom:1.2rem;font-size:.8rem;color:#2b4c7e;line-height:1.7">
+        <strong>📋 How to use:</strong><br>
+        1. Click <strong>"⬇ Download Template"</strong> to get the sample CSV.<br>
+        2. Required columns: <code>rollNo</code>, <code>month</code>, <code>amount</code>, <code>dueDate</code>.<br>
+        3. <code>month</code> example: <code>April 2025</code>. <code>dueDate</code> format: <code>YYYY-MM-DD</code>.<br>
+        4. Students must already exist in the system (matched by Roll No).<br>
+        5. Supports 5000+ records in one import.
+      </div>
+      <div id="bulk-fees-alert" class="alert alert-err" style="display:none"></div>
+      <div class="form-group">
+        <label>CSV File *</label>
+        <input type="file" id="bulk-fees-file" accept=".csv">
+        <small style="color:var(--gr);font-size:.72rem">Only .csv files.</small>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
+        <input type="checkbox" id="bulk-fees-overwrite" style="width:auto;accent-color:var(--gd)">
+        <label for="bulk-fees-overwrite" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Overwrite existing fee for same Roll No + Month</label>
+      </div>
+      <div id="bulk-fees-preview" style="display:none;margin-top:1rem">
+        <div style="font-size:.78rem;font-weight:700;color:var(--nv);margin-bottom:.5rem">📋 Preview (first 5 rows):</div>
+        <div style="overflow-x:auto;border-radius:6px;border:1px solid var(--bd)">
+          <table style="width:100%;border-collapse:collapse;font-size:.74rem">
+            <thead id="bulk-fees-preview-head" style="background:var(--of)"></thead>
+            <tbody id="bulk-fees-preview-body"></tbody>
+          </table>
+        </div>
+        <div id="bulk-fees-row-count" style="font-size:.75rem;color:var(--gr);margin-top:.4rem"></div>
+      </div>
+      <div id="bulk-fees-result" style="display:none;margin-top:1rem;padding:1rem;border-radius:8px;font-size:.82rem;line-height:1.7"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-bulk-import-fees')">Close</button>
+      <button class="btn" style="background:#2b6cb0;color:#fff" onclick="downloadFeeTemplate()">⬇ Template</button>
+      <button class="btn" style="background:#2b6cb0;color:#fff" onclick="previewFeeCSV()">👁 Preview</button>
+      <button class="btn btn-gd" onclick="runBulkImportFees()" id="btn-import-fees" disabled>📥 Import Fees</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

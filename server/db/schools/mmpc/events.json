@@ -1,0 +1,20 @@
+[
+  {
+    "_id": "mny75hjcro2meq",
+    "title": "Annual Sports Day",
+    "description": "Annual sports day with various athletic competitions.",
+    "date": "2025-03-20",
+    "type": "Sports",
+    "status": "Upcoming",
+    "createdAt": "2026-04-14T05:44:27.144Z"
+  },
+  {
+    "_id": "mny75hjcn3he4b",
+    "title": "Parent Teacher Meeting",
+    "description": "Quarterly PTM for all classes.",
+    "date": "2025-02-28",
+    "type": "Meeting",
+    "status": "Upcoming",
+    "createdAt": "2026-04-14T05:44:27.144Z"
+  }
+]

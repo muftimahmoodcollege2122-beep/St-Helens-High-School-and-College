@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mufti Mahmood Public School & College – D.I. Khan</title>
+<meta name="description" content="Mufti Mahmood Public School & College, D.I. Khan – Quality education since 2006. Admissions open for 2026-27.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0d1f4a;--nv2:#1a3270;--nv3:#2a4494;--gd:#c8952a;--gd2:#e8b84b;--gd3:#f5d78e;--wh:#fff;--of:#f4f6fb;--gr:#6b7280;--gn:#38a169;--rd:#e53e3e;--bd:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--of);color:#1a1a2e;overflow-x:hidden}
+/* Ticker */
+.ticker-wrap{background:var(--gd);overflow:hidden;height:32px;display:flex;align-items:center;width:100%}
+.ticker-label{background:var(--nv);color:var(--gd2);font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:0 14px;white-space:nowrap;height:100%;display:flex;align-items:center;flex-shrink:0;z-index:1}
+.ticker-track{display:flex;flex-shrink:0;min-width:100%;animation:ticker 35s linear infinite;white-space:nowrap;will-change:transform}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{font-size:.72rem;font-weight:700;color:var(--nv);padding:0 2.5rem;white-space:nowrap;flex-shrink:0}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* Notice banner */
+#notice-banner{word-break:break-word;overflow-wrap:anywhere;white-space:normal;box-sizing:border-box;width:100%}
+/* Topbar */
+.topbar{background:var(--nv);color:rgba(255,255,255,.7);font-size:.72rem;padding:5px 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem}
+.topbar a{color:var(--gd2);text-decoration:none;margin-left:.8rem}
+.topbar span{display:flex;align-items:center;gap:.4rem}
+/* Nav */
+nav{position:sticky;top:0;z-index:999;background:var(--nv2);border-bottom:3px solid var(--gd);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.navi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:64px}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);overflow:hidden;flex-shrink:0}
+.brand-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.brand-txt{color:var(--wh);font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2}
+.brand-txt small{display:block;font-family:'Nunito',sans-serif;font-size:.6rem;color:var(--gd2);letter-spacing:.07em;font-weight:600}
+.nav-ul{display:flex;list-style:none;gap:0;position:relative}
+.nav-ul li{position:relative}
+.nav-ul a,.nav-ul>li>button{color:rgba(255,255,255,.85);text-decoration:none;font-size:.73rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:8px 9px;border-radius:4px;border:none;background:none;cursor:pointer;white-space:nowrap;transition:.2s;font-family:'Nunito',sans-serif;display:block}
+.nav-ul a:hover,.nav-ul>li>button:hover,.nav-ul a.on{background:rgba(200,149,42,.18);color:var(--gd2)}
+.drop{display:none;position:absolute;top:calc(100% + 3px);left:0;background:var(--nv);border:1px solid rgba(200,149,42,.3);border-radius:6px;min-width:180px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.nav-ul li:hover .drop{display:block}
+.drop a{display:block;padding:9px 14px;font-size:.78rem;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.8);border-radius:0}
+.drop a:hover{background:rgba(200,149,42,.15);color:var(--gd2)}
+.burger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.burger span{display:block;width:24px;height:2px;background:var(--wh);border-radius:2px;transition:.3s}
+.mob-menu{display:none;position:fixed;inset:0;background:var(--nv);z-index:9999;padding:1.5rem;overflow-y:auto;flex-direction:column}
+.mob-menu.open{display:flex}
+.mob-close{align-self:flex-end;background:none;border:1px solid rgba(255,255,255,.2);color:var(--wh);width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;margin-bottom:1.5rem}
+.mob-menu a{color:var(--wh);text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:.95rem;font-weight:700;display:block}
+.mob-menu a:hover{color:var(--gd2)}
+/* Hero */
+.hero{min-height:91vh;background:linear-gradient(160deg,var(--nv) 0%,var(--nv2) 55%,#1e3d8f 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 80px)}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--of),transparent)}
+.hc{text-align:center;position:relative;z-index:2;padding:2rem;animation:fadeUp .8s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hlogo{width:150px;height:150px;border-radius:50%;border:4px solid var(--gd);box-shadow:0 0 0 10px rgba(200,149,42,.12),0 20px 60px rgba(0,0,0,.5);animation:float 4s ease-in-out infinite;overflow:hidden;margin:0 auto 1.5rem}
+.hlogo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.htag{display:inline-block;background:var(--gd);color:var(--nv);font-size:.67rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:4px 16px;border-radius:2px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4.5vw,3.2rem);color:var(--wh);font-weight:900;line-height:1.15;margin-bottom:.4rem}
+.hero h1 em{color:var(--gd2);font-style:normal}
+.hsub{color:rgba(255,255,255,.55);font-size:.88rem;letter-spacing:.06em;margin-bottom:.3rem}
+.hmotto{font-family:'Playfair Display',serif;font-style:italic;color:var(--gd2);font-size:1.08rem;margin:.9rem 0 1.8rem}
+.hbtns{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap}
+/* Stats */
+.sbar{background:var(--gd);display:flex;justify-content:center;flex-wrap:wrap}
+.si{text-align:center;padding:1.2rem 2rem;border-right:1px solid rgba(255,255,255,.3)}
+.si:last-child{border-right:none}
+.sn{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--nv)}
+.sl{font-size:.67rem;font-weight:800;color:var(--nv);letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+/* General */
+.con{max-width:1100px;margin:0 auto}
+section{padding:68px 1.5rem}
+.stag{display:inline-block;background:rgba(200,149,42,.1);color:var(--gd);font-size:.67rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:3px 12px;border-radius:2px;margin-bottom:.5rem;border-left:3px solid var(--gd)}
+.stitle{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2.1rem);font-weight:700;color:var(--nv);margin-bottom:.7rem;line-height:1.2}
+.stitle span{color:var(--gd)}
+.dvd{width:50px;height:3px;background:linear-gradient(90deg,var(--gd),var(--nv));margin-bottom:1.8rem;border-radius:2px}
+.wbg{background:var(--wh)}
+/* Buttons */
+.btn{padding:11px 26px;border-radius:4px;font-weight:800;font-size:.84rem;letter-spacing:.04em;border:none;cursor:pointer;display:inline-block;text-decoration:none;transition:.2s;font-family:'Nunito',sans-serif}
+.bg{background:var(--gd);color:var(--nv);box-shadow:0 4px 14px rgba(200,149,42,.35)}
+.bg:hover{background:var(--gd2);transform:translateY(-2px)}
+.bo{border:2px solid rgba(255,255,255,.4);color:var(--wh);background:none}
+.bo:hover{border-color:var(--gd);color:var(--gd2)}
+.bn{background:var(--nv);color:var(--wh)}
+.bn:hover{background:var(--nv2);transform:translateY(-2px)}
+/* Quick links */
+.ql{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.85rem;margin-top:1.8rem}
+.qi{background:var(--wh);border-radius:8px;padding:1.2rem .8rem;text-align:center;border-top:3px solid var(--gd);box-shadow:0 4px 14px rgba(0,0,0,.07);cursor:pointer;transition:.25s;text-decoration:none}
+.qi:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(13,31,74,.13)}
+.qi-ic{font-size:1.7rem;margin-bottom:.35rem}
+.qi-lb{font-size:.72rem;font-weight:700;color:var(--nv);text-transform:uppercase;letter-spacing:.05em}
+/* News */
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.4rem}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.2rem}
+.nc{background:var(--wh);border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.07);transition:.25s}
+.nc:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(13,31,74,.12)}
+.nc-top{background:var(--nv);padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between}
+.nbadge{display:inline-block;background:var(--gd);color:var(--nv);font-size:.62rem;font-weight:800;padding:3px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.07em}
+.nc-date{font-size:.65rem;color:rgba(255,255,255,.5)}
+.nb{padding:1.1rem}
+.nt{font-weight:800;font-size:.9rem;color:var(--nv);margin-bottom:.4rem;line-height:1.3}
+.nx{font-size:.78rem;color:var(--gr);line-height:1.5}
+/* Events */
+.ec{background:var(--wh);border-radius:10px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.07);display:flex;transition:.25s}
+.ec:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(13,31,74,.12)}
+.edc{background:var(--nv);min-width:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.8rem .5rem}
+.eday{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:var(--gd2);line-height:1}
+.emon{font-size:.6rem;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em}
+.eb{padding:.9rem 1rem;flex:1}
+.etitle{font-weight:800;font-size:.88rem;color:var(--nv);margin-bottom:.3rem}
+.edesc{font-size:.75rem;color:var(--gr);line-height:1.4;margin-bottom:.4rem}
+.etype,.eloc{display:inline-block;background:rgba(200,149,42,.1);color:var(--gd);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:2px;margin-right:.3rem}
+.eloc{background:rgba(13,31,74,.06);color:var(--nv2)}
+/* Why */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.why-card{background:var(--wh);border-radius:12px;padding:1.6rem 1.3rem;box-shadow:0 4px 20px rgba(0,0,0,.07);transition:.25s;position:relative;overflow:hidden}
+.why-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gd),var(--gd2))}
+.why-card:hover{transform:translateY(-6px);box-shadow:0 14px 36px rgba(13,31,74,.13)}
+.why-ic{font-size:2.2rem;margin-bottom:.8rem;display:block}
+.why-card h3{font-family:'Playfair Display',serif;font-size:1rem;color:var(--nv);font-weight:700;margin-bottom:.4rem}
+.why-card p{font-size:.78rem;color:var(--gr);line-height:1.6}
+/* Principal */
+.principal-section{background:linear-gradient(135deg,var(--nv) 0%,var(--nv2) 100%);position:relative;overflow:hidden}
+.principal-section::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.015) 40px,rgba(255,255,255,.015) 80px)}
+.principal-grid{display:grid;grid-template-columns:300px 1fr;gap:3.5rem;align-items:center;position:relative;z-index:2}
+.principal-img-wrap{text-align:center}
+.principal-img{width:210px;height:210px;border-radius:50%;border:5px solid var(--gd);box-shadow:0 0 0 12px rgba(200,149,42,.15),0 20px 50px rgba(0,0,0,.4);overflow:hidden;margin:0 auto 1.2rem;background:linear-gradient(135deg,var(--nv3),var(--nv));display:flex;align-items:center;justify-content:center}
+.principal-img img{width:100%;height:100%;object-fit:cover}
+.principal-img-ph{font-size:5rem}
+.principal-name{font-family:'Playfair Display',serif;color:var(--wh);font-size:1.1rem;font-weight:700;margin-bottom:.2rem}
+.principal-desg{color:var(--gd2);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.principal-quote{position:relative;padding:1.4rem 1.4rem 1.4rem 3rem;background:rgba(255,255,255,.06);border-radius:8px;border-left:4px solid var(--gd)}
+.principal-quote::before{content:'"';position:absolute;left:.8rem;top:.3rem;font-family:'Playfair Display',serif;font-size:3.5rem;color:var(--gd);opacity:.4;line-height:1}
+.principal-quote p{font-family:'Playfair Display',serif;font-style:italic;color:rgba(255,255,255,.85);font-size:.95rem;line-height:1.8}
+.principal-sig{margin-top:1.2rem;display:flex;align-items:center;gap:.8rem}
+.sig-line{width:40px;height:2px;background:var(--gd);border-radius:2px}
+.sig-txt{font-size:.78rem;color:rgba(255,255,255,.6);font-weight:700}
+/* Toppers */
+.topper-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.4rem}
+.topper-card{background:var(--wh);border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.09);transition:.3s;text-align:center;position:relative}
+.topper-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(13,31,74,.14)}
+.topper-rank{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:900}
+.rank-1{background:linear-gradient(135deg,#f6d365,#fda085);color:#7b3f00}
+.rank-2{background:linear-gradient(135deg,#c9d6df,#a8bdc8);color:#2d3748}
+.rank-3{background:linear-gradient(135deg,#cd7f32,#e8a060);color:#fff}
+.rank-other{background:var(--nv);color:var(--gd2)}
+.topper-photo-wrap{background:linear-gradient(135deg,var(--nv2),var(--nv3));height:130px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.topper-photo-wrap img{width:100%;height:100%;object-fit:cover}
+.topper-photo-ph{font-size:3.5rem}
+.topper-info{padding:1.1rem}
+.topper-name{font-weight:800;font-size:.92rem;color:var(--nv);margin-bottom:.25rem}
+.topper-class{font-size:.75rem;color:var(--gd);font-weight:700;margin-bottom:.2rem}
+.topper-pct{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--nv);margin-bottom:.15rem}
+.topper-exam{font-size:.68rem;color:var(--gr);text-transform:uppercase;letter-spacing:.06em}
+/* Achievements */
+.ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.ach-item{background:var(--wh);border-radius:8px;padding:1rem 1.2rem;display:flex;align-items:center;gap:.9rem;box-shadow:0 3px 12px rgba(0,0,0,.06);border-left:4px solid var(--gd);transition:.2s}
+.ach-item:hover{transform:translateX(4px)}
+.ach-item span{font-size:.88rem;font-weight:700;color:var(--nv)}
+/* Faculty */
+.fc{background:var(--wh);border-radius:10px;padding:1.4rem 1.1rem;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.07);transition:.25s;border-top:3px solid var(--gd)}
+.fc:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(13,31,74,.12)}
+.fav{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--nv),var(--nv3));display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto .85rem;border:3px solid var(--gd);overflow:hidden}
+.fav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.fn{font-weight:800;font-size:.88rem;color:var(--nv);margin-bottom:.25rem}
+.fs{font-size:.75rem;color:var(--gd);font-weight:700;margin-bottom:.2rem}
+.fq{font-size:.7rem;color:var(--gr)}
+.fxp{font-size:.68rem;color:var(--nv3);font-weight:700;margin-top:.3rem}
+/* Gallery */
+.gfb-wrap{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.gfb{padding:6px 16px;border-radius:4px;border:2px solid var(--bd);background:var(--wh);color:var(--gr);font-size:.74rem;font-weight:700;cursor:pointer;transition:.2s;font-family:'Nunito',sans-serif}
+.gfb.on,.gfb:hover{background:var(--nv);color:var(--wh);border-color:var(--nv)}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.git{aspect-ratio:1;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,var(--nv2),var(--nv3));position:relative;box-shadow:0 4px 12px rgba(0,0,0,.1);transition:.3s;cursor:pointer}
+.git:hover{transform:scale(1.03);box-shadow:0 10px 28px rgba(0,0,0,.2)}
+.git img{width:100%;height:100%;object-fit:cover}
+.git-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,31,74,.85),transparent);opacity:0;transition:.3s;display:flex;align-items:flex-end;padding:.7rem}
+.git:hover .git-overlay{opacity:1}
+.git-title{color:var(--wh);font-size:.74rem;font-weight:700}
+/* About */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.about-img{border-radius:12px;height:340px;overflow:hidden;box-shadow:0 20px 50px rgba(13,31,74,.3)}
+.about-img img{width:100%;height:100%;object-fit:cover}
+.about-vals{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-top:1.2rem}
+.av{background:var(--of);border-radius:8px;padding:.9rem;border-left:3px solid var(--gd)}
+.av h4{font-size:.78rem;font-weight:800;color:var(--nv);margin-bottom:.15rem}
+.av p{font-size:.72rem;color:var(--gr)}
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:2.5rem;align-items:start}
+.ci-block{display:flex;gap:.85rem;align-items:flex-start;margin-bottom:1.3rem}
+.ci-ic{width:42px;height:42px;border-radius:50%;background:var(--nv);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.ci-txt h4{font-size:.83rem;font-weight:800;color:var(--nv);margin-bottom:.15rem}
+.ci-txt p{font-size:.78rem;color:var(--gr);line-height:1.5}
+.ci-txt a{color:var(--nv2);text-decoration:none;font-weight:700}
+.ci-txt a:hover{color:var(--gd)}
+/* Forms */
+.form-group{margin-bottom:1rem}
+label{display:block;font-size:.76rem;font-weight:700;color:var(--nv);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em}
+input,textarea,select{width:100%;padding:.7rem .9rem;border:2px solid var(--bd);border-radius:6px;font-family:'Nunito',sans-serif;font-size:.85rem;background:var(--wh);color:#1a1a2e;transition:.2s;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--nv);box-shadow:0 0 0 3px rgba(13,31,74,.07)}
+textarea{resize:vertical;min-height:110px}
+/* Footer */
+footer{background:var(--nv);color:rgba(255,255,255,.7);padding:3rem 1.5rem 1.5rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;max-width:1100px;margin:0 auto 2rem}
+.footer-brand .fl{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--wh);font-weight:700;margin-bottom:.5rem;display:block}
+.footer-brand p{font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.55);margin-bottom:1rem}
+.footer-social{display:flex;gap:.6rem;flex-wrap:wrap}
+.fsoc{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.9rem;text-decoration:none;transition:.2s;cursor:pointer}
+.fsoc:hover{background:var(--gd);transform:translateY(-2px)}
+footer h4{color:var(--gd2);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;margin-bottom:.9rem}
+footer ul{list-style:none}
+footer ul li{margin-bottom:.45rem}
+footer ul li a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.78rem;transition:.2s}
+footer ul li a:hover{color:var(--gd2)}
+.footer-bottom{max-width:1100px;margin:0 auto;border-top:1px solid rgba(255,255,255,.1);padding-top:1.2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;font-size:.73rem;color:rgba(255,255,255,.4)}
+.footer-bottom span{color:var(--gd)}
+/* WhatsApp */
+#whatsapp-btn{position:fixed;bottom:1.8rem;right:1.8rem;z-index:9998;width:56px;height:56px;border-radius:50%;background:#25d366;display:none;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);cursor:pointer;text-decoration:none;transition:.3s;animation:waPulse 2.5s ease-in-out infinite}
+#whatsapp-btn:hover{transform:scale(1.1)}
+#whatsapp-btn svg{width:28px;height:28px;fill:#fff}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.4)}50%{box-shadow:0 6px 32px rgba(37,211,102,.7)}}
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:9999;padding:.85rem 1.5rem;border-radius:8px;font-size:.82rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;max-width:360px;text-align:center;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.toast.success{background:var(--gn);color:var(--wh)}
+.toast.error{background:var(--rd);color:var(--wh)}
+.toast.info{background:var(--nv);color:var(--wh)}
+/* Loading */
+.skeleton{background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+/* Responsive */
+@media(max-width:1024px){
+  .nav-ul a,.nav-ul>li>button{font-size:.68rem;padding:8px 7px}
+  .why-grid{grid-template-columns:repeat(2,1fr)}
+  .principal-grid{grid-template-columns:260px 1fr;gap:2.5rem}
+  .footer-grid{grid-template-columns:1.5fr 1fr 1fr;gap:1.5rem}
+  .footer-grid>div:last-child{grid-column:2}
+}
+@media(max-width:900px){
+  .about-grid,.contact-grid,.principal-grid{grid-template-columns:1fr;gap:1.8rem}
+  .principal-img-wrap{display:flex;align-items:center;gap:1.5rem;text-align:left}
+  .principal-img{width:150px;height:150px;margin:0}
+  .about-img{height:240px}
+  .about-vals{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem}
+  .footer-grid>div:first-child{grid-column:1/-1}
+  section{padding:52px 1.2rem}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .gal-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .sbar{flex-wrap:wrap}
+  .si{flex:1 1 45%;border-right:none;border-bottom:1px solid rgba(255,255,255,.2);padding:1rem 1.2rem}
+  .si:nth-child(odd){border-right:1px solid rgba(255,255,255,.2)}
+  .si:last-child{border-bottom:none}
+  .ach-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .nav-ul{display:none}
+  .burger{display:flex}
+  .topbar{font-size:.65rem;padding:4px 1rem}
+  .topbar span:first-child{display:none}
+  .hlogo{width:120px;height:120px}
+  .hero{min-height:85vh}
+  .hbtns .btn{padding:10px 18px;font-size:.8rem}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.2rem}
+  .ql{grid-template-columns:repeat(4,1fr);gap:.6rem}
+  .qi{padding:.9rem .5rem}
+  .qi-ic{font-size:1.4rem}
+  .qi-lb{font-size:.62rem}
+  section{padding:44px 1rem}
+}
+@media(max-width:540px){
+  .navi{height:56px}
+  .brand-txt{font-size:.78rem}
+  .brand-logo{width:38px;height:38px}
+  .hlogo{width:100px;height:100px}
+  .hero{min-height:80vh}
+  .hbtns{flex-direction:column;gap:.6rem;align-items:center}
+  .hbtns .btn{width:100%;text-align:center}
+  .si{flex:1 1 50%;padding:.85rem 1rem}
+  .sn{font-size:1.5rem}
+  .g3{grid-template-columns:1fr}
+  .g4{grid-template-columns:1fr 1fr}
+  .gal-grid{grid-template-columns:repeat(2,1fr);gap:.7rem}
+  .ql{grid-template-columns:repeat(4,1fr);gap:.5rem}
+  .qi{padding:.75rem .4rem}
+  .qi-ic{font-size:1.25rem}
+  .qi-lb{font-size:.58rem}
+  .why-grid{grid-template-columns:1fr}
+  .about-vals{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .ec{flex-direction:column}
+  .edc{flex-direction:row;justify-content:flex-start;gap:.5rem;padding:.6rem .9rem;min-width:unset}
+  .eday{font-size:1.2rem}
+  .principal-img-wrap{flex-direction:column;text-align:center}
+  .principal-img{margin:0 auto}
+  .topper-grid{grid-template-columns:1fr 1fr}
+  section{padding:36px .9rem}
+  footer{padding:2rem 1rem 1rem}
+  #whatsapp-btn{width:50px;height:50px;bottom:1.3rem;right:1.3rem}
+}
+@media(max-width:380px){
+  .brand-txt{display:none}
+  .ql{grid-template-columns:repeat(2,1fr)}
+  .g4{grid-template-columns:1fr}
+  .topper-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr}
+  section{padding:30px .75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Ticker -->
+<div class="ticker-wrap" id="ticker-wrap" style="display:none">
+  <div class="ticker-label">📢 News</div>
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
+
+<!-- Topbar -->
+<div class="topbar">
+  <span>📍 Kacheri Road, D.I. Khan, KPK, Pakistan</span>
+  <span>
+    📞 <a href="tel:+92966123456" id="tb-phone">+92-966-123456</a>
+    ✉️ <a href="mailto:info@mmpc.edu.pk" id="tb-email">info@mmpc.edu.pk</a>
+    <a href="/admin" style="margin-left:1.2rem;background:rgba(200,149,42,.2);padding:2px 8px;border-radius:3px">🔐 Admin</a>
+    <a href="/teacher" style="margin-left:.6rem;background:rgba(46,125,50,.2);padding:2px 8px;border-radius:3px">👨‍🏫 Teacher</a>
+  </span>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="navi">
+    <a class="brand" href="#home" onclick="scrollTo({top:0,behavior:'smooth'})">
+      <div class="brand-logo"><img src="/images/logo.jpg" alt="MMPC"></div>
+      <div class="brand-txt">Mufti Mahmood Public School & College<small>D.I. Khan • Est. 2006 • Excellence in Education</small></div>
+    </a>
+    <ul class="nav-ul">
+      <li><a href="#home" class="nav-link on">Home</a></li>
+      <li>
+        <button>About ▾</button>
+        <div class="drop">
+          <a href="#about">About School</a>
+          <a href="#principal">Principal's Message</a>
+          <a href="#faculty">Our Faculty</a>
+          <a href="#why">Why Choose Us</a>
+        </div>
+      </li>
+      <li><a href="#news" class="nav-link">News</a></li>
+      <li><a href="#events" class="nav-link">Events</a></li>
+      <li><a href="#toppers" class="nav-link">Toppers</a></li>
+      <li><a href="#gallery" class="nav-link">Gallery</a></li>
+      <li><a href="#admission-form" class="nav-link">Contact</a></li>
+      <li><a href="/portal" style="background:rgba(200,149,42,.15);color:var(--gd2)">🎓 Portal</a></li>
+      <li><a href="/parent" style="background:rgba(25,118,210,.15);color:#1976d2">👨‍👩‍👦 Parents</a></li>
+      <li><a href="/teacher" style="background:rgba(46,125,50,.15);color:#2e7d32">👨‍🏫 Teacher</a></li>
+    </ul>
+    <button class="burger" onclick="toggleMob()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mob-menu" id="mob-menu">
+  <button class="mob-close" onclick="toggleMob()">✕</button>
+  <a href="#home" onclick="toggleMob()">🏠 Home</a>
+  <a href="#about" onclick="toggleMob()">🏫 About School</a>
+  <a href="#principal" onclick="toggleMob()">👨‍💼 Principal's Message</a>
+  <a href="#why" onclick="toggleMob()">⭐ Why Choose Us</a>
+  <a href="#news" onclick="toggleMob()">📰 News</a>
+  <a href="#events" onclick="toggleMob()">📅 Events</a>
+  <a href="#toppers" onclick="toggleMob()">🏆 Toppers</a>
+  <a href="#faculty" onclick="toggleMob()">👨‍🏫 Faculty</a>
+  <a href="#gallery" onclick="toggleMob()">🖼 Gallery</a>
+  <a href="#contact" onclick="toggleMob()">📞 Contact</a>
+  <a href="/portal" onclick="toggleMob()" style="color:var(--gd2);font-weight:800">🎓 Student Portal</a>
+  <a href="/parent" onclick="toggleMob()" style="color:#1976d2;font-weight:800">👨‍👩‍👦 Parent Portal</a>
+  <a href="/teacher" onclick="toggleMob()" style="color:#2e7d32;font-weight:800">👨‍🏫 Teacher Panel</a>
+  <a href="/admin" style="color:var(--gd2);margin-top:.5rem">🔐 Admin Panel</a>
+</div>
+
+<!-- Notice Banner -->
+<div id="notice-banner"></div>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="hc">
+    <div class="hlogo"><img src="/images/logo.jpg" alt="MMPC Logo"></div>
+    <div class="htag" id="hero-tagline">⭐ Established 2006 — D.I. Khan</div>
+    <h1 id="hero-title">Mufti Mahmood <em>Public School</em><br>&amp; College</h1>
+    <p class="hsub" id="hero-subtitle">Dera Ismail Khan, Khyber Pakhtunkhwa, Pakistan</p>
+    <p class="hmotto" id="hero-motto">"Knowledge is the Light that Illuminates the Path"</p>
+    <div class="hbtns">
+      <a href="#contact" class="btn bg" id="admissions-btn">📝 Admissions Open</a>
+      <a href="/portal" class="btn bo">🎓 Student Portal</a>
+      <a href="/parent" class="btn bo">👨‍👩‍👦 Parent Portal</a>
+      <a href="/teacher" class="btn bo">👨‍🏫 Teacher Panel</a>
+      <a href="#contact" class="btn bo">📞 Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="sbar">
+  <div class="si"><div class="sn" id="stat-students">2000+</div><div class="sl">Students</div></div>
+  <div class="si"><div class="sn" id="stat-faculty">80+</div><div class="sl">Faculty</div></div>
+  <div class="si"><div class="sn" id="stat-years">40+</div><div class="sl">Years of Excellence</div></div>
+  <div class="si"><div class="sn" id="stat-passrate">95%</div><div class="sl">Pass Rate</div></div>
+  <div class="si"><div class="sn" id="stat-programs">15+</div><div class="sl">Programmes</div></div>
+</div>
+
+<!-- Quick Links -->
+<section style="padding:40px 1.5rem;background:var(--wh)">
+  <div class="con">
+    <div class="ql">
+      <a class="qi" href="#news"><div class="qi-ic">📢</div><div class="qi-lb">News</div></a>
+      <a class="qi" href="#events"><div class="qi-ic">📅</div><div class="qi-lb">Events</div></a>
+      <a class="qi" href="#toppers"><div class="qi-ic">🏆</div><div class="qi-lb">Toppers</div></a>
+      <a class="qi" href="#faculty"><div class="qi-ic">👨‍🏫</div><div class="qi-lb">Faculty</div></a>
+      <a class="qi" href="#gallery"><div class="qi-ic">🖼</div><div class="qi-lb">Gallery</div></a>
+      <a class="qi" href="#contact"><div class="qi-ic">📞</div><div class="qi-lb">Contact</div></a>
+      <a class="qi" href="#about"><div class="qi-ic">🏫</div><div class="qi-lb">About Us</div></a>
+      <a class="qi" href="/portal" style="border-top-color:var(--gn)"><div class="qi-ic">🎓</div><div class="qi-lb">Portal</div></a>
+      <a class="qi" href="/parent" style="border-top-color:#1976d2"><div class="qi-ic">👨‍👩‍👦</div><div class="qi-lb">Parents</div></a>
+      <a class="qi" href="/teacher" style="border-top-color:#2e7d32"><div class="qi-ic">👨‍🏫</div><div class="qi-lb">Teachers</div></a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section id="news">
+  <div class="con">
+    <div class="stag">Latest Updates</div>
+    <h2 class="stitle">News &amp; <span>Announcements</span></h2>
+    <div class="dvd"></div>
+    <div class="g3" id="news-grid">
+      <div class="nc skeleton" style="height:160px"></div>
+      <div class="nc skeleton" style="height:160px"></div>
+      <div class="nc skeleton" style="height:160px"></div>
+    </div>
+    <div style="text-align:center;margin-top:1.8rem"><button class="btn bn" onclick="loadMoreNews()">Load More News</button></div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section id="events" class="wbg">
+  <div class="con">
+    <div class="stag">School Calendar</div>
+    <h2 class="stitle">Upcoming <span>Events</span></h2>
+    <div class="dvd"></div>
+    <div style="display:grid;gap:1rem" id="events-list">
+      <div class="ec skeleton" style="height:90px"></div>
+      <div class="ec skeleton" style="height:90px"></div>
+      <div class="ec skeleton" style="height:90px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section id="why">
+  <div class="con">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div class="stag">Our Strengths</div>
+      <h2 class="stitle">Why Choose <span>MMPC?</span></h2>
+      <div class="dvd" style="margin:0 auto"></div>
+    </div>
+    <div class="why-grid" id="why-grid">
+      <div class="why-card reveal"><span class="why-ic">🏆</span><h3>Academic Excellence</h3><p>Consistent top results in Board exams with 95%+ pass rate every year.</p></div>
+      <div class="why-card reveal"><span class="why-ic">👨‍🏫</span><h3>Qualified Faculty</h3><p>80+ highly qualified and experienced teachers dedicated to student success.</p></div>
+      <div class="why-card reveal"><span class="why-ic">🕌</span><h3>Islamic Values</h3><p>Education blending modern knowledge with strong Islamic moral foundation.</p></div>
+      <div class="why-card reveal"><span class="why-ic">🔬</span><h3>Modern Facilities</h3><p>Well-equipped labs, library, and sports facilities for holistic development.</p></div>
+      <div class="why-card reveal"><span class="why-ic">🎯</span><h3>Career Guidance</h3><p>Professional counseling to help students choose the right career path.</p></div>
+      <div class="why-card reveal"><span class="why-ic">🤝</span><h3>Parent Involvement</h3><p>Regular PTMs and open communication between school and families.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPAL -->
+<section id="principal" class="principal-section" style="padding:72px 1.5rem">
+  <div class="con">
+    <div class="principal-grid">
+      <div class="principal-img-wrap reveal">
+        <div class="principal-img" id="principal-img-wrap">
+          <div class="principal-img-ph">👨‍💼</div>
+        </div>
+        <div>
+          <div class="principal-name" id="principal-name">Prof. Muhammad Khalid</div>
+          <div class="principal-desg" id="principal-desg">Principal</div>
+        </div>
+      </div>
+      <div class="principal-content reveal">
+        <div class="stag" style="background:rgba(200,149,42,.2);color:var(--gd2);border-left-color:var(--gd2)">Leadership</div>
+        <h2 class="stitle" style="color:var(--wh)">Principal's <span>Message</span></h2>
+        <div class="dvd" style="background:linear-gradient(90deg,var(--gd2),transparent)"></div>
+        <div class="principal-quote">
+          <p id="principal-msg">Welcome to Mufti Mahmood Public School & College. Our institution has been a pillar of quality education in D.I. Khan since 2006. We are committed to providing an environment where students grow academically, morally, and spiritually. Our dedicated faculty works tirelessly to ensure every student reaches their full potential. I invite you to join our family and be part of our legacy of excellence.</p>
+        </div>
+        <div class="principal-sig">
+          <div class="sig-line"></div>
+          <div class="sig-txt" id="principal-sig-name">Prof. Muhammad Khalid — Principal, MMPC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- EDUCATION SECRETARY -->
+<section id="secretary" style="padding:72px 1.5rem;background:var(--of)" id="secretary-section">
+  <div class="con">
+    <div class="principal-grid">
+      <div class="principal-img-wrap reveal">
+        <div class="principal-img" id="secretary-img-wrap">
+          <div class="principal-img-ph">🎓</div>
+        </div>
+        <div>
+          <div class="principal-name" id="secretary-name" style="color:var(--nv)">Mr. Muhammad Khalid</div>
+          <div class="principal-desg" id="secretary-desg" style="color:var(--gd)">Province education secretary</div>
+        </div>
+      </div>
+      <div class="principal-content reveal" style="background:linear-gradient(135deg,var(--nv) 0%,var(--nv2) 100%);padding:2.5rem;border-radius:16px">
+        <div class="stag" style="background:rgba(200,149,42,.2);color:var(--gd2);border-left-color:var(--gd2)">Education Authority</div>
+        <h2 class="stitle" style="color:var(--wh)">Secretary's <span>Message</span></h2>
+        <div class="dvd" style="background:linear-gradient(90deg,var(--gd2),transparent)"></div>
+        <div class="principal-quote">
+          <p id="secretary-msg" style="color:rgba(255,255,255,.85)">We are committed to raising the standard of education across D.I. Khan. Mufti Mahmood Public School & College stands as a model institution in our district, exemplifying dedication to academic excellence and moral development.</p>
+        </div>
+        <div class="principal-sig">
+          <div class="sig-line"></div>
+          <div class="sig-txt" id="secretary-sig-name" style="color:var(--gd2)">Mr. Muhammad Khalid — Province education secretary</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOPPERS -->
+<section id="toppers" class="wbg">
+  <div class="con">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div class="stag">Hall of Fame</div>
+      <h2 class="stitle">Our Top <span>Achievers</span></h2>
+      <div class="dvd" style="margin:0 auto"></div>
+    </div>
+    <div class="topper-grid" id="topper-grid">
+      <div class="topper-card skeleton" style="height:220px"></div>
+      <div class="topper-card skeleton" style="height:220px"></div>
+      <div class="topper-card skeleton" style="height:220px"></div>
+      <div class="topper-card skeleton" style="height:220px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements" style="padding:52px 1.5rem;background:linear-gradient(135deg,var(--nv) 0%,var(--nv2) 100%)">
+  <div class="con">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center">
+      <div>
+        <div class="stag" style="background:rgba(200,149,42,.2);color:var(--gd2);border-left-color:var(--gd2)">Our Pride</div>
+        <h2 class="stitle" style="color:var(--wh)">School <span>Achievements</span></h2>
+        <div class="dvd" style="background:linear-gradient(90deg,var(--gd2),transparent)"></div>
+        <p style="color:rgba(255,255,255,.65);font-size:.88rem;line-height:1.8">We take pride in our students' accomplishments and the recognition our school has received at district, provincial, and national levels.</p>
+      </div>
+      <div class="ach-grid" id="ach-grid">
+        <div class="ach-item reveal"><span>🏆 Board Position – 2024 Annual Exams</span></div>
+        <div class="ach-item reveal"><span>🥇 District Science Fair Champions 2024</span></div>
+        <div class="ach-item reveal"><span>📚 100% Result in FA/FSc 2023</span></div>
+        <div class="ach-item reveal"><span>🎖 Best School Award – D.I. Khan 2023</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="con">
+    <div class="about-grid">
+      <div>
+        <div class="stag">Who We Are</div>
+        <h2 class="stitle">About <span>Our School</span></h2>
+        <div class="dvd"></div>
+        <p id="about-para1" style="font-size:.9rem;color:var(--gr);line-height:1.8;margin-bottom:1rem">Mufti Mahmood Public School & College, established in 2006 in Dera Ismail Khan, is one of the leading educational institutions in KPK. Named after the legendary Islamic scholar Mufti Mahmood, the school has been a beacon of quality education combining modern academics with Islamic values.</p>
+        <p id="about-para2" style="font-size:.9rem;color:var(--gr);line-height:1.8;margin-bottom:1.4rem">We offer a comprehensive curriculum from Nursery to FA/FSc, with a dedicated faculty of over 80 qualified teachers committed to nurturing the next generation of leaders.</p>
+        <div class="about-vals">
+          <div class="av"><h4>🎯 Our Mission</h4><p id="about-mission">Quality education blending modern knowledge with Islamic values.</p></div>
+          <div class="av"><h4>🔭 Our Vision</h4><p id="about-vision">To become the leading school in KPK producing well-rounded graduates.</p></div>
+          <div class="av"><h4>📖 Academics</h4><p id="about-academics">Matric, FSc, FA programmes with science &amp; arts streams.</p></div>
+          <div class="av"><h4>🌟 Co-Curricular</h4><p id="about-cocurr">Sports, debate, science fair, cultural events &amp; more.</p></div>
+        </div>
+      </div>
+      <div class="about-img reveal"><img src="/images/campus8.png" alt="MMPC Campus"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FACULTY -->
+<section id="faculty" class="wbg">
+  <div class="con">
+    <div class="stag">Our Educators</div>
+    <h2 class="stitle">Meet the <span>Faculty</span></h2>
+    <div class="dvd"></div>
+    <div class="g4" id="faculty-grid">
+      <div class="fc skeleton" style="height:170px"></div>
+      <div class="fc skeleton" style="height:170px"></div>
+      <div class="fc skeleton" style="height:170px"></div>
+      <div class="fc skeleton" style="height:170px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="con">
+    <div class="stag">Photo Gallery</div>
+    <h2 class="stitle">School <span>Gallery</span></h2>
+    <div class="dvd"></div>
+    <div class="gfb-wrap">
+      <button class="gfb on" onclick="filterGallery('',this)">All</button>
+      <button class="gfb" onclick="filterGallery('Students',this)">Students</button>
+      <button class="gfb" onclick="filterGallery('Campus',this)">Campus</button>
+      <button class="gfb" onclick="filterGallery('Events',this)">Events</button>
+      <button class="gfb" onclick="filterGallery('Labs',this)">Labs</button>
+      <button class="gfb" onclick="filterGallery('Sports',this)">Sports</button>
+    </div>
+    <div class="gal-grid" id="gal-grid">
+      <div class="git skeleton"></div><div class="git skeleton"></div>
+      <div class="git skeleton"></div><div class="git skeleton"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="wbg">
+  <div class="con">
+    <div class="stag">Get In Touch</div>
+    <h2 class="stitle">Contact <span>Us</span></h2>
+    <div class="dvd"></div>
+    <div class="contact-grid">
+      <div>
+        <div class="ci-block"><div class="ci-ic">📍</div><div class="ci-txt"><h4>Address</h4><p id="contact-address">Kacheri Road, D.I. Khan, KPK</p></div></div>
+        <div class="ci-block"><div class="ci-ic">📞</div><div class="ci-txt"><h4>Phone</h4><p id="contact-phones"><a href="tel:+92966123456">+92-966-123456</a></p></div></div>
+        <div class="ci-block"><div class="ci-ic" id="wa-ci-ic" style="background:#25d366">💬</div><div class="ci-txt"><h4>WhatsApp</h4><p id="wa-contact-block">WhatsApp not configured yet.</p></div></div>
+        <div class="ci-block"><div class="ci-ic">✉️</div><div class="ci-txt"><h4>Email</h4><p id="contact-emails"><a href="mailto:info@mmpc.edu.pk">info@mmpc.edu.pk</a></p></div></div>
+        <div class="ci-block"><div class="ci-ic">🕐</div><div class="ci-txt"><h4>Office Hours</h4><p id="contact-hours">Mon–Sat: 7:30 AM – 2:30 PM</p></div></div>
+      </div>
+      <div>
+        <form id="contact-form" onsubmit="submitContact(event)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group"><label>Full Name *</label><input type="text" id="ct-name" placeholder="Your name" required></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" id="ct-phone" placeholder="+92-xxx-xxxxxxx" required></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" id="ct-email" placeholder="your@email.com"></div>
+          <div class="form-group"><label>Subject *</label><input type="text" id="ct-subject" placeholder="What is your inquiry about?" required></div>
+          <div class="form-group"><label>Message *</label><textarea id="ct-message" placeholder="Write your message here..." required></textarea></div>
+          <button type="submit" class="btn bg" id="ct-btn" style="width:100%">Send Message ✉️</button>
+          <div id="ct-success" style="display:none;margin-top:1rem;padding:.8rem;background:rgba(56,161,105,.1);border:1px solid var(--gn);border-radius:6px;color:var(--gn);font-size:.82rem;font-weight:700;text-align:center">✅ Message sent! We will get back to you soon.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Admission Form Section -->
+<section id="admission-form" style="padding:60px 1.5rem;background:var(--of)">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div class="dvd" style="margin:0 auto 1rem"></div>
+      <h2 class="stitle">📝 Online Admission Form</h2>
+      <p style="color:var(--gr);font-size:.92rem;max-width:600px;margin:0 auto">Fill in all required fields carefully. After submission, the school administration will review your application and contact you.</p>
+    </div>
+
+    <form id="adm-form" onsubmit="submitAdmission(event)" style="background:#fff;border-radius:12px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.08);max-width:900px;margin:0 auto">
+
+      <!-- A: Student Info -->
+      <div style="background:var(--nv);color:#fff;padding:.6rem 1rem;border-radius:6px;margin-bottom:1.2rem;font-weight:700;font-size:.9rem">A — Student Information</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div><label class="adm-label">Full Name *</label><input class="adm-inp" id="adm-studentName" placeholder="As per B-Form" required></div>
+        <div><label class="adm-label">Gender *</label>
+          <select class="adm-inp" id="adm-gender" required>
+            <option value="">Select</option>
+            <option>Male</option><option>Female</option>
+          </select>
+        </div>
+        <div><label class="adm-label">Date of Birth *</label><input class="adm-inp" id="adm-dob" type="date" required></div>
+        <div><label class="adm-label">B-Form Number *</label><input class="adm-inp" id="adm-bForm" placeholder="e.g. 12345-1234567-1" required></div>
+        <div><label class="adm-label">Religion</label><input class="adm-inp" id="adm-religion" placeholder="e.g. Islam"></div>
+        <div><label class="adm-label">Applying Class *</label>
+          <select class="adm-inp" id="adm-applyingClass" required>
+            <option value="">Select Class</option>
+            <option>Nursery</option><option>Prep</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+            <option>9</option><option>10 (Matric)</option>
+            <option>11 (FSc/FA)</option><option>12 (FSc/FA)</option>
+          </select>
+        </div>
+        <div><label class="adm-label">Section Preference</label>
+          <select class="adm-inp" id="adm-section">
+            <option>A</option><option>B</option><option>C</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- B: Father -->
+      <div style="background:var(--nv);color:#fff;padding:.6rem 1rem;border-radius:6px;margin-bottom:1.2rem;font-weight:700;font-size:.9rem">B — Father / Guardian Information</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div><label class="adm-label">Father's Full Name *</label><input class="adm-inp" id="adm-fatherName" required placeholder="Full name"></div>
+        <div><label class="adm-label">Father's CNIC *</label><input class="adm-inp" id="adm-fatherCnic" required placeholder="12345-1234567-1"></div>
+        <div><label class="adm-label">Occupation</label><input class="adm-inp" id="adm-fatherOccupation" placeholder="e.g. Farmer, Teacher"></div>
+      </div>
+
+      <!-- C: Mother -->
+      <div style="background:var(--nv);color:#fff;padding:.6rem 1rem;border-radius:6px;margin-bottom:1.2rem;font-weight:700;font-size:.9rem">C — Mother Information</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div><label class="adm-label">Mother's Full Name</label><input class="adm-inp" id="adm-motherName" placeholder="Full name"></div>
+        <div><label class="adm-label">Mother's CNIC</label><input class="adm-inp" id="adm-motherCnic" placeholder="12345-1234567-1"></div>
+      </div>
+
+      <!-- D: Contact -->
+      <div style="background:var(--nv);color:#fff;padding:.6rem 1rem;border-radius:6px;margin-bottom:1.2rem;font-weight:700;font-size:.9rem">D — Contact Information</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div style="grid-column:1/-1"><label class="adm-label">Home Address *</label><input class="adm-inp" id="adm-address" required placeholder="Full address, D.I. Khan"></div>
+        <div><label class="adm-label">Primary Phone *</label><input class="adm-inp" id="adm-phone1" required placeholder="+92-300-0000000"></div>
+        <div><label class="adm-label">WhatsApp Number</label><input class="adm-inp" id="adm-phone2" placeholder="+92-300-0000000"></div>
+        <div><label class="adm-label">Email</label><input class="adm-inp" id="adm-email" type="email" placeholder="email@example.com"></div>
+      </div>
+
+      <!-- E: Previous School -->
+      <div style="background:var(--nv);color:#fff;padding:.6rem 1rem;border-radius:6px;margin-bottom:1.2rem;font-weight:700;font-size:.9rem">E — Previous School</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div><label class="adm-label">School Name</label><input class="adm-inp" id="adm-prevSchool" placeholder="Previous school name"></div>
+        <div><label class="adm-label">Last Class Attended</label><input class="adm-inp" id="adm-prevClass" placeholder="e.g. Class 5"></div>
+        <div><label class="adm-label">Result / Grades</label><input class="adm-inp" id="adm-prevResult" placeholder="e.g. A Grade, 85%"></div>
+      </div>
+
+      <!-- F: Emergency & Medical -->
+      <div style="background:var(--nv);color:#fff;padding:.6rem 1rem;border-radius:6px;margin-bottom:1.2rem;font-weight:700;font-size:.9rem">F — Emergency &amp; Medical</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div><label class="adm-label">Emergency Contact Name</label><input class="adm-inp" id="adm-emergencyContact" placeholder="Name &amp; relation"></div>
+        <div><label class="adm-label">Emergency Phone</label><input class="adm-inp" id="adm-emergencyPhone" placeholder="+92-000-0000000"></div>
+        <div style="grid-column:1/-1"><label class="adm-label">Medical Info (Allergies / Conditions)</label><textarea class="adm-inp" id="adm-medicalInfo" rows="2" placeholder="Any allergies, conditions, or medications the school should know about. Write 'None' if none." style="resize:vertical"></textarea></div>
+      </div>
+
+      <!-- G: Transport & Documents -->
+      <div style="background:var(--nv);color:#fff;padding:.6rem 1rem;border-radius:6px;margin-bottom:1.2rem;font-weight:700;font-size:.9rem">G — Transport &amp; Documents</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div><label class="adm-label">School Transport Required?</label>
+          <select class="adm-inp" id="adm-transport">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+        <div><label class="adm-label">Documents Being Submitted</label>
+          <div style="display:flex;flex-direction:column;gap:.3rem;margin-top:.4rem;font-size:.82rem">
+            <label><input type="checkbox" id="doc-photos"> Passport Photos (x2)</label>
+            <label><input type="checkbox" id="doc-bform"> B-Form Copy</label>
+            <label><input type="checkbox" id="doc-cnic"> Parents' CNIC Copies</label>
+            <label><input type="checkbox" id="doc-slc"> School Leaving Certificate</label>
+            <label><input type="checkbox" id="doc-result"> Result Card / Marksheet</label>
+            <label><input type="checkbox" id="doc-char"> Character Certificate</label>
+          </div>
+        </div>
+      </div>
+
+      <div id="adm-error" style="color:#e53e3e;font-size:.85rem;margin-bottom:1rem;display:none"></div>
+      <div id="adm-success" style="color:#276749;background:#c6f6d5;padding:1rem;border-radius:6px;margin-bottom:1rem;display:none;font-weight:600"></div>
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <button type="submit" class="btn bg" style="min-width:160px" id="adm-submit-btn">📤 Submit Application</button>
+        <button type="button" class="btn bn" onclick="printAdmissionForm()" style="min-width:160px">🖨️ Print / Download</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Print Modal -->
+<div id="print-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;overflow-y:auto;padding:20px">
+  <div style="max-width:800px;margin:0 auto;background:#fff;border-radius:8px;padding:2rem;position:relative">
+    <button onclick="document.getElementById('print-modal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:#e53e3e;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:1rem">✕</button>
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem">
+      <button onclick="window.print()" class="btn bg">🖨️ Print</button>
+      <button onclick="document.getElementById('print-modal').style.display='none'" class="btn bn">Close</button>
+    </div>
+    <div id="print-content"></div>
+  </div>
+</div>
+
+<style>
+.adm-label{display:block;font-size:.8rem;font-weight:600;color:var(--nv);margin-bottom:.3rem}
+.adm-inp{width:100%;padding:.5rem .7rem;border:1px solid #e2e8f0;border-radius:6px;font-size:.88rem;box-sizing:border-box;font-family:inherit}
+.adm-inp:focus{outline:none;border-color:var(--nv);box-shadow:0 0 0 2px rgba(13,31,74,.15)}
+@media print{
+  body > *:not(#print-area){display:none!important}
+  #print-area{display:block!important}
+  #print-modal{display:none!important}
+}
+</style>
+
+<script>
+async function submitAdmission(e) {
+  e.preventDefault();
+  const btn = document.getElementById('adm-submit-btn');
+  const errEl = document.getElementById('adm-error');
+  const sucEl = document.getElementById('adm-success');
+  errEl.style.display = 'none'; sucEl.style.display = 'none';
+  btn.disabled = true; btn.textContent = '⏳ Submitting...';
+
+  const docs = [];
+  if(document.getElementById('doc-photos').checked) docs.push('Passport Photos');
+  if(document.getElementById('doc-bform').checked) docs.push('B-Form Copy');
+  if(document.getElementById('doc-cnic').checked) docs.push('Parents CNIC Copies');
+  if(document.getElementById('doc-slc').checked) docs.push('School Leaving Certificate');
+  if(document.getElementById('doc-result').checked) docs.push('Result Card');
+  if(document.getElementById('doc-char').checked) docs.push('Character Certificate');
+
+  const payload = {
+    studentName:       document.getElementById('adm-studentName').value.trim(),
+    gender:            document.getElementById('adm-gender').value,
+    dob:               document.getElementById('adm-dob').value,
+    bForm:             document.getElementById('adm-bForm').value.trim(),
+    religion:          document.getElementById('adm-religion').value.trim(),
+    applyingClass:     document.getElementById('adm-applyingClass').value,
+    section:           document.getElementById('adm-section').value,
+    fatherName:        document.getElementById('adm-fatherName').value.trim(),
+    fatherCnic:        document.getElementById('adm-fatherCnic').value.trim(),
+    fatherOccupation:  document.getElementById('adm-fatherOccupation').value.trim(),
+    motherName:        document.getElementById('adm-motherName').value.trim(),
+    motherCnic:        document.getElementById('adm-motherCnic').value.trim(),
+    address:           document.getElementById('adm-address').value.trim(),
+    phone1:            document.getElementById('adm-phone1').value.trim(),
+    phone2:            document.getElementById('adm-phone2').value.trim(),
+    email:             document.getElementById('adm-email').value.trim(),
+    prevSchool:        document.getElementById('adm-prevSchool').value.trim(),
+    prevClass:         document.getElementById('adm-prevClass').value.trim(),
+    prevResult:        document.getElementById('adm-prevResult').value.trim(),
+    emergencyContact:  document.getElementById('adm-emergencyContact').value.trim(),
+    emergencyPhone:    document.getElementById('adm-emergencyPhone').value.trim(),
+    medicalInfo:       document.getElementById('adm-medicalInfo').value.trim(),
+    transport:         document.getElementById('adm-transport').value,
+    documents:         docs.join(', '),
+  };
+
+  try {
+    const res = await fetch('/api/admissions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      sucEl.textContent = '✅ Application submitted successfully! The school will contact you shortly. Application ID: ' + data.id;
+      sucEl.style.display = 'block';
+      document.getElementById('adm-form').reset();
+    } else {
+      errEl.textContent = data.message || 'Submission failed.';
+      errEl.style.display = 'block';
+    }
+  } catch(err) {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = '📤 Submit Application';
+}
+
+function printAdmissionForm() {
+  const fields = {
+    'Student Name':        document.getElementById('adm-studentName').value || '___________________',
+    'Gender':              document.getElementById('adm-gender').value || '___________________',
+    'Date of Birth':       document.getElementById('adm-dob').value || '___________________',
+    'B-Form Number':       document.getElementById('adm-bForm').value || '___________________',
+    'Religion':            document.getElementById('adm-religion').value || '___________________',
+    'Applying Class':      document.getElementById('adm-applyingClass').value || '___________________',
+    'Section':             document.getElementById('adm-section').value || '___________________',
+    "Father's Name":       document.getElementById('adm-fatherName').value || '___________________',
+    "Father's CNIC":       document.getElementById('adm-fatherCnic').value || '___________________',
+    'Occupation':          document.getElementById('adm-fatherOccupation').value || '___________________',
+    "Mother's Name":       document.getElementById('adm-motherName').value || '___________________',
+    "Mother's CNIC":       document.getElementById('adm-motherCnic').value || '___________________',
+    'Address':             document.getElementById('adm-address').value || '___________________',
+    'Phone 1':             document.getElementById('adm-phone1').value || '___________________',
+    'Phone 2 / WhatsApp':  document.getElementById('adm-phone2').value || '___________________',
+    'Email':               document.getElementById('adm-email').value || '___________________',
+    'Previous School':     document.getElementById('adm-prevSchool').value || '___________________',
+    'Previous Class':      document.getElementById('adm-prevClass').value || '___________________',
+    'Previous Result':     document.getElementById('adm-prevResult').value || '___________________',
+    'Emergency Contact':   document.getElementById('adm-emergencyContact').value || '___________________',
+    'Emergency Phone':     document.getElementById('adm-emergencyPhone').value || '___________________',
+    'Medical Info':        document.getElementById('adm-medicalInfo').value || '___________________',
+    'Transport Required':  document.getElementById('adm-transport').value || 'No',
+  };
+
+  const docs = [];
+  if(document.getElementById('doc-photos').checked) docs.push('Passport Photos');
+  if(document.getElementById('doc-bform').checked) docs.push('B-Form Copy');
+  if(document.getElementById('doc-cnic').checked) docs.push('Parents CNIC');
+  if(document.getElementById('doc-slc').checked) docs.push('School Leaving Certificate');
+  if(document.getElementById('doc-result').checked) docs.push('Result Card');
+  if(document.getElementById('doc-char').checked) docs.push('Character Certificate');
+
+  const sections = {
+    'A — Student Information': ['Student Name','Gender','Date of Birth','B-Form Number','Religion','Applying Class','Section'],
+    'B — Father / Guardian':   ["Father's Name","Father's CNIC",'Occupation'],
+    'C — Mother':              ["Mother's Name","Mother's CNIC"],
+    'D — Contact':             ['Address','Phone 1','Phone 2 / WhatsApp','Email'],
+    'E — Previous School':     ['Previous School','Previous Class','Previous Result'],
+    'F — Emergency & Medical': ['Emergency Contact','Emergency Phone','Medical Info'],
+    'G — Transport':           ['Transport Required'],
+  };
+
+  let rows = '';
+  for (const [secTitle, keys] of Object.entries(sections)) {
+    rows += `<tr><td colspan="2" style="background:#0d1f4a;color:#fff;padding:7px 12px;font-weight:700;font-size:.85rem">${secTitle}</td></tr>`;
+    for (const k of keys) {
+      rows += `<tr><td style="width:35%;padding:7px 12px;font-weight:600;font-size:.82rem;background:#f4f6fb;border-bottom:1px solid #e2e8f0">${k}</td><td style="padding:7px 12px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${fields[k]}</td></tr>`;
+    }
+  }
+
+  const printHtml = `
+    <div style="font-family:Arial,sans-serif;max-width:750px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:16px;border-bottom:3px solid #0d1f4a;padding-bottom:16px;margin-bottom:20px">
+        <img src="/images/logo.jpg" style="width:70px;height:70px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'">
+        <div>
+          <div style="font-size:1.2rem;font-weight:900;color:#0d1f4a">Mufti Mahmood Public School &amp; College</div>
+          <div style="font-size:.8rem;color:#6b7280">Kacheri Road, Dera Ismail Khan, KPK, Pakistan</div>
+          <div style="font-size:.8rem;color:#6b7280">Tel: +92-966-123456 &nbsp;|&nbsp; info@mmpc.edu.pk</div>
+          <div style="font-size:.75rem;color:#c8952a;font-weight:700;margin-top:2px">Established 2006 &nbsp;★&nbsp; Est. 2006</div>
+        </div>
+        <div style="margin-left:auto;text-align:right">
+          <div style="background:#0d1f4a;color:#fff;padding:6px 16px;border-radius:4px;font-weight:700;font-size:.85rem">ADMISSION FORM</div>
+          <div style="font-size:.75rem;color:#6b7280;margin-top:4px">Date: ${new Date().toLocaleDateString('en-PK')}</div>
+        </div>
+      </div>
+
+      <table style="width:100%;border-collapse:collapse;border:1px solid #e2e8f0;margin-bottom:20px">
+        ${rows}
+        <tr><td colspan="2" style="background:#0d1f4a;color:#fff;padding:7px 12px;font-weight:700;font-size:.85rem">H — Documents Submitted</td></tr>
+        <tr><td colspan="2" style="padding:8px 12px;font-size:.85rem">${docs.length ? docs.join(', ') : 'None checked'}</td></tr>
+      </table>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:2rem;padding-top:1rem;border-top:2px solid #e2e8f0">
+        <div style="text-align:center">
+          <div style="border-top:1px solid #333;margin-top:40px;padding-top:6px;font-size:.78rem;color:#6b7280">Parent / Guardian Signature</div>
+        </div>
+        <div style="text-align:center">
+          <div style="border-top:1px solid #333;margin-top:40px;padding-top:6px;font-size:.78rem;color:#6b7280">Student Signature</div>
+        </div>
+        <div style="text-align:center">
+          <div style="border-top:1px solid #333;margin-top:40px;padding-top:6px;font-size:.78rem;color:#6b7280">Principal Signature &amp; Stamp</div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;padding:.8rem;background:#f4f6fb;border-radius:6px;font-size:.75rem;color:#6b7280;text-align:center">
+        For office use only — Application reviewed by: __________________ &nbsp;|&nbsp; Date: __________________ &nbsp;|&nbsp; Status: __________________
+      </div>
+    </div>`;
+
+  document.getElementById('print-content').innerHTML = printHtml;
+  document.getElementById('print-modal').style.display = 'block';
+
+  // Create a hidden print area
+  let pa = document.getElementById('print-area');
+  if (!pa) { pa = document.createElement('div'); pa.id = 'print-area'; document.body.appendChild(pa); }
+  pa.innerHTML = printHtml;
+  pa.style.display = 'none';
+}
+</script>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="fl">Mufti Mahmood Public School &amp; College</span>
+      <p>Providing quality education in D.I. Khan since 2006. Combining modern academics with Islamic values to nurture Pakistan's future leaders.</p>
+      <div class="footer-social">
+        <a class="fsoc" id="wa-footer-btn" title="WhatsApp" style="display:none">💬</a>
+        <a class="fsoc" href="mailto:info@mmpc.edu.pk" id="footer-email-btn" title="Email">✉️</a>
+        <a class="fsoc" href="#contact" title="Call">📞</a>
+        <a class="fsoc" href="/portal" title="Student Portal">🎓</a>
+        <a class="fsoc" href="/parent" title="Parent Portal">👨‍👩‍👦</a>
+      </div>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#home">🏠 Home</a></li>
+        <li><a href="#about">🏫 About Us</a></li>
+        <li><a href="#principal">👨‍💼 Principal</a></li>
+        <li><a href="#news">📰 News</a></li>
+        <li><a href="#events">📅 Events</a></li>
+        <li><a href="#toppers">🏆 Toppers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Students</h4>
+      <ul>
+        <li><a href="/portal">🎓 Student Portal</a></li>
+        <li><a href="/parent">👨‍👩‍👦 Parent Portal</a></li>
+        <li><a href="/teacher">👨‍🏫 Teacher Panel</a></li>
+        <li><a href="#faculty">👨‍🏫 Faculty</a></li>
+        <li><a href="#gallery">🖼 Gallery</a></li>
+        <li><a href="#contact">📝 Admissions</a></li>
+        <li><a href="#contact">📞 Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#contact">📍 D.I. Khan, KPK</a></li>
+        <li><a href="tel:+92966123456" id="footer-phone">📞 +92-966-123456</a></li>
+        <li><a href="mailto:info@mmpc.edu.pk" id="footer-email">✉️ info@mmpc.edu.pk</a></li>
+        <li><a href="/admin">🔐 Admin Panel</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Mufti Mahmood Public School &amp; College. All rights reserved.</span>
+    <span>D.I. Khan, Khyber Pakhtunkhwa, Pakistan</span>
+  </div>
+</footer>
+
+<!-- WhatsApp Floating Button -->
+<a id="whatsapp-btn" target="_blank" title="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API='';
+function showToast(msg,type='info'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type}`;t.style.display='block';setTimeout(()=>t.style.display='none',3500);}
+function fmtDate(d){return new Date(d).toLocaleDateString('en-PK',{year:'numeric',month:'short',day:'numeric'});}
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open');}
+
+const revealObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+
+const sections=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id;});document.querySelectorAll('.nav-link').forEach(a=>{a.classList.toggle('on',a.getAttribute('href')==='#'+cur);});});
+
+let newsPage=1;
+async function loadNews(append=false){
+  try{
+    const res=await fetch(`${API}/api/news?limit=6&page=${newsPage}`);
+    const json=await res.json();
+    const grid=document.getElementById('news-grid');
+    if(!append)grid.innerHTML='';
+    if(!json.data||json.data.length===0){if(!append)grid.innerHTML='<p style="color:var(--gr);padding:1rem">No news available yet.</p>';return;}
+    json.data.forEach(n=>{const d=document.createElement('div');d.className='nc reveal';d.innerHTML=`<div class="nc-top"><span class="nbadge">${n.category}</span><span class="nc-date">${fmtDate(n.createdAt)}</span></div><div class="nb"><div class="nt">${n.title}</div><div class="nx">${n.body.substring(0,110)}${n.body.length>110?'…':''}</div></div>`;grid.appendChild(d);revealObs.observe(d);});
+  }catch{document.getElementById('news-grid').innerHTML='<p style="color:var(--gr)">Failed to load news.</p>';}
+}
+function loadMoreNews(){newsPage++;loadNews(true);}
+
+async function loadEvents(){
+  try{
+    const res=await fetch(`${API}/api/events?limit=6`);
+    const json=await res.json();
+    const list=document.getElementById('events-list');
+    list.innerHTML='';
+    if(!json.data||json.data.length===0){list.innerHTML='<p style="color:var(--gr);padding:1rem">No upcoming events.</p>';return;}
+    json.data.forEach(e=>{const d=new Date(e.date);const el=document.createElement('div');el.className='ec reveal';el.innerHTML=`<div class="edc"><div class="eday">${d.getDate()}</div><div class="emon">${d.toLocaleString('default',{month:'short'})}</div></div><div class="eb"><div class="etitle">${e.title}</div><div class="edesc">${e.description.substring(0,100)}${e.description.length>100?'…':''}</div><span class="etype">${e.type}</span>${e.location?`<span class="eloc">📍 ${e.location}</span>`:''}${e.time?`<span class="eloc">🕐 ${e.time}</span>`:''}</div>`;list.appendChild(el);revealObs.observe(el);});
+  }catch{document.getElementById('events-list').innerHTML='<p style="color:var(--gr)">Failed to load events.</p>';}
+}
+
+async function loadToppers(){
+  try{
+    const res=await fetch(`${API}/api/toppers`);
+    const json=await res.json();
+    const grid=document.getElementById('topper-grid');
+    grid.innerHTML='';
+    if(!json.data||json.data.length===0){grid.innerHTML='<p style="color:var(--gr);padding:1rem">No toppers added yet.</p>';return;}
+    json.data.forEach((t,i)=>{
+      const rc=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+      const medals=['🥇','🥈','🥉'];
+      const el=document.createElement('div');el.className='topper-card reveal';
+      el.innerHTML=`<div class="topper-rank ${rc}">${medals[i]||i+1}</div><div class="topper-photo-wrap">${t.photo?`<img src="${t.photo}" alt="${t.name}">`:`<div class="topper-photo-ph">🎓</div>`}</div><div class="topper-info"><div class="topper-name">${t.name}</div><div class="topper-class">${t.class}${t.subject?' • '+t.subject:''}</div><div class="topper-pct">${t.percentage||''}</div><div class="topper-exam">${t.position||''}${t.exam?' — '+t.exam:''}</div></div>`;
+      grid.appendChild(el);revealObs.observe(el);
+    });
+  }catch{document.getElementById('topper-grid').innerHTML='<p style="color:var(--gr)">Failed to load toppers.</p>';}
+}
+
+const ICONS=['👨‍🏫','👩‍🏫','🧑‍🏫','👨‍🔬','👩‍🔬','📐','💻','🕌','📚','⚗️'];
+async function loadFaculty(){
+  try{
+    const res=await fetch(`${API}/api/teachers?limit=12`);
+    const json=await res.json();
+    const grid=document.getElementById('faculty-grid');
+    grid.innerHTML='';
+    if(!json.data||json.data.length===0){grid.innerHTML='<p style="color:var(--gr)">No faculty yet.</p>';return;}
+    json.data.forEach((t,i)=>{const el=document.createElement('div');el.className='fc reveal';el.innerHTML=`<div class="fav">${t.photo?`<img src="${t.photo}">`:`${ICONS[i%ICONS.length]}`}</div><div class="fn">${t.name}</div><div class="fs">${t.subject}</div><div class="fq">${t.qualification||''}</div>${t.experience?`<div class="fxp">🕐 ${t.experience}</div>`:''}`;grid.appendChild(el);revealObs.observe(el);});
+  }catch{document.getElementById('faculty-grid').innerHTML='<p style="color:var(--gr)">Failed.</p>';}
+}
+
+const STATIC_GALLERY=[{src:'/images/campus8.png',title:'Main Building',category:'Campus'},{src:'/images/campus2.webp',title:'College Entrance',category:'Campus'},{src:'/images/campus1.webp',title:'Boys Senior Block',category:'Campus'},{src:'/images/campus6.webp',title:'College Hall',category:'Events'},{src:'/images/campus3.webp',title:'Campus Garden',category:'Campus'},{src:'/images/campus4.webp',title:'Classrooms Block',category:'Campus'},{src:'/images/campus5.webp',title:'Activity Block',category:'Campus'},{src:'/images/campus7.webp',title:'Inauguration Stone',category:'Campus'}];
+async function loadGallery(category=''){
+  try{
+    const res=await fetch(`${API}/api/gallery?limit=12${category?'&category='+category:''}`);
+    const json=await res.json();
+    const grid=document.getElementById('gal-grid');grid.innerHTML='';
+    const items=json.data&&json.data.length>0?json.data.map(i=>({src:i.imageUrl,title:i.title})):STATIC_GALLERY.filter(i=>!category||i.category===category);
+    if(!items.length){grid.innerHTML='<p style="color:var(--gr);grid-column:1/-1;padding:1rem">No images.</p>';return;}
+    items.forEach(item=>{const el=document.createElement('div');el.className='git reveal';el.innerHTML=`<img src="${item.src}" alt="${item.title}" loading="lazy"><div class="git-overlay"><div class="git-title">${item.title}</div></div>`;grid.appendChild(el);revealObs.observe(el);});
+  }catch{document.getElementById('gal-grid').innerHTML='<p>Failed.</p>';}
+}
+function filterGallery(cat,btn){document.querySelectorAll('.gfb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');loadGallery(cat);}
+
+async function submitContact(e){
+  e.preventDefault();
+  const btn=document.getElementById('ct-btn');btn.textContent='Sending...';btn.disabled=true;
+  try{
+    const res=await fetch(`${API}/api/contact`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('ct-name').value,email:document.getElementById('ct-email').value,phone:document.getElementById('ct-phone').value,subject:document.getElementById('ct-subject').value,message:document.getElementById('ct-message').value})});
+    const json=await res.json();
+    if(json.success){document.getElementById('ct-success').style.display='block';document.getElementById('contact-form').reset();showToast('Message sent!','success');}
+    else showToast(json.message||'Failed.','error');
+  }catch{showToast('Network error.','error');}
+  finally{btn.textContent='Send Message ✉️';btn.disabled=false;}
+}
+
+async function loadSiteSettings(){
+  try{
+    const res=await fetch(`${API}/api/settings`);
+    const json=await res.json();
+    if(!json.success)return;
+    const s=json.data;
+    const set=(id,val)=>{const el=document.getElementById(id);if(el&&val!==undefined&&val!=='')el.textContent=val;};
+
+    // Notice Banner
+    const banner=document.getElementById('notice-banner');
+    if(s.noticeActive&&s.noticeText){
+      const c={info:{bg:'#1a56db',color:'#fff'},warning:{bg:'#e3731d',color:'#fff'},success:{bg:'#0e9f6e',color:'#fff'}};
+      const st=c[s.noticeType]||c.info;
+      banner.style.cssText=`display:block;background:${st.bg};color:${st.color};padding:.7rem 1.5rem;text-align:center;font-size:.84rem;font-weight:700;z-index:200;word-break:break-word;overflow-wrap:anywhere;white-space:normal;width:100%;box-sizing:border-box`;
+      banner.textContent=s.noticeText;
+    }
+
+    // Ticker
+    if(s.tickerEnabled&&s.tickerText){
+      const wrap=document.getElementById('ticker-wrap');wrap.style.display='flex';
+      const items=s.tickerText.split('|').filter(Boolean);
+      const track=document.getElementById('ticker-track');
+      track.innerHTML=[...items,...items].map(t=>`<span class="ticker-item">📌 ${t.trim()}</span>`).join('');
+    }
+
+    // Hero
+    set('hero-tagline',s.heroTagline);
+    const htitle=document.getElementById('hero-title');if(htitle&&s.heroTitle)htitle.innerHTML=s.heroTitle;
+    set('hero-subtitle',s.heroSubtitle);set('hero-motto',s.heroMotto);
+
+    // Stats
+    set('stat-students',s.statStudents);set('stat-faculty',s.statFaculty);
+    set('stat-years',s.statYears);set('stat-passrate',s.statPassRate);set('stat-programs',s.statPrograms);
+
+    // Admissions btn
+    const admBtn=document.getElementById('admissions-btn');
+    if(admBtn)admBtn.textContent=s.admissionsOpen?'📝 '+s.admissionsText:'🎓 Explore School';
+
+    // About
+    set('about-para1',s.aboutPara1);set('about-para2',s.aboutPara2);
+    set('about-mission',s.aboutMission);set('about-vision',s.aboutVision);
+    set('about-academics',s.aboutAcademics);set('about-cocurr',s.aboutCoCurr);
+
+    // Contact
+    const cp=document.getElementById('contact-phones');
+    if(cp)cp.innerHTML=`<a href="tel:${(s.contactPhone1||'').replace(/[^+\d]/g,'')}">${s.contactPhone1||''}</a>${s.contactPhone2?'<br><a href="tel:'+s.contactPhone2.replace(/[^+\d]/g,'')+'">'+s.contactPhone2+'</a>':''}`;
+    const ce=document.getElementById('contact-emails');
+    if(ce)ce.innerHTML=`<a href="mailto:${s.contactEmail1||''}">${s.contactEmail1||''}</a>${s.contactEmail2?'<br><a href="mailto:'+s.contactEmail2+'">'+s.contactEmail2+'</a>':''}`;
+    set('contact-address',s.contactAddress);set('contact-hours',s.contactHours);
+
+    // Topbar & Footer
+    const tbp=document.getElementById('tb-phone');if(tbp&&s.contactPhone1){tbp.textContent=s.contactPhone1;tbp.href='tel:'+s.contactPhone1.replace(/[^+\d]/g,'');}
+    const tbe=document.getElementById('tb-email');if(tbe&&s.contactEmail1){tbe.textContent=s.contactEmail1;tbe.href='mailto:'+s.contactEmail1;}
+    const fp=document.getElementById('footer-phone');if(fp&&s.contactPhone1){fp.textContent='📞 '+s.contactPhone1;fp.href='tel:'+s.contactPhone1.replace(/[^+\d]/g,'');}
+    const fe=document.getElementById('footer-email');if(fe&&s.contactEmail1){fe.textContent='✉️ '+s.contactEmail1;fe.href='mailto:'+s.contactEmail1;}
+
+    // Principal
+    if(s.principalEnabled!==false){
+      set('principal-name',s.principalName);set('principal-desg',s.principalDesignation);
+      set('principal-msg',s.principalMessage);
+      set('principal-sig-name',(s.principalName||'')+(s.principalDesignation?' — '+s.principalDesignation+', MMPC':''));
+      if(s.principalPhoto){const wrap=document.getElementById('principal-img-wrap');if(wrap)wrap.innerHTML=`<img src="${s.principalPhoto}" alt="${s.principalName||'Principal'}" style="width:100%;height:100%;object-fit:cover">`;}
+      // Secretary
+      set('secretary-name', s.secretaryName);
+      set('secretary-desg', s.secretaryDesignation);
+      set('secretary-msg', s.secretaryMessage);
+      set('secretary-sig-name', (s.secretaryName||'') + ' — ' + (s.secretaryDesignation||''));
+      if(s.secretaryPhoto){const wrap=document.getElementById('secretary-img-wrap');if(wrap)wrap.innerHTML=`<img src="${s.secretaryPhoto}" alt="${s.secretaryName||'Secretary'}" style="width:100%;height:100%;object-fit:cover">`;}
+      const secSection=document.getElementById('secretary-section');
+      if(secSection) secSection.style.display = s.secretaryEnabled===false ? 'none' : '';
+    }else{const sec=document.getElementById('principal');if(sec)sec.style.display='none';}
+
+    // Why Choose Us
+    if(s.whyEnabled!==false){
+      const wg=document.getElementById('why-grid');if(wg){wg.innerHTML='';for(let i=1;i<=6;i++){const ic=s[`why${i}Icon`],title=s[`why${i}Title`],text=s[`why${i}Text`];if(title){const el=document.createElement('div');el.className='why-card reveal';el.innerHTML=`<span class="why-ic">${ic||'⭐'}</span><h3>${title}</h3><p>${text||''}</p>`;wg.appendChild(el);revealObs.observe(el);}}}
+    }else{const ws=document.getElementById('why');if(ws)ws.style.display='none';}
+
+    // Achievements
+    if(s.achievementsEnabled!==false){
+      const ag=document.getElementById('ach-grid');if(ag){const achs=[s.ach1,s.ach2,s.ach3,s.ach4].filter(Boolean);if(achs.length){ag.innerHTML=achs.map(a=>`<div class="ach-item reveal"><span>${a}</span></div>`).join('');ag.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));}}
+    }else{const as=document.getElementById('achievements');if(as)as.style.display='none';}
+
+    // Toppers section
+    if(s.toppersEnabled===false){const ts=document.getElementById('toppers');if(ts)ts.style.display='none';}
+
+    // WhatsApp
+    const waBtn=document.getElementById('whatsapp-btn');
+    const waFBtn=document.getElementById('wa-footer-btn');
+    const waC=document.getElementById('wa-contact-block');
+    if(s.whatsappEnabled&&s.whatsappNumber){
+      const waNum=s.whatsappNumber.replace(/[^+\d]/g,'');
+      const waMsg=encodeURIComponent(s.whatsappMessage||'Assalamu Alaikum!');
+      const waUrl=`https://wa.me/${waNum}?text=${waMsg}`;
+      if(waBtn){waBtn.style.display='flex';waBtn.href=waUrl;}
+      if(waFBtn){waFBtn.style.display='flex';waFBtn.href=waUrl;waFBtn.target='_blank';}
+      if(waC)waC.innerHTML=`<a href="${waUrl}" target="_blank" style="color:#25d366;font-weight:800">${s.whatsappNumber} — Chat on WhatsApp 💬</a>`;
+    }
+  }catch(err){/* use HTML defaults */}
+}
+
+loadSiteSettings();loadNews();loadEvents();loadToppers();loadFaculty();loadGallery();
+</script>
+</body>
+</html>

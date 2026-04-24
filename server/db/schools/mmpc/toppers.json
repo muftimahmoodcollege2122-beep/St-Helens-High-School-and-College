@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "mny75hjt3ryyf0",
+    "name": "Ahmed Raza Khan",
+    "class": "10 (Matric)",
+    "exam": "Annual 2025",
+    "year": "2025",
+    "percentage": "91.4%",
+    "position": "1st Position",
+    "subject": "Science Group",
+    "rank": 1,
+    "createdAt": "2026-04-14T05:44:27.162Z"
+  },
+  {
+    "_id": "mny75hjuvbpdut",
+    "name": "Fatima Noor",
+    "class": "10 (Matric)",
+    "exam": "Annual 2025",
+    "year": "2025",
+    "percentage": "89.2%",
+    "position": "2nd Position",
+    "subject": "Science Group",
+    "rank": 2,
+    "createdAt": "2026-04-14T05:44:27.162Z"
+  },
+  {
+    "_id": "mny75hjups97y5",
+    "name": "Sara Bibi",
+    "class": "10 (Matric)",
+    "exam": "Annual 2025",
+    "year": "2025",
+    "percentage": "87.6%",
+    "position": "3rd Position",
+    "subject": "Arts Group",
+    "rank": 3,
+    "createdAt": "2026-04-14T05:44:27.162Z"
+  },
+  {
+    "_id": "mny75hjupzn7f6",
+    "name": "Usman Tariq",
+    "class": "9",
+    "exam": "Annual 2025",
+    "year": "2025",
+    "percentage": "85.0%",
+    "position": "1st Position",
+    "subject": "Science Group",
+    "rank": 4,
+    "createdAt": "2026-04-14T05:44:27.162Z"
+  }
+]

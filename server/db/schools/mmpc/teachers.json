@@ -1,0 +1,53 @@
+[
+  {
+    "_id": "mny75hjefrid5p",
+    "name": "Mr. Muhammad Arif",
+    "subject": "Mathematics",
+    "qualification": "MSc Mathematics",
+    "designation": "Senior Teacher",
+    "experience": "15 years",
+    "status": "Active",
+    "createdAt": "2026-04-14T05:44:27.146Z"
+  },
+  {
+    "_id": "mny75hje86wa1m",
+    "name": "Ms. Nadia Hussain",
+    "subject": "English",
+    "qualification": "MA English",
+    "designation": "Teacher",
+    "experience": "8 years",
+    "status": "Active",
+    "createdAt": "2026-04-14T05:44:27.146Z"
+  },
+  {
+    "_id": "mny75hjes4xdxc",
+    "name": "Mr. Tariq Mehmood",
+    "subject": "Physics",
+    "qualification": "MSc Physics",
+    "designation": "Senior Teacher",
+    "experience": "12 years",
+    "status": "Active",
+    "createdAt": "2026-04-14T05:44:27.146Z"
+  },
+  {
+    "_id": "mny75hjebc2g0f",
+    "name": "Ms. Amna Riaz",
+    "subject": "Pakistan Studies",
+    "qualification": "MA History",
+    "designation": "Teacher",
+    "experience": "9 years",
+    "status": "Active",
+    "createdAt": "2026-04-14T05:44:27.147Z"
+  },
+  {
+    "_id": "mny7wvgbydcchh",
+    "name": "Hassan Khan",
+    "subject": "Bioliogy",
+    "qualification": "M.Sc Political science ",
+    "designation": "Senior Teacher",
+    "experience": "11+",
+    "phone": "03_XXXXXXXXX",
+    "bio": "",
+    "createdAt": "2026-04-14T06:05:44.891Z"
+  }
+]

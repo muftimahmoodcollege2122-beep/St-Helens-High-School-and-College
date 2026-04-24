@@ -1,0 +1,11 @@
+[
+  {
+    "_id": "mny75hj6sdxfxq",
+    "username": "admin",
+    "password": "$2a$12$y1AAyZyk6N/rAI4AfgmWreQQhLidRfWFmeoX1H98X19.atL/ZsKCi",
+    "name": "Administrator",
+    "role": "admin",
+    "createdAt": "2026-04-14T05:44:27.138Z",
+    "lastLogin": "2026-04-14T05:45:16.610Z"
+  }
+]

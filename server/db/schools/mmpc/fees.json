@@ -1,0 +1,13 @@
+[
+  {
+    "_id": "mny8l014qfyrt4",
+    "student": "mny7yj2z5snfvz",
+    "month": "April",
+    "amount": 4000,
+    "dueDate": "2026-04-02",
+    "status": "Unpaid",
+    "paidAmount": 0,
+    "note": "",
+    "createdAt": "2026-04-14T06:24:30.568Z"
+  }
+]

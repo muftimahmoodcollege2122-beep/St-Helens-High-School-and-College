@@ -3380,7 +3380,7 @@ function showAdmissionDetail(idx) {
       ${row('Documents Submitted', a.documents)}
     </table>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-      <button class="btn btn-gn" onclick="updateAdmissionStatus('${a._id}','Approved');closeModal('modal-admission-detail');loadAdmissions()">✅ Approve</button>
+      <button class="btn btn-gn" onclick="updateAdmissionStatus('${a._id}','Approved').then(()=>{closeModal('modal-admission-detail');loadAdmissions();if(typeof loadStudents==='function')loadStudents();})">✅ Approve</button>
       <button class="btn btn-rd" onclick="updateAdmissionStatus('${a._id}','Rejected');closeModal('modal-admission-detail');loadAdmissions()">❌ Reject</button>
       <button class="btn" style="background:#805ad5;color:#fff" onclick="printAdmission(${idx})">🖨️ Print</button>
       <button class="btn" style="background:#6b7280;color:#fff" onclick="closeModal('modal-admission-detail')">Close</button>
@@ -3390,12 +3390,74 @@ function showAdmissionDetail(idx) {
 
 async function updateAdmissionStatus(id, status) {
   const token = localStorage.getItem('mmpc_token');
+
+  // Find the admission record
+  const admission = (window._admissions || []).find(a => a._id === id);
+
+  // If approving — auto-add to students module
+  if (status === 'Approved' && admission) {
+    const alreadyApproved = admission.status === 'Approved';
+    if (!alreadyApproved) {
+      const year = new Date().getFullYear();
+      // Generate a roll number: YYYY-XXX based on timestamp
+      const rollNo = year + '-' + String(Date.now()).slice(-4);
+
+      const confirmed = confirm(
+        `✅ Approve "${admission.studentName}"?\n\n` +
+        `This will also ADD them to the Students module with:\n` +
+        `• Roll No: ${rollNo}\n` +
+        `• Class: ${admission.applyingClass}  Section: ${admission.section || 'A'}\n` +
+        `• Father: ${admission.fatherName || '—'}\n\n` +
+        `Proceed?`
+      );
+      if (!confirmed) return;
+
+      // 1. Update admission status
+      await fetch('/api/admissions/' + id + '/status', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ status: 'Approved' })
+      });
+
+      // 2. Add to students
+      const studentRes = await fetch('/api/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({
+          rollNo,
+          name:       admission.studentName,
+          gender:     admission.gender     || '',
+          class:      admission.applyingClass,
+          section:    admission.section    || 'A',
+          fatherName: admission.fatherName || '',
+          phone:      admission.phone1     || '',
+          address:    admission.address    || '',
+          status:     'Active'
+        })
+      });
+      const studentJson = await studentRes.json();
+
+      if (studentJson.success) {
+        showToast(`✅ Approved & added to Students (Roll: ${rollNo})`, 'ok');
+      } else {
+        // Student add failed (e.g. duplicate roll) — still approved, just warn
+        showToast(`⚠️ Approved but student add failed: ${studentJson.message}`, 'err');
+      }
+
+      // Update local cache so UI reflects new status without refetch
+      if (admission) admission.status = 'Approved';
+      return;
+    }
+  }
+
+  // Normal status change (Pending / Rejected)
   await fetch('/api/admissions/' + id + '/status', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
     body: JSON.stringify({ status })
   });
-  showToast('Status updated');
+  if (admission) admission.status = status;
+  showToast('Status updated to ' + status);
 }
 
 async function deleteAdmission(id) {

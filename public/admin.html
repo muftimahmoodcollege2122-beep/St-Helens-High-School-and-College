@@ -275,6 +275,8 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span> Teachers</button>
       <button class="sb-link" onclick="showPage('teacher-accounts',this)"><span class="ic">🔑</span> Teacher Logins</button>
       <button class="sb-link" onclick="dlDB()"><span class="ic">💾</span> Backup Database</button>
+      <button class="sb-link" onclick="document.getElementById('restore-file-input').click()"><span class="ic">📤</span> Restore Backup</button>
+      <input type="file" id="restore-file-input" accept=".db" style="display:none" onchange="restoreDB(this)">
 
       <div class="sb-section">Communication</div>
       <button class="sb-link" onclick="showPage('messages',this)">
@@ -3326,8 +3328,8 @@ async function loadAdmissions() {
 function showAdmissionDetail(idx) {
   const a = window._admissions[idx];
   if (!a) return;
-  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f4f6fb;width:40%;border-bottom:1px solid #e2e8f0;color:#1a4a2e">${label}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${val}</td></tr>` : '';
-  const sec = (title) => `<tr><td colspan="2" style="background:#1a4a2e;color:#fff;padding:7px 10px;font-weight:700;font-size:.82rem">${title}</td></tr>`;
+  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f4f6fb;width:40%;border-bottom:1px solid #e2e8f0;color:#0d1f4a">${label}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${val}</td></tr>` : '';
+  const sec = (title) => `<tr><td colspan="2" style="background:#0d1f4a;color:#e8b84b;padding:7px 10px;font-weight:700;font-size:.82rem">${title}</td></tr>`;
   const statusBg = a.status==='Approved'?'#c6f6d5':a.status==='Rejected'?'#fed7d7':'#fefcbf';
   const statusClr = a.status==='Approved'?'#276749':a.status==='Rejected'?'#9b2c2c':'#744210';
   document.getElementById('admission-detail-body').innerHTML = `
@@ -3345,15 +3347,19 @@ function showAdmissionDetail(idx) {
       ${row('Date of Birth', a.dob)}
       ${row('B-Form Number', a.bForm)}
       ${row('Religion', a.religion)}
+      ${row('Nationality', a.nationality)}
       ${row('Applying Class', a.applyingClass)}
       ${row('Section', a.section)}
+      ${row('Academic Stream', a.stream)}
       ${sec('B — Father / Guardian')}
       ${row("Father's Name", a.fatherName)}
       ${row("Father's CNIC", a.fatherCnic)}
       ${row('Occupation', a.fatherOccupation)}
+      ${row('Monthly Income', a.income)}
       ${sec('C — Mother')}
       ${row("Mother's Name", a.motherName)}
       ${row("Mother's CNIC", a.motherCnic)}
+      ${row("Mother's Occupation", a.motherOccupation)}
       ${sec('D — Contact')}
       ${row('Address', a.address)}
       ${row('Phone 1', a.phone1)}
@@ -3363,20 +3369,23 @@ function showAdmissionDetail(idx) {
       ${row('School Name', a.prevSchool)}
       ${row('Last Class', a.prevClass)}
       ${row('Result / Grades', a.prevResult)}
+      ${row('Transfer Reason', a.transferReason)}
       ${sec('F — Emergency & Medical')}
       ${row('Emergency Contact', a.emergencyContact)}
       ${row('Emergency Phone', a.emergencyPhone)}
       ${row('Medical Info', a.medicalInfo)}
       ${sec('G — Transport & Documents')}
       ${row('Transport Required', a.transport)}
+      ${row('Pick-up Area', a.pickupArea)}
       ${row('Documents Submitted', a.documents)}
     </table>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap">
       <button class="btn btn-gn" onclick="updateAdmissionStatus('${a._id}','Approved');closeModal('modal-admission-detail');loadAdmissions()">✅ Approve</button>
       <button class="btn btn-rd" onclick="updateAdmissionStatus('${a._id}','Rejected');closeModal('modal-admission-detail');loadAdmissions()">❌ Reject</button>
+      <button class="btn" style="background:#805ad5;color:#fff" onclick="printAdmission(${idx})">🖨️ Print</button>
       <button class="btn" style="background:#6b7280;color:#fff" onclick="closeModal('modal-admission-detail')">Close</button>
     </div>`;
-  document.getElementById('modal-admission-detail').classList.add('active');
+  document.getElementById('modal-admission-detail').classList.add('open');
 }
 
 async function updateAdmissionStatus(id, status) {
@@ -3416,6 +3425,67 @@ function dlDB(){
     document.body.removeChild(a);
     showToast('Backup downloaded ✅');
   }).catch(e=>showToast('Backup failed: '+e.message,'err'));
+}
+async function restoreDB(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!file.name.endsWith('.db')) { showToast('Please select a valid .db backup file', 'err'); return; }
+  if (!confirm(`⚠️ Restore database from "${file.name}"?\n\nThis will REPLACE all current data with the backup. This cannot be undone.\n\nProceed?`)) { input.value = ''; return; }
+  const token = localStorage.getItem('mmpc_token');
+  const formData = new FormData();
+  formData.append('backup', file);
+  showToast('Uploading backup...');
+  try {
+    const res = await fetch('/api/auth/restore-db', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✅ Database restored successfully! Reloading...');
+      setTimeout(() => location.reload(), 1800);
+    } else {
+      showToast('Restore failed: ' + (data.message || 'Unknown error'), 'err');
+    }
+  } catch(e) {
+    showToast('Restore failed: ' + e.message, 'err');
+  }
+  input.value = '';
+}
+
+function printAdmission(idx) {
+  const a = window._admissions[idx];
+  if (!a) return;
+  const row = (l, v) => v ? `<tr><td style="padding:5px 8px;font-weight:600;font-size:.8rem;background:#f4f6fb;width:38%;border:1px solid #e2e8f0;color:#0d1f4a">${l}</td><td style="padding:5px 8px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
+  const sec = t => `<tr><td colspan="2" style="background:#0d1f4a;color:#e8b84b;padding:6px 10px;font-weight:700;font-size:.8rem">${t}</td></tr>`;
+  const html = `<html><head><title>Admission — ${a.studentName}</title>
+  <style>body{font-family:Arial,sans-serif;padding:20px;font-size:13px}table{width:100%;border-collapse:collapse;margin-bottom:12px}.sig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:2rem}.sig-box{text-align:center}.sig-line{border-top:1px solid #333;margin-top:40px;padding-top:6px;font-size:.72rem;color:#666}@media print{button{display:none}}</style></head>
+  <body>
+    <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0d1f4a;padding-bottom:12px;margin-bottom:16px">
+      <div><div style="font-size:1.1rem;font-weight:900;color:#0d1f4a">Mufti Mahmood Public School & College</div>
+      <div style="font-size:.75rem;color:#666">Kacheri Road, D.I. Khan &nbsp;|&nbsp; Tel: +92-966-123456</div></div>
+      <div style="margin-left:auto;background:#0d1f4a;color:#e8b84b;padding:5px 14px;border-radius:4px;font-weight:700;font-size:.82rem">ADMISSION FORM 2026-27</div>
+    </div>
+    <table>
+      ${sec('A — Student Information')}${row('Full Name',a.studentName)}${row('Gender',a.gender)}${row('Date of Birth',a.dob)}${row('B-Form',a.bForm)}${row('Religion',a.religion)}${row('Nationality',a.nationality)}${row('Applying Class',a.applyingClass)}${row('Section',a.section)}${row('Stream',a.stream)}
+      ${sec('B — Father / Guardian')}${row("Father's Name",a.fatherName)}${row("Father's CNIC",a.fatherCnic)}${row('Occupation',a.fatherOccupation)}${row('Income',a.income)}
+      ${sec('C — Mother')}${row("Mother's Name",a.motherName)}${row("Mother's CNIC",a.motherCnic)}${row("Mother's Occupation",a.motherOccupation)}
+      ${sec('D — Contact')}${row('Address',a.address)}${row('Phone 1',a.phone1)}${row('WhatsApp',a.phone2)}${row('Email',a.email)}
+      ${sec('E — Previous School')}${row('School Name',a.prevSchool)}${row('Last Class',a.prevClass)}${row('Result',a.prevResult)}${row('Transfer Reason',a.transferReason)}
+      ${sec('F — Emergency & Medical')}${row('Emergency Contact',a.emergencyContact)}${row('Emergency Phone',a.emergencyPhone)}${row('Medical Info',a.medicalInfo)}
+      ${sec('G — Transport & Documents')}${row('Transport',a.transport)}${row('Pick-up Area',a.pickupArea)}${row('Documents',a.documents)}
+    </table>
+    <p style="font-size:.75rem;color:#666">Status: <strong>${a.status||'Pending'}</strong> &nbsp;|&nbsp; Applied: ${new Date(a.createdAt).toLocaleDateString('en-PK')} &nbsp;|&nbsp; ID: ${a._id}</p>
+    <div class="sig">
+      <div class="sig-box"><div class="sig-line">Parent / Guardian Signature</div></div>
+      <div class="sig-box"><div class="sig-line">Student Signature</div></div>
+      <div class="sig-box"><div class="sig-line">Principal Signature & Stamp</div></div>
+    </div>
+    <button onclick="window.print()" style="margin-top:1rem;padding:8px 20px;background:#0d1f4a;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:.85rem">🖨️ Print</button>
+  </body></html>`;
+  const w = window.open('', '_blank', 'width=860,height=700');
+  w.document.write(html); w.document.close();
 }
 </script>
 

@@ -59,4 +59,57 @@ router.get('/backup-db', protect, (req, res) => {
   res.download(dbPath, 'mmpc_backup_' + new Date().toISOString().slice(0,10) + '.db');
 });
 
+router.post('/restore-db', protect, (req, res) => {
+  const { DB_FILE } = require('../db');
+  const dbPath = process.env.DB_PATH || DB_FILE;
+  const fs   = require('fs');
+  const path = require('path');
+  const os   = require('os');
+  const multer = require('multer');
+
+  // Only superadmin can restore
+  if (req.user.role !== 'superadmin' && req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Only admins can restore the database.' });
+  }
+
+  const tmpDir = os.tmpdir();
+  const storage = multer.diskStorage({
+    destination: (r, f, cb) => cb(null, tmpDir),
+    filename:    (r, f, cb) => cb(null, 'mmpc_restore_' + Date.now() + '.db')
+  });
+  const upload = multer({
+    storage,
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
+    fileFilter: (r, file, cb) => {
+      if (!file.originalname.endsWith('.db')) return cb(new Error('Only .db files allowed'));
+      cb(null, true);
+    }
+  }).single('backup');
+
+  upload(req, res, (err) => {
+    if (err) return res.status(400).json({ success: false, message: err.message });
+    if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded.' });
+
+    try {
+      // Make a safety backup of current DB first
+      const safetyPath = dbPath + '.pre_restore_' + Date.now();
+      if (fs.existsSync(dbPath)) fs.copyFileSync(dbPath, safetyPath);
+
+      // Copy uploaded file over the current DB
+      fs.copyFileSync(req.file.path, dbPath);
+      fs.unlinkSync(req.file.path);
+
+      // Force better-sqlite3 to reconnect on next request
+      // by clearing the cached require
+      Object.keys(require.cache).forEach(k => {
+        if (k.includes('/db/index') || k.includes('/db\\index')) delete require.cache[k];
+      });
+
+      res.json({ success: true, message: 'Database restored successfully. Safety backup saved on server.' });
+    } catch (e) {
+      res.status(500).json({ success: false, message: 'Restore failed: ' + e.message });
+    }
+  });
+});
+
 module.exports = router;

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Alumni — Mufti Mahmood Public School & College</title>
+<meta name="description" content="MMPC Alumni Network — profiles, success stories and alumni registration.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0d1f4a;--nv2:#1a3270;--nv3:#2a4494;--gd:#c8952a;--gd2:#e8b84b;--wh:#fff;--of:#f4f6fb;--gr:#6b7280;--gn:#38a169;--rd:#e53e3e;--bd:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--of);color:#1a1a2e;overflow-x:hidden}
+.topbar{background:var(--nv);color:rgba(255,255,255,.7);font-size:.72rem;padding:5px 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem}
+.topbar a{color:var(--gd2);text-decoration:none;margin-left:.8rem}
+nav{position:sticky;top:0;z-index:999;background:var(--nv2);border-bottom:3px solid var(--gd);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.navi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);overflow:hidden;flex-shrink:0}
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.brand-txt{color:var(--wh);font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2}
+.brand-txt small{display:block;font-family:'Nunito',sans-serif;font-size:.6rem;color:var(--gd2);letter-spacing:.07em;font-weight:600}
+.nav-ul{display:flex;list-style:none}
+.nav-ul a{color:rgba(255,255,255,.85);text-decoration:none;font-size:.73rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:8px 10px;border-radius:4px;transition:.2s;display:block}
+.nav-ul a:hover,.nav-ul a.on{background:rgba(200,149,42,.18);color:var(--gd2)}
+.burger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.burger span{display:block;width:24px;height:2px;background:var(--wh);border-radius:2px}
+.mob-menu{display:none;position:fixed;inset:0;background:var(--nv);z-index:9999;padding:1.5rem;overflow-y:auto;flex-direction:column}
+.mob-menu.open{display:flex}
+.mob-close{align-self:flex-end;background:none;border:1px solid rgba(255,255,255,.2);color:var(--wh);width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;margin-bottom:1.5rem}
+.mob-menu a{color:var(--wh);text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:.95rem;font-weight:700;display:block}
+/* Hero */
+.page-hero{background:linear-gradient(160deg,var(--nv) 0%,var(--nv2) 60%,#1e3d8f 100%);padding:72px 1.5rem 60px;text-align:center;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 80px)}
+.page-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,var(--of),transparent)}
+.hero-inner{position:relative;z-index:2}
+.stag{display:inline-block;background:rgba(200,149,42,.15);color:var(--gd2);font-size:.67rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:4px 14px;border-radius:2px;margin-bottom:.6rem;border:1px solid rgba(200,149,42,.3)}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.9rem);color:var(--wh);font-weight:900;margin-bottom:.5rem}
+.page-hero h1 em{color:var(--gd2);font-style:normal}
+.page-hero p{color:rgba(255,255,255,.6);font-size:.92rem;max-width:560px;margin:0 auto 1.4rem}
+.hero-tabs{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
+.hero-tab{padding:9px 22px;border-radius:4px;border:2px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);font-size:.78rem;font-weight:800;cursor:pointer;transition:.2s;background:none;font-family:'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.06em}
+.hero-tab.on,.hero-tab:hover{background:var(--gd);color:var(--nv);border-color:var(--gd)}
+/* Breadcrumb */
+.breadcrumb{background:var(--wh);border-bottom:1px solid var(--bd);padding:.6rem 1.5rem}
+.breadcrumb-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--gr)}
+.breadcrumb a{color:var(--nv2);text-decoration:none;font-weight:700}
+/* Sections */
+.con{max-width:1200px;margin:0 auto}
+.sec{padding:52px 1.5rem}
+.sec-alt{background:var(--wh)}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:900;color:var(--nv);margin-bottom:.4rem}
+.sec-title em{color:var(--gd)}
+.sec-sub{color:var(--gr);font-size:.88rem;margin-bottom:2rem}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.6rem;flex-wrap:wrap;gap:.8rem}
+/* Stats banner */
+.stats-banner{background:var(--nv);padding:28px 1.5rem}
+.stats-row{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center}
+.stat-item .n{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--gd2)}
+.stat-item .l{font-size:.72rem;font-weight:800;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem}
+/* Alumni cards grid */
+.alumni-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem}
+.ac{background:var(--wh);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.07);overflow:hidden;transition:.3s;cursor:default}
+.ac:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.14)}
+.ac-banner{height:72px;background:linear-gradient(135deg,var(--nv),var(--nv3));position:relative;overflow:hidden}
+.ac-banner::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:30px;background:var(--wh);clip-path:ellipse(55% 100% at 50% 100%)}
+.ac-avatar{width:68px;height:68px;border-radius:50%;border:3px solid var(--wh);object-fit:cover;position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);background:var(--of);font-size:1.8rem;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ac-body{padding:30px 1rem 1.1rem;text-align:center}
+.ac-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--nv);margin-bottom:.15rem}
+.ac-role{font-size:.75rem;color:var(--gr);margin-bottom:.5rem}
+.ac-batch{display:inline-block;background:rgba(200,149,42,.12);color:var(--gd);font-size:.65rem;font-weight:800;padding:2px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.06em;border:1px solid rgba(200,149,42,.25);margin-bottom:.7rem}
+.ac-field{font-size:.76rem;color:var(--nv2);font-weight:700;margin-bottom:.5rem}
+.ac-tags{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center}
+.tag{font-size:.62rem;background:var(--of);color:var(--gr);padding:2px 8px;border-radius:12px;font-weight:700;border:1px solid var(--bd)}
+/* Stories */
+.stories-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem}
+.story-card{background:var(--wh);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.07);overflow:hidden;transition:.3s}
+.story-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.13)}
+.story-img{height:190px;background:linear-gradient(135deg,var(--nv2),var(--nv3));overflow:hidden;position:relative}
+.story-img img{width:100%;height:100%;object-fit:cover;transition:.35s}
+.story-card:hover .story-img img{transform:scale(1.05)}
+.story-badge{position:absolute;top:.7rem;left:.7rem;background:var(--gd);color:var(--nv);font-size:.6rem;font-weight:800;padding:3px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.06em}
+.story-body{padding:1.2rem}
+.story-batch{font-size:.68rem;font-weight:800;color:var(--gr);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.story-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--nv);margin-bottom:.4rem;line-height:1.3}
+.story-excerpt{font-size:.8rem;color:var(--gr);line-height:1.65;margin-bottom:.9rem}
+.story-author{display:flex;align-items:center;gap:.6rem;padding-top:.8rem;border-top:1px solid var(--bd)}
+.story-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--nv),var(--nv3));display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.story-author-info .name{font-size:.8rem;font-weight:800;color:var(--nv)}
+.story-author-info .meta{font-size:.68rem;color:var(--gr)}
+/* Quote blocks */
+.quotes-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:1rem}
+.quote-card{background:var(--nv);border-radius:10px;padding:1.4rem;position:relative;overflow:hidden}
+.quote-card::before{content:'"';position:absolute;top:-.2rem;right:.8rem;font-size:5rem;color:var(--gd2);opacity:.15;font-family:'Playfair Display',serif;line-height:1}
+.quote-text{color:rgba(255,255,255,.85);font-size:.83rem;line-height:1.7;margin-bottom:1rem;font-style:italic;position:relative;z-index:1}
+.quote-author{font-size:.73rem;font-weight:800;color:var(--gd2)}
+.quote-meta{font-size:.67rem;color:rgba(255,255,255,.4)}
+/* Register form */
+.reg-layout{display:grid;grid-template-columns:1fr 340px;gap:2rem;max-width:1100px;margin:0 auto}
+.reg-form-wrap{background:var(--wh);border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.08);overflow:hidden}
+.form-sec-head{background:var(--nv);color:var(--wh);padding:.75rem 1.4rem;font-weight:800;font-size:.88rem;display:flex;align-items:center;gap:.6rem}
+.form-sec-body{padding:1.4rem}
+.field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+label{display:block;font-size:.75rem;font-weight:800;color:var(--nv);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em}
+input,select,textarea{width:100%;padding:.6rem .85rem;border:2px solid var(--bd);border-radius:6px;font-family:'Nunito',sans-serif;font-size:.85rem;color:#1a1a2e;background:var(--wh);transition:.2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--nv);box-shadow:0 0 0 3px rgba(13,31,74,.07)}
+input.err,select.err{border-color:var(--rd)}
+textarea{resize:vertical;min-height:80px}
+.req{color:var(--rd)}
+.hint{font-size:.68rem;color:var(--gr);margin-top:.2rem}
+.divider{height:1px;background:var(--bd);margin:.2rem 0 1rem}
+.form-actions{padding:1.2rem 1.4rem;background:var(--of);border-top:1px solid var(--bd)}
+.alert{padding:.9rem 1.2rem;border-radius:8px;font-size:.84rem;font-weight:700;margin:1rem 1.4rem;display:none}
+.alert.success{background:#c6f6d5;color:#276749;border:1px solid #9ae6b4}
+.alert.error{background:#fed7d7;color:#822727;border:1px solid #fc8181}
+/* Sidebar cards */
+.reg-sidebar{display:flex;flex-direction:column;gap:1.2rem}
+.s-card{background:var(--wh);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.07);overflow:hidden}
+.s-head{background:var(--nv);color:var(--wh);padding:.7rem 1.1rem;font-weight:800;font-size:.82rem;display:flex;align-items:center;gap:.5rem}
+.s-body{padding:1.1rem;font-size:.82rem;color:var(--gr);line-height:1.7}
+.benefit-list{list-style:none}
+.benefit-list li{padding:.35rem 0;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--gr)}
+.benefit-list li:last-child{border-bottom:none}
+.benefit-list li::before{content:'✓';color:var(--gn);font-weight:900;flex-shrink:0}
+/* Btn */
+.btn{padding:11px 28px;border-radius:4px;font-weight:800;font-size:.84rem;letter-spacing:.04em;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;transition:.2s;font-family:'Nunito',sans-serif}
+.bg{background:var(--gd);color:var(--nv);box-shadow:0 4px 14px rgba(200,149,42,.35)}
+.bg:hover{background:var(--gd2);transform:translateY(-2px)}
+.bg:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.bn{background:var(--nv);color:var(--wh)}.bn:hover{background:var(--nv2);transform:translateY(-2px)}
+.bo{border:2px solid var(--nv);color:var(--nv);background:none}.bo:hover{background:var(--nv);color:var(--wh)}
+/* Filter */
+.filter-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.ftab{padding:6px 15px;border-radius:20px;border:2px solid var(--bd);background:var(--wh);color:var(--gr);font-size:.74rem;font-weight:700;cursor:pointer;transition:.2s;font-family:'Nunito',sans-serif}
+.ftab.on,.ftab:hover{background:var(--nv);color:var(--wh);border-color:var(--nv)}
+/* Search */
+.search-box{position:relative;flex:1;max-width:300px}
+.search-box input{padding:.5rem .85rem .5rem 2.2rem;border-radius:20px}
+.search-box::before{content:'🔍';position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none}
+/* Footer */
+footer{background:var(--nv);color:rgba(255,255,255,.7);padding:2.5rem 1.5rem 1.2rem}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.footer-brand .fl{font-family:'Playfair Display',serif;font-size:1rem;color:var(--wh);font-weight:700;margin-bottom:.4rem;display:block}
+.footer-brand p{font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.5)}
+footer h4{color:var(--gd2);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;margin-bottom:.8rem}
+footer ul{list-style:none}
+footer ul li{margin-bottom:.4rem}
+footer ul li a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.78rem;transition:.2s}
+footer ul li a:hover{color:var(--gd2)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;font-size:.73rem;color:rgba(255,255,255,.35)}
+/* Section toggle */
+.pg-section{display:none}.pg-section.active{display:block}
+/* Reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:960px){.reg-layout{grid-template-columns:1fr}.quotes-row{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}.footer-grid>div:first-child{grid-column:1/-1}}
+@media(max-width:720px){.nav-ul{display:none}.burger{display:flex}.alumni-grid{grid-template-columns:repeat(2,1fr)}.stories-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.alumni-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>📍 Kacheri Road, D.I. Khan, KPK, Pakistan</span>
+  <span>📞 <a href="tel:+92966123456">+92-966-123456</a> ✉️ <a href="mailto:info@mmpc.edu.pk">info@mmpc.edu.pk</a>
+  <a href="/admin" style="margin-left:1.2rem;background:rgba(200,149,42,.2);padding:2px 8px;border-radius:3px">🔐 Admin</a></span>
+</div>
+
+<nav>
+  <div class="navi">
+    <a class="brand" href="/">
+      <div class="brand-logo"><img src="/images/logo.jpg" alt="MMPC"></div>
+      <div class="brand-txt">Mufti Mahmood Public School & College<small>D.I. Khan • Est. 2006 • Excellence in Education</small></div>
+    </a>
+    <ul class="nav-ul">
+      <li><a href="/">🏠 Home</a></li>
+      <li><a href="/gallery">🖼 Gallery</a></li>
+      <li><a href="/admission">📝 Admissions</a></li>
+      <li><a href="/alumni" class="on">🎓 Alumni</a></li>
+      <li><a href="/portal">🎓 Portal</a></li>
+      <li><a href="/parent">👨‍👩‍👦 Parents</a></li>
+      <li><a href="/#contact">📞 Contact</a></li>
+    </ul>
+    <button class="burger" onclick="document.getElementById('mob').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mob">
+  <button class="mob-close" onclick="document.getElementById('mob').classList.remove('open')">✕</button>
+  <a href="/">🏠 Home</a><a href="/gallery">🖼 Gallery</a><a href="/admission">📝 Admissions</a>
+  <a href="/alumni">🎓 Alumni</a><a href="/portal">🎓 Student Portal</a><a href="/parent">👨‍👩‍👦 Parent Portal</a>
+  <a href="/#contact">📞 Contact</a><a href="/admin">🔐 Admin Panel</a>
+</div>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="hero-inner">
+    <div class="stag">Est. 2006 • 18+ Years of Excellence</div>
+    <h1>MMPC <em>Alumni</em> Network</h1>
+    <p>Celebrating the achievements of our graduates — doctors, engineers, scholars and leaders shaping Pakistan</p>
+    <div class="hero-tabs">
+      <button class="hero-tab on" onclick="showSection('profiles',this)">👤 Alumni Profiles</button>
+      <button class="hero-tab" onclick="showSection('stories',this)">📖 Success Stories</button>
+      <button class="hero-tab" onclick="showSection('register',this)">✍️ Register as Alumni</button>
+    </div>
+  </div>
+</div>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="/">Home</a><span>›</span><span>Alumni Network</span>
+  </div>
+</div>
+
+<!-- Stats Banner -->
+<div class="stats-banner">
+  <div class="stats-row">
+    <div class="stat-item"><div class="n">2,400+</div><div class="l">Total Alumni</div></div>
+    <div class="stat-item"><div class="n">18</div><div class="l">Batches</div></div>
+    <div class="stat-item"><div class="n">120+</div><div class="l">Doctors & Engineers</div></div>
+    <div class="stat-item"><div class="n">8</div><div class="l">Countries Represented</div></div>
+  </div>
+</div>
+
+<!-- ===== PROFILES SECTION ===== -->
+<div class="pg-section active" id="sec-profiles">
+  <div class="sec" style="padding-bottom:0">
+    <div class="con">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Notable <em>Alumni</em></div>
+          <div class="sec-sub">Graduates making MMPC proud across Pakistan and beyond</div>
+        </div>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center">
+          <div class="search-box"><input id="search-input" placeholder="Search alumni..." oninput="filterAlumni()"></div>
+          <div class="filter-row" id="batch-filters">
+            <button class="ftab on" onclick="setBatch('',this)">All</button>
+            <button class="ftab" onclick="setBatch('2010',this)">Batch '10</button>
+            <button class="ftab" onclick="setBatch('2012',this)">Batch '12</button>
+            <button class="ftab" onclick="setBatch('2015',this)">Batch '15</button>
+            <button class="ftab" onclick="setBatch('2018',this)">Batch '18</button>
+            <button class="ftab" onclick="setBatch('2020',this)">Batch '20</button>
+            <button class="ftab" onclick="setBatch('2022',this)">Batch '22</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sec" style="padding-top:1.2rem">
+    <div class="con">
+      <div class="alumni-grid" id="alumni-grid"></div>
+      <div style="text-align:center;margin-top:2rem" id="load-more-wrap">
+        <button class="btn bo" id="load-more-btn" onclick="loadMoreAlumni()">Load More Alumni</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quotes -->
+  <div class="sec-alt">
+    <div class="sec" style="padding:40px 1.5rem">
+      <div class="con">
+        <div style="text-align:center;margin-bottom:1.6rem">
+          <div class="sec-title">What They <em>Say</em></div>
+          <div class="sec-sub">Words from our proud graduates</div>
+        </div>
+        <div class="quotes-row">
+          <div class="quote-card reveal">
+            <div class="quote-text">MMPC gave me the discipline and Islamic values that guide every decision I make today as a doctor. The teachers here were more than educators — they were mentors.</div>
+            <div class="quote-author">Dr. Asad Ullah Khan</div>
+            <div class="quote-meta">MBBS — Batch 2012 | KMU Peshawar</div>
+          </div>
+          <div class="quote-card reveal">
+            <div class="quote-text">From a small school in D.I. Khan to an engineering job in Islamabad — MMPC's science program laid every brick of my foundation. I owe it all to my teachers here.</div>
+            <div class="quote-author">Engr. Saira Naseem</div>
+            <div class="quote-meta">Civil Engineer — Batch 2015 | UET Lahore</div>
+          </div>
+          <div class="quote-card reveal">
+            <div class="quote-text">The culture of hard work and brotherhood at MMPC is unmatched. My batchmates are now spread across the world but we remain a family because of what this school built in us.</div>
+            <div class="quote-author">Hassan Farooq</div>
+            <div class="quote-meta">Software Engineer, Dubai — Batch 2018</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STORIES SECTION ===== -->
+<div class="pg-section" id="sec-stories">
+  <div class="sec">
+    <div class="con">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title"><em>Success</em> Stories</div>
+          <div class="sec-sub">Inspiring journeys from our MMPC alumni community</div>
+        </div>
+        <div class="filter-row">
+          <button class="ftab on" onclick="filterStories('',this)">All</button>
+          <button class="ftab" onclick="filterStories('Medical',this)">🏥 Medical</button>
+          <button class="ftab" onclick="filterStories('Engineering',this)">⚙️ Engineering</button>
+          <button class="ftab" onclick="filterStories('Business',this)">💼 Business</button>
+          <button class="ftab" onclick="filterStories('Education',this)">📚 Education</button>
+          <button class="ftab" onclick="filterStories('Technology',this)">💻 Technology</button>
+        </div>
+      </div>
+      <div class="stories-grid" id="stories-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REGISTER SECTION ===== -->
+<div class="pg-section" id="sec-register">
+  <div class="sec">
+    <div class="reg-layout" style="padding:0;max-width:1100px;margin:0 auto">
+      <div>
+        <div class="reg-form-wrap">
+          <div class="form-sec-head"><span>👤</span> Personal Information</div>
+          <div class="form-sec-body">
+            <div class="field-grid">
+              <div><label>Full Name <span class="req">*</span></label><input id="r-name" placeholder="Your full name" required oninput="rValidate()"></div>
+              <div><label>Gender <span class="req">*</span></label><select id="r-gender" required onchange="rValidate()"><option value="">Select</option><option>Male</option><option>Female</option></select></div>
+              <div><label>Date of Birth</label><input id="r-dob" type="date"></div>
+              <div><label>CNIC</label><input id="r-cnic" placeholder="12345-1234567-1"></div>
+            </div>
+          </div>
+          <div class="form-sec-head"><span>🎓</span> Academic Details</div>
+          <div class="form-sec-body">
+            <div class="field-grid">
+              <div><label>Graduation Year <span class="req">*</span></label><select id="r-year" required onchange="rValidate()"><option value="">Select Year</option></select></div>
+              <div><label>Program / Class</label><select id="r-prog"><option>FSc Pre-Medical</option><option>FSc Pre-Engineering</option><option>FA (Arts)</option><option>Matric Science</option><option>Matric Arts</option></select></div>
+              <div><label>Board Roll No.</label><input id="r-roll" placeholder="e.g. 123456"></div>
+              <div><label>Result / Grade</label><input id="r-result" placeholder="e.g. A1, 85%"></div>
+            </div>
+          </div>
+          <div class="form-sec-head"><span>💼</span> Current Status</div>
+          <div class="form-sec-body">
+            <div class="field-grid">
+              <div><label>Current Profession <span class="req">*</span></label><select id="r-prof" required onchange="rValidate()"><option value="">Select</option><option>Student</option><option>Doctor / Medical</option><option>Engineer</option><option>Teacher / Educator</option><option>Government Officer</option><option>Businessman</option><option>Software Engineer / IT</option><option>Lawyer</option><option>Armed Forces</option><option>Other</option></select></div>
+              <div><label>Employer / University</label><input id="r-employer" placeholder="Where you work/study"></div>
+              <div><label>City</label><input id="r-city" placeholder="Current city"></div>
+              <div><label>Country</label><input id="r-country" placeholder="Country" value="Pakistan"></div>
+            </div>
+            <div class="divider"></div>
+            <div><label>Brief Bio / Achievement</label><textarea id="r-bio" placeholder="Tell us about your journey after MMPC — achievements, experiences, how MMPC shaped you..."></textarea></div>
+          </div>
+          <div class="form-sec-head"><span>📞</span> Contact Information</div>
+          <div class="form-sec-body">
+            <div class="field-grid">
+              <div><label>Phone / WhatsApp <span class="req">*</span></label><input id="r-phone" type="tel" placeholder="+92-300-0000000" required oninput="rValidate()"></div>
+              <div><label>Email Address</label><input id="r-email" type="email" placeholder="you@example.com"></div>
+              <div><label>LinkedIn Profile</label><input id="r-linkedin" placeholder="linkedin.com/in/yourname"></div>
+              <div><label>Show in Public Directory?</label><select id="r-public"><option value="Yes">Yes — Show my profile</option><option value="No">No — Keep private</option></select></div>
+            </div>
+          </div>
+          <div class="alert success" id="r-success"></div>
+          <div class="alert error" id="r-error"></div>
+          <div class="form-actions">
+            <button class="btn bg" id="r-submit" onclick="submitRegistration()">✅ Register as Alumni</button>
+            <button class="btn bo" onclick="resetReg()">🔄 Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="reg-sidebar" style="margin-top:52px">
+        <div class="s-card">
+          <div class="s-head">🌟 Why Register?</div>
+          <div class="s-body">
+            <ul class="benefit-list">
+              <li>Get listed in the official MMPC Alumni Directory</li>
+              <li>Connect with batchmates & fellow graduates</li>
+              <li>Receive alumni reunion invitations</li>
+              <li>Career networking opportunities</li>
+              <li>Mentor current students</li>
+              <li>Stay updated with school news</li>
+              <li>Get an alumni certificate from MMPC</li>
+            </ul>
+          </div>
+        </div>
+        <div class="s-card">
+          <div class="s-head">📅 Next Reunion</div>
+          <div class="s-body">
+            <div style="background:linear-gradient(135deg,var(--nv),var(--nv3));color:#fff;border-radius:8px;padding:1rem;text-align:center;margin-bottom:.8rem">
+              <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--gd2)">Dec 25, 2026</div>
+              <div style="font-size:.72rem;opacity:.7;margin-top:.2rem;text-transform:uppercase;letter-spacing:.1em">Annual Alumni Gathering</div>
+            </div>
+            <p>Join us at the MMPC campus for our Annual Alumni Day — reconnect with old friends, meet current students, and celebrate MMPC's legacy.</p>
+          </div>
+        </div>
+        <div class="s-card">
+          <div class="s-head">📞 Alumni Coordinator</div>
+          <div class="s-body">
+            <div style="display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.7rem">
+              <span style="font-size:1.1rem">📞</span>
+              <div><a href="tel:+92966123456" style="color:var(--nv2);font-weight:700;text-decoration:none">+92-966-123456</a><div style="font-size:.72rem;color:var(--gr)">Mon–Sat 8AM–2PM</div></div>
+            </div>
+            <div style="display:flex;gap:.7rem;align-items:center">
+              <span>✉️</span><a href="mailto:alumni@mmpc.edu.pk" style="color:var(--nv2);font-weight:700;font-size:.82rem;text-decoration:none">alumni@mmpc.edu.pk</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="fl">Mufti Mahmood Public School & College</span>
+        <p>Quality education in D.I. Khan since 2006. Combining modern academics with Islamic values.</p>
+      </div>
+      <div>
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="/">🏠 Home</a></li><li><a href="/gallery">🖼 Gallery</a></li>
+          <li><a href="/admission">📝 Admissions</a></li><li><a href="/alumni">🎓 Alumni</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Portals</h4>
+        <ul>
+          <li><a href="/portal">🎓 Student Portal</a></li><li><a href="/parent">👨‍👩‍👦 Parent Portal</a></li>
+          <li><a href="/teacher">👨‍🏫 Teacher Panel</a></li><li><a href="/admin">🔐 Admin Panel</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Mufti Mahmood Public School & College. All rights reserved.</span>
+      <span>D.I. Khan, KPK, Pakistan</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const ALUMNI = [
+  {name:'Dr. Asad Ullah Khan',role:'Medical Officer, DHQ Hospital',batch:'2012',field:'MBBS — KMU Peshawar',emoji:'👨‍⚕️',tags:['Medicine','KPK']},
+  {name:'Engr. Saira Naseem',role:'Civil Engineer, NHA Pakistan',batch:'2015',field:'B.E Civil — UET Lahore',emoji:'👩‍🔬',tags:['Engineering','Lahore']},
+  {name:'Hassan Farooq',role:'Software Engineer, Dubai',batch:'2018',field:'BS CS — COMSATS',emoji:'👨‍💻',tags:['Technology','UAE']},
+  {name:'Dr. Fatima Siddiqui',role:'Gynaecologist, D.I. Khan',batch:'2010',field:'MBBS — Bolan Medical College',emoji:'👩‍⚕️',tags:['Medicine','DIKhan']},
+  {name:'Adnan Mahmood',role:'CSS Officer (BPS-17)',batch:'2012',field:'MA Political Science — QAU',emoji:'🏛️',tags:['Civil Service','Islamabad']},
+  {name:'Engr. Bilal Zafar',role:'Electrical Engineer, WAPDA',batch:'2015',field:'B.E Electrical — NUST',emoji:'⚡',tags:['Engineering','Islamabad']},
+  {name:'Prof. Raheela Khan',role:'Lecturer, GDC D.I. Khan',batch:'2010',field:'MA English — BZU Multan',emoji:'👩‍🏫',tags:['Education','DIKhan']},
+  {name:'Usman Tariq',role:'Business Owner, D.I. Khan',batch:'2018',field:'BBA — IMS Peshawar',emoji:'💼',tags:['Business','DIKhan']},
+  {name:'Dr. Imran Sheikh',role:'Dentist, Peshawar',batch:'2020',field:'BDS — Khyber College',emoji:'🦷',tags:['Medicine','Peshawar']},
+  {name:'Nadia Bibi',role:'Government Teacher',batch:'2022',field:'B.Ed — IUB',emoji:'📚',tags:['Education','KPK']},
+  {name:'Zubair Ahmed',role:'Army Officer (Captain)',batch:'2018',field:'PMA Kakul',emoji:'🎖️',tags:['Armed Forces','Pakistan']},
+  {name:'Sana Gul',role:'Pharmacist, Shifa Hospital',batch:'2020',field:'Pharm-D — UOP',emoji:'💊',tags:['Medicine','Peshawar']}
+];
+
+const STORIES = [
+  {category:'Medical',batch:'Batch 2012',title:'From D.I. Khan to DHQ: Dr. Asad\'s Journey in Rural Healthcare',excerpt:'Growing up in D.I. Khan, Dr. Asad Ullah Khan dreamed of serving the communities that raised him. Today, as a Medical Officer at DHQ Hospital, he has treated over 10,000 patients and runs a free clinic every Friday.',emoji:'👨‍⚕️',name:'Dr. Asad Ullah Khan',role:'MBBS — KMU Peshawar'},
+  {category:'Engineering',batch:'Batch 2015',title:'Building Bridges: How Saira Became the First Female Engineer from Her Mohallah',excerpt:'Saira Naseem faced resistance when she chose Engineering over the traditional path. With MMPC\'s science program as her foundation, she secured admission to UET Lahore and today designs road infrastructure across KPK.',emoji:'👩‍🔬',name:'Engr. Saira Naseem',role:'Civil Engineer — NHA Pakistan'},
+  {category:'Technology',batch:'Batch 2018',title:'Code, Culture, and Community: Hassan\'s Tech Career in Dubai',excerpt:'Hassan Farooq started coding in his school library in D.I. Khan. Six years later, he is a Software Engineer at a multinational company in Dubai, and still mentors students back at MMPC every summer.',emoji:'👨‍💻',name:'Hassan Farooq',role:'Software Engineer — Dubai'},
+  {category:'Business',batch:'Batch 2018',title:'From Student to Employer: Usman Tariq\'s Story of Local Entrepreneurship',excerpt:'Rather than migrating for work, Usman Tariq chose to build a business in D.I. Khan itself. His agricultural supplies company now employs 18 local people and serves farmers across South KPK.',emoji:'💼',name:'Usman Tariq',role:'CEO — Tariq Agricultural Supplies'},
+  {category:'Education',batch:'Batch 2010',title:'Prof. Raheela: Giving Back to the City That Educated Her',excerpt:'Prof. Raheela Khan turned down higher-paying opportunities in Karachi and Lahore to teach at Government Degree College D.I. Khan. She believes in building the city from within, one student at a time.',emoji:'👩‍🏫',name:'Prof. Raheela Khan',role:'Lecturer — GDC D.I. Khan'},
+  {category:'Medical',batch:'Batch 2020',title:'Young Dentist Dr. Imran: Bringing Modern Dentistry to D.I. Khan',excerpt:'At just 26, Dr. Imran Sheikh returned from Peshawar with his BDS degree and set up the first fully equipped dental clinic in the Cantt area of D.I. Khan, serving hundreds of patients monthly.',emoji:'🦷',name:'Dr. Imran Sheikh',role:'BDS — Khyber College of Dentistry'}
+];
+
+let alumniPage = 1, batchFilter = '', searchFilter = '', storyCat = '';
+const PER = 8;
+
+// ── Sections ──────────────────────────────────────────────────────────────────
+function showSection(id, btn) {
+  document.querySelectorAll('.pg-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.hero-tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('on');
+}
+
+// ── Alumni profiles ───────────────────────────────────────────────────────────
+function getFiltered() {
+  return ALUMNI.filter(a => {
+    const matchBatch = !batchFilter || a.batch === batchFilter;
+    const matchSearch = !searchFilter || a.name.toLowerCase().includes(searchFilter) || a.field.toLowerCase().includes(searchFilter) || a.role.toLowerCase().includes(searchFilter);
+    return matchBatch && matchSearch;
+  });
+}
+
+function setBatch(b, btn) {
+  document.querySelectorAll('#batch-filters .ftab').forEach(x => x.classList.remove('on'));
+  btn.classList.add('on'); batchFilter = b; alumniPage = 1; renderAlumni(false);
+}
+
+function filterAlumni() {
+  searchFilter = document.getElementById('search-input').value.trim().toLowerCase();
+  alumniPage = 1; renderAlumni(false);
+}
+
+function loadMoreAlumni() { alumniPage++; renderAlumni(true); }
+
+function renderAlumni(append) {
+  const filtered = getFiltered();
+  const grid = document.getElementById('alumni-grid');
+  const slice = filtered.slice(0, alumniPage * PER);
+  if (!append) grid.innerHTML = '';
+  else grid.innerHTML = '';
+  if (!slice.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gr)"><span style="font-size:2.5rem;display:block;margin-bottom:.8rem">🔍</span><strong>No alumni found</strong><p style="font-size:.82rem;margin-top:.4rem">Try adjusting your search or batch filter</p></div>';
+    document.getElementById('load-more-wrap').style.display = 'none'; return;
+  }
+  slice.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'ac reveal';
+    el.innerHTML = `
+      <div class="ac-banner">
+        <div class="ac-avatar" style="display:flex;align-items:center;justify-content:center;font-size:1.8rem">${a.emoji}</div>
+      </div>
+      <div class="ac-body">
+        <div class="ac-name">${a.name}</div>
+        <div class="ac-role">${a.role}</div>
+        <div class="ac-batch">Batch '${a.batch}</div>
+        <div class="ac-field">${a.field}</div>
+        <div class="ac-tags">${a.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>`;
+    grid.appendChild(el); revealObs.observe(el);
+  });
+  document.getElementById('load-more-wrap').style.display = slice.length < filtered.length ? 'block' : 'none';
+}
+
+// ── Stories ───────────────────────────────────────────────────────────────────
+function filterStories(cat, btn) {
+  document.querySelectorAll('#sec-stories .ftab').forEach(x => x.classList.remove('on'));
+  btn.classList.add('on'); storyCat = cat; renderStories();
+}
+
+function renderStories() {
+  const grid = document.getElementById('stories-grid');
+  const filtered = storyCat ? STORIES.filter(s => s.category === storyCat) : STORIES;
+  grid.innerHTML = '';
+  if (!filtered.length) { grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gr);grid-column:1/-1">No stories in this category yet.</div>'; return; }
+  filtered.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'story-card reveal';
+    el.innerHTML = `
+      <div class="story-img" style="display:flex;align-items:center;justify-content:center;font-size:4rem">
+        ${s.emoji}
+        <div class="story-badge">${s.category}</div>
+      </div>
+      <div class="story-body">
+        <div class="story-batch">${s.batch}</div>
+        <div class="story-title">${s.title}</div>
+        <div class="story-excerpt">${s.excerpt}</div>
+        <div class="story-author">
+          <div class="story-ava">${s.emoji}</div>
+          <div class="story-author-info">
+            <div class="name">${s.name}</div>
+            <div class="meta">${s.role}</div>
+          </div>
+        </div>
+      </div>`;
+    grid.appendChild(el); revealObs.observe(el);
+  });
+}
+
+// ── Register ───────────────────────────────────────────────────────────────────
+const RREQUIRED = ['r-name','r-gender','r-year','r-prof','r-phone'];
+function rValidate() {
+  const filled = RREQUIRED.filter(id => { const el = document.getElementById(id); return el && el.value.trim(); }).length;
+}
+
+async function submitRegistration() {
+  const errEl = document.getElementById('r-error'), sucEl = document.getElementById('r-success');
+  errEl.style.display = 'none'; sucEl.style.display = 'none';
+  let valid = true;
+  RREQUIRED.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.classList.add('err'); valid = false; }
+    else el.classList.remove('err');
+  });
+  if (!valid) { errEl.textContent = '⚠️ Please fill all required fields.'; errEl.style.display = 'block'; return; }
+  const btn = document.getElementById('r-submit');
+  btn.disabled = true; btn.textContent = '⏳ Submitting...';
+  // Simulated submission — hook to /api/alumni when backend route added
+  await new Promise(r => setTimeout(r, 1200));
+  sucEl.innerHTML = `✅ Registration successful! Welcome to the MMPC Alumni Network. We'll be in touch soon.<br><small>Your profile will appear in the directory after review.</small>`;
+  sucEl.style.display = 'block'; sucEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  btn.disabled = false; btn.textContent = '✅ Register as Alumni';
+}
+
+function resetReg() {
+  if (!confirm('Reset the form?')) return;
+  document.querySelectorAll('#sec-register input,#sec-register select,#sec-register textarea').forEach(el => { el.value = el.defaultValue || ''; el.classList.remove('err'); });
+  document.getElementById('r-country').value = 'Pakistan';
+  document.getElementById('r-success').style.display = 'none';
+  document.getElementById('r-error').style.display = 'none';
+}
+
+// ── Reveal observer ───────────────────────────────────────────────────────────
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ── Year select ───────────────────────────────────────────────────────────────
+const yrSel = document.getElementById('r-year');
+for (let y = 2026; y >= 2008; y--) {
+  const opt = document.createElement('option'); opt.value = y; opt.textContent = y; yrSel.appendChild(opt);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderAlumni(false);
+renderStories();
+</script>
+</body>
+</html>

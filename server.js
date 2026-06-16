@@ -34,10 +34,13 @@ app.use('/api/parent',        require('./server/routes/parent-portal'));
 app.use('/api/admissions',   require('./server/routes/admissions'));
 
 // ── Pages ─────────────────────────────────────────────────────────────────────
-app.get('/admin',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
-app.get('/portal',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'portal.html')));
-app.get('/teacher', (req, res) => res.sendFile(path.join(__dirname, 'public', 'teacher.html')));
-app.get('/parent',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'parent.html')));
+app.get('/admin',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/portal',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'portal.html')));
+app.get('/teacher',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'teacher.html')));
+app.get('/parent',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'parent.html')));
+app.get('/gallery',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'gallery.html')));
+app.get('/admission',(req, res) => res.sendFile(path.join(__dirname, 'public', 'admission.html')));
+app.get('/alumni',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'alumni.html')));
 
 // ── Fallback → index.html (SPA) ───────────────────────────────────────────────
 app.get('*', (req, res) => {
@@ -57,6 +60,9 @@ app.listen(PORT, () => {
   console.log(`👨‍🏫  Teacher Panel  →  http://localhost:${PORT}/teacher`);
   console.log(`🎓  Student Portal →  http://localhost:${PORT}/portal`);
   console.log(`👨‍👩‍👦  Parent Portal  →  http://localhost:${PORT}/parent`);
+  console.log(`🖼   Gallery       →  http://localhost:${PORT}/gallery`);
+  console.log(`📝  Admissions     →  http://localhost:${PORT}/admission`);
+  console.log(`🎓  Alumni         →  http://localhost:${PORT}/alumni`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('  Run: node server/setup-passwords.js  (first time only)');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');

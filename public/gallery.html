@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Gallery — Mufti Mahmood Public School & College</title>
+<meta name="description" content="Explore MMPC's photo gallery — campus life, events, sports, labs and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0d1f4a;--nv2:#1a3270;--nv3:#2a4494;--gd:#c8952a;--gd2:#e8b84b;--gd3:#f5d78e;--wh:#fff;--of:#f4f6fb;--gr:#6b7280;--gn:#38a169;--rd:#e53e3e;--bd:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--of);color:#1a1a2e;overflow-x:hidden}
+/* Topbar */
+.topbar{background:var(--nv);color:rgba(255,255,255,.7);font-size:.72rem;padding:5px 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem}
+.topbar a{color:var(--gd2);text-decoration:none;margin-left:.8rem}
+/* Nav */
+nav{position:sticky;top:0;z-index:999;background:var(--nv2);border-bottom:3px solid var(--gd);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.navi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);overflow:hidden;flex-shrink:0}
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.brand-txt{color:var(--wh);font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2}
+.brand-txt small{display:block;font-family:'Nunito',sans-serif;font-size:.6rem;color:var(--gd2);letter-spacing:.07em;font-weight:600}
+.nav-ul{display:flex;list-style:none;gap:0}
+.nav-ul a{color:rgba(255,255,255,.85);text-decoration:none;font-size:.73rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:8px 10px;border-radius:4px;transition:.2s;display:block}
+.nav-ul a:hover,.nav-ul a.on{background:rgba(200,149,42,.18);color:var(--gd2)}
+.burger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.burger span{display:block;width:24px;height:2px;background:var(--wh);border-radius:2px}
+.mob-menu{display:none;position:fixed;inset:0;background:var(--nv);z-index:9999;padding:1.5rem;overflow-y:auto;flex-direction:column}
+.mob-menu.open{display:flex}
+.mob-close{align-self:flex-end;background:none;border:1px solid rgba(255,255,255,.2);color:var(--wh);width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;margin-bottom:1.5rem}
+.mob-menu a{color:var(--wh);text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:.95rem;font-weight:700;display:block}
+.mob-menu a:hover{color:var(--gd2)}
+/* Hero */
+.page-hero{background:linear-gradient(160deg,var(--nv) 0%,var(--nv2) 60%,#1e3d8f 100%);padding:64px 1.5rem 52px;text-align:center;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 80px)}
+.page-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,var(--of),transparent)}
+.page-hero-inner{position:relative;z-index:2}
+.stag{display:inline-block;background:rgba(200,149,42,.15);color:var(--gd2);font-size:.67rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:4px 14px;border-radius:2px;margin-bottom:.6rem;border:1px solid rgba(200,149,42,.3)}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);color:var(--wh);font-weight:900;margin-bottom:.5rem}
+.page-hero h1 em{color:var(--gd2);font-style:normal}
+.page-hero p{color:rgba(255,255,255,.6);font-size:.92rem;max-width:560px;margin:0 auto}
+/* Breadcrumb */
+.breadcrumb{background:var(--wh);border-bottom:1px solid var(--bd);padding:.6rem 1.5rem}
+.breadcrumb-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--gr)}
+.breadcrumb a{color:var(--nv2);text-decoration:none;font-weight:700}
+.breadcrumb a:hover{color:var(--gd)}
+.breadcrumb span{color:var(--gr)}
+/* Main */
+.con{max-width:1200px;margin:0 auto}
+section{padding:56px 1.5rem}
+/* Filter bar */
+.filter-bar{background:var(--wh);border-bottom:1px solid var(--bd);padding:.9rem 1.5rem;position:sticky;top:67px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.filter-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;justify-content:space-between}
+.filter-tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+.ftab{padding:6px 16px;border-radius:20px;border:2px solid var(--bd);background:var(--wh);color:var(--gr);font-size:.74rem;font-weight:700;cursor:pointer;transition:.2s;font-family:'Nunito',sans-serif}
+.ftab.on,.ftab:hover{background:var(--nv);color:var(--wh);border-color:var(--nv)}
+.filter-right{display:flex;align-items:center;gap:.6rem}
+.view-toggle button{width:34px;height:34px;border:2px solid var(--bd);background:var(--wh);border-radius:6px;cursor:pointer;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center;transition:.2s}
+.view-toggle button.on{background:var(--nv);color:var(--wh);border-color:var(--nv)}
+.result-count{font-size:.75rem;color:var(--gr);font-weight:700}
+/* Gallery grid */
+.gal-section{padding:40px 1.5rem 60px}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.gal-grid.list-view{grid-template-columns:1fr;gap:.8rem}
+.git{aspect-ratio:1;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--nv2),var(--nv3));position:relative;box-shadow:0 4px 16px rgba(0,0,0,.1);transition:.35s;cursor:pointer}
+.gal-grid.list-view .git{aspect-ratio:unset;height:100px;border-radius:8px}
+.git:hover{transform:scale(1.03);box-shadow:0 12px 32px rgba(0,0,0,.22)}
+.git img{width:100%;height:100%;object-fit:cover;transition:.35s}
+.git:hover img{transform:scale(1.06)}
+.git-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,31,74,.9) 0%,rgba(13,31,74,.2) 60%,transparent 100%);opacity:0;transition:.3s;display:flex;flex-direction:column;justify-content:flex-end;padding:1rem}
+.git:hover .git-overlay{opacity:1}
+.git-title{color:var(--wh);font-size:.82rem;font-weight:800;margin-bottom:.2rem}
+.git-cat{display:inline-block;background:var(--gd);color:var(--nv);font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:2px;text-transform:uppercase;letter-spacing:.06em}
+.git-badge{position:absolute;top:10px;left:10px;background:var(--gd);color:var(--nv);font-size:.6rem;font-weight:800;padding:3px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:.05em;opacity:0;transition:.2s}
+.git:hover .git-badge{opacity:1}
+/* list view card */
+.gal-grid.list-view .git-overlay{opacity:1;background:linear-gradient(to right,rgba(13,31,74,.85) 0%,transparent 100%);flex-direction:row;align-items:center;gap:1rem;padding:.8rem 1rem}
+.gal-grid.list-view .git-title{font-size:.88rem}
+/* Lightbox */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:9999;align-items:center;justify-content:center;padding:1.5rem}
+#lightbox.open{display:flex}
+.lb-inner{position:relative;max-width:900px;width:100%;animation:lbIn .25s ease}
+@keyframes lbIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.lb-img{width:100%;max-height:75vh;object-fit:contain;border-radius:8px;display:block}
+.lb-info{margin-top:1rem;text-align:center}
+.lb-title{color:var(--wh);font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem}
+.lb-desc{color:rgba(255,255,255,.55);font-size:.82rem}
+.lb-cat{display:inline-block;background:var(--gd);color:var(--nv);font-size:.65rem;font-weight:800;padding:3px 10px;border-radius:2px;text-transform:uppercase;margin-bottom:.5rem}
+.lb-close{position:absolute;top:-14px;right:-14px;background:var(--rd);color:var(--wh);border:none;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);border:none;color:var(--wh);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;backdrop-filter:blur(4px)}
+.lb-nav:hover{background:var(--gd);color:var(--nv)}
+.lb-prev{left:-56px}
+.lb-next{right:-56px}
+/* Stats */
+.gal-stats{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:2rem}
+.gs{background:var(--wh);border-radius:8px;padding:.85rem 1.4rem;border-left:3px solid var(--gd);box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center}
+.gs-n{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--nv)}
+.gs-l{font-size:.66rem;font-weight:800;color:var(--gr);text-transform:uppercase;letter-spacing:.07em}
+/* Empty */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--gr)}
+.empty-state .ei{font-size:3.5rem;margin-bottom:1rem;display:block}
+.empty-state h3{font-family:'Playfair Display',serif;color:var(--nv);margin-bottom:.5rem}
+/* Skeleton */
+.skeleton{background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:10px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:none}
+/* Load more */
+.load-more-wrap{text-align:center;margin-top:2.5rem}
+.btn{padding:11px 28px;border-radius:4px;font-weight:800;font-size:.84rem;letter-spacing:.04em;border:none;cursor:pointer;display:inline-block;text-decoration:none;transition:.2s;font-family:'Nunito',sans-serif}
+.bg{background:var(--gd);color:var(--nv);box-shadow:0 4px 14px rgba(200,149,42,.35)}
+.bg:hover{background:var(--gd2);transform:translateY(-2px)}
+.bn{background:var(--nv);color:var(--wh)}
+.bn:hover{background:var(--nv2);transform:translateY(-2px)}
+.bo{border:2px solid var(--nv);color:var(--nv);background:none}
+.bo:hover{background:var(--nv);color:var(--wh)}
+/* Footer */
+footer{background:var(--nv);color:rgba(255,255,255,.7);padding:2.5rem 1.5rem 1.2rem}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.footer-brand .fl{font-family:'Playfair Display',serif;font-size:1rem;color:var(--wh);font-weight:700;margin-bottom:.4rem;display:block}
+.footer-brand p{font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.5)}
+footer h4{color:var(--gd2);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;margin-bottom:.8rem}
+footer ul{list-style:none}
+footer ul li{margin-bottom:.4rem}
+footer ul li a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.78rem;transition:.2s}
+footer ul li a:hover{color:var(--gd2)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;font-size:.73rem;color:rgba(255,255,255,.35)}
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:99999;padding:.85rem 1.5rem;border-radius:8px;font-size:.82rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;max-width:360px;text-align:center}
+.toast.success{background:var(--gn);color:var(--wh);display:block}
+.toast.error{background:var(--rd);color:var(--wh);display:block}
+/* Responsive */
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}.footer-grid>div:first-child{grid-column:1/-1}}
+@media(max-width:720px){.nav-ul{display:none}.burger{display:flex}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}.lb-prev{left:-8px}.lb-next{right:-8px}.lb-nav{width:36px;height:36px;font-size:1rem}}
+@media(max-width:540px){.gal-grid{grid-template-columns:repeat(2,1fr);gap:.6rem}.filter-inner{flex-direction:column;align-items:flex-start}.footer-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <span>📍 Kacheri Road, D.I. Khan, KPK, Pakistan</span>
+  <span>
+    📞 <a href="tel:+92966123456">+92-966-123456</a>
+    ✉️ <a href="mailto:info@mmpc.edu.pk">info@mmpc.edu.pk</a>
+    <a href="/admin" style="margin-left:1.2rem;background:rgba(200,149,42,.2);padding:2px 8px;border-radius:3px">🔐 Admin</a>
+  </span>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="navi">
+    <a class="brand" href="/">
+      <div class="brand-logo"><img src="/images/logo.jpg" alt="MMPC"></div>
+      <div class="brand-txt">Mufti Mahmood Public School & College<small>D.I. Khan • Est. 2006 • Excellence in Education</small></div>
+    </a>
+    <ul class="nav-ul">
+      <li><a href="/">🏠 Home</a></li>
+      <li><a href="/gallery" class="on">🖼 Gallery</a></li>
+      <li><a href="/admission">📝 Admissions</a></li>
+      <li><a href="/alumni">🎓 Alumni</a></li>
+      <li><a href="/portal">🎓 Portal</a></li>
+      <li><a href="/parent">👨‍👩‍👦 Parents</a></li>
+      <li><a href="/#contact">📞 Contact</a></li>
+    </ul>
+    <button class="burger" onclick="document.getElementById('mob-menu').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mob-menu" id="mob-menu">
+  <button class="mob-close" onclick="document.getElementById('mob-menu').classList.remove('open')">✕</button>
+  <a href="/">🏠 Home</a>
+  <a href="/gallery">🖼 Gallery</a>
+  <a href="/admission">📝 Admissions</a>
+  <a href="/alumni">🎓 Alumni</a>
+  <a href="/portal">🎓 Student Portal</a>
+  <a href="/parent">👨‍👩‍👦 Parent Portal</a>
+  <a href="/#contact">📞 Contact</a>
+  <a href="/admin">🔐 Admin Panel</a>
+</div>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="stag">Visual Tour</div>
+    <h1>School <em>Gallery</em></h1>
+    <p>Explore our campus, events, students and achievements through our photo collection</p>
+  </div>
+</div>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="/">Home</a>
+    <span>›</span>
+    <span>Photo Gallery</span>
+  </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <div class="filter-tabs" id="filter-tabs">
+      <button class="ftab on" onclick="filterGallery('',this)">All Photos</button>
+      <button class="ftab" onclick="filterGallery('Campus',this)">🏫 Campus</button>
+      <button class="ftab" onclick="filterGallery('Students',this)">👨‍🎓 Students</button>
+      <button class="ftab" onclick="filterGallery('Events',this)">📅 Events</button>
+      <button class="ftab" onclick="filterGallery('Labs',this)">🔬 Labs</button>
+      <button class="ftab" onclick="filterGallery('Sports',this)">⚽ Sports</button>
+      <button class="ftab" onclick="filterGallery('Ceremonies',this)">🎖 Ceremonies</button>
+      <button class="ftab" onclick="filterGallery('Other',this)">📷 Other</button>
+    </div>
+    <div class="filter-right">
+      <span class="result-count" id="result-count"></span>
+      <div class="view-toggle">
+        <button class="on" id="grid-btn" onclick="setView('grid')" title="Grid View">⊞</button>
+        <button id="list-btn" onclick="setView('list')" title="List View">☰</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery -->
+<div class="gal-section">
+  <div class="con">
+    <!-- Stats -->
+    <div class="gal-stats" id="gal-stats" style="display:none">
+      <div class="gs"><div class="gs-n" id="total-count">0</div><div class="gs-l">Total Photos</div></div>
+      <div class="gs"><div class="gs-n" id="cat-count">0</div><div class="gs-l">Categories</div></div>
+      <div class="gs"><div class="gs-n" id="featured-count">0</div><div class="gs-l">Featured</div></div>
+    </div>
+
+    <!-- Grid -->
+    <div class="gal-grid" id="gal-grid">
+      <div class="git skeleton"></div>
+      <div class="git skeleton"></div>
+      <div class="git skeleton"></div>
+      <div class="git skeleton"></div>
+      <div class="git skeleton"></div>
+      <div class="git skeleton"></div>
+    </div>
+    <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+      <button class="btn bo" id="load-more-btn" onclick="loadMore()">Load More Photos</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox(event)">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+    <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+    <img class="lb-img" id="lb-img" src="" alt="">
+    <div class="lb-info">
+      <div class="lb-cat" id="lb-cat"></div>
+      <div class="lb-title" id="lb-title"></div>
+      <div class="lb-desc" id="lb-desc"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="fl">Mufti Mahmood Public School & College</span>
+        <p>Quality education in D.I. Khan since 2006. Combining modern academics with Islamic values.</p>
+      </div>
+      <div>
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="/">🏠 Home</a></li>
+          <li><a href="/gallery">🖼 Gallery</a></li>
+          <li><a href="/admission">📝 Admissions</a></li>
+          <li><a href="/alumni">🎓 Alumni</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Portals</h4>
+        <ul>
+          <li><a href="/portal">🎓 Student Portal</a></li>
+          <li><a href="/parent">👨‍👩‍👦 Parent Portal</a></li>
+          <li><a href="/teacher">👨‍🏫 Teacher Panel</a></li>
+          <li><a href="/admin">🔐 Admin Panel</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Mufti Mahmood Public School & College. All rights reserved.</span>
+      <span>D.I. Khan, KPK, Pakistan</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STATIC = [
+  {_id:'s1',imageUrl:'/images/campus8.png',title:'Main Building',description:'Front view of the main school building',category:'Campus',featured:true},
+  {_id:'s2',imageUrl:'/images/campus2.webp',title:'College Entrance',description:'The grand entrance to MMPC',category:'Campus',featured:false},
+  {_id:'s3',imageUrl:'/images/campus1.webp',title:'Boys Senior Block',description:'Senior section academic block',category:'Campus',featured:false},
+  {_id:'s4',imageUrl:'/images/campus6.webp',title:'College Hall',description:'Main auditorium for events and assemblies',category:'Events',featured:true},
+  {_id:'s5',imageUrl:'/images/campus3.webp',title:'Campus Garden',description:'Green spaces for students',category:'Campus',featured:false},
+  {_id:'s6',imageUrl:'/images/campus4.webp',title:'Classrooms Block',description:'Modern classrooms for all sections',category:'Campus',featured:false},
+  {_id:'s7',imageUrl:'/images/campus5.webp',title:'Activity Block',description:'Co-curricular activities hub',category:'Events',featured:false},
+  {_id:'s8',imageUrl:'/images/campus7.webp',title:'Inauguration Stone',description:'Foundation stone — Est. 2006',category:'Campus',featured:false}
+];
+
+let allItems = [];
+let filteredItems = [];
+let currentPage = 1;
+let currentCat = '';
+let currentView = 'grid';
+let lbIndex = 0;
+const PER_PAGE = 12;
+
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+async function fetchGallery() {
+  try {
+    const res = await fetch('/api/gallery?limit=200');
+    const json = await res.json();
+    allItems = (json.data && json.data.length > 0) ? json.data : STATIC;
+  } catch {
+    allItems = STATIC;
+  }
+  updateStats();
+  applyFilter();
+}
+
+function updateStats() {
+  const cats = new Set(allItems.map(i => i.category)).size;
+  const featured = allItems.filter(i => i.featured).length;
+  document.getElementById('total-count').textContent = allItems.length;
+  document.getElementById('cat-count').textContent = cats;
+  document.getElementById('featured-count').textContent = featured;
+  document.getElementById('gal-stats').style.display = 'flex';
+}
+
+function applyFilter() {
+  filteredItems = currentCat ? allItems.filter(i => i.category === currentCat) : [...allItems];
+  currentPage = 1;
+  renderPage(false);
+}
+
+function filterGallery(cat, btn) {
+  document.querySelectorAll('.ftab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  currentCat = cat;
+  applyFilter();
+}
+
+function renderPage(append = false) {
+  const grid = document.getElementById('gal-grid');
+  const start = (currentPage - 1) * PER_PAGE;
+  const slice = filteredItems.slice(start, start + PER_PAGE);
+  const count = document.getElementById('result-count');
+  count.textContent = filteredItems.length + ' photo' + (filteredItems.length !== 1 ? 's' : '');
+
+  if (!append) grid.innerHTML = '';
+
+  if (!slice.length && !append) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span class="ei">📷</span><h3>No photos yet</h3><p>Photos will appear here once uploaded by the admin.</p></div>`;
+    document.getElementById('load-more-wrap').style.display = 'none';
+    return;
+  }
+
+  slice.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'git reveal';
+    el.dataset.idx = filteredItems.indexOf(item);
+    el.onclick = () => openLightbox(parseInt(el.dataset.idx));
+    el.innerHTML = `
+      <img src="${item.imageUrl}" alt="${item.title}" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a3270,#2a4494)'">
+      <div class="git-overlay">
+        <div class="git-title">${item.title}</div>
+        <div class="git-cat">${item.category}</div>
+      </div>
+      ${item.featured ? '<div class="git-badge">⭐ Featured</div>' : ''}
+    `;
+    grid.appendChild(el);
+    revealObs.observe(el);
+  });
+
+  const hasMore = start + PER_PAGE < filteredItems.length;
+  document.getElementById('load-more-wrap').style.display = hasMore ? 'block' : 'none';
+}
+
+function loadMore() {
+  currentPage++;
+  renderPage(true);
+}
+
+function setView(v) {
+  currentView = v;
+  const grid = document.getElementById('gal-grid');
+  document.getElementById('grid-btn').classList.toggle('on', v === 'grid');
+  document.getElementById('list-btn').classList.toggle('on', v === 'list');
+  grid.classList.toggle('list-view', v === 'list');
+}
+
+function openLightbox(idx) {
+  lbIndex = idx;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateLightbox() {
+  const item = filteredItems[lbIndex];
+  document.getElementById('lb-img').src = item.imageUrl;
+  document.getElementById('lb-img').alt = item.title;
+  document.getElementById('lb-title').textContent = item.title;
+  document.getElementById('lb-desc').textContent = item.description || '';
+  document.getElementById('lb-cat').textContent = item.category;
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox') && !e.currentTarget.classList.contains('lb-close')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + filteredItems.length) % filteredItems.length;
+  updateLightbox();
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
+  if (e.key === 'ArrowLeft') lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+});
+
+fetchGallery();
+</script>
+</body>
+</html>

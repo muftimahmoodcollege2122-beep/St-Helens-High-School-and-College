@@ -274,9 +274,9 @@ textarea{resize:vertical;min-height:90px}
             <button class="sb-link" onclick="showPage('toppers',this)"><span class="ic">🏆</span> Toppers</button>
       <button class="sb-link" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span> Teachers</button>
       <button class="sb-link" onclick="showPage('teacher-accounts',this)"><span class="ic">🔑</span> Teacher Logins</button>
-      <button class="sb-link" onclick="dlDB()"><span class="ic">💾</span> Backup Database</button>
-      <button class="sb-link" onclick="document.getElementById('restore-file-input').click()"><span class="ic">📤</span> Restore Backup</button>
-      <input type="file" id="restore-file-input" accept=".db" style="display:none" onchange="restoreDB(this)">
+      <button class="sb-link" onclick="dlJSON()"><span class="ic">💾</span> Backup (JSON)</button>
+      <button class="sb-link" onclick="document.getElementById('restore-file-input').click()"><span class="ic">📤</span> Restore (JSON)</button>
+      <input type="file" id="restore-file-input" accept=".json" style="display:none" onchange="restoreJSON(this)">
 
       <div class="sb-section">Communication</div>
       <button class="sb-link" onclick="showPage('messages',this)">
@@ -3426,29 +3426,50 @@ function dlDB(){
     showToast('Backup downloaded ✅');
   }).catch(e=>showToast('Backup failed: '+e.message,'err'));
 }
-async function restoreDB(input) {
+function dlJSON() {
+  const token = localStorage.getItem('mmpc_token');
+  if (!token) { showToast('Not logged in', 'err'); return; }
+  showToast('Preparing JSON backup...');
+  fetch('/api/auth/backup-json', { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(r => {
+      if (!r.ok) return r.json().then(d => { throw new Error(d.message || 'Failed'); });
+      return r.blob();
+    })
+    .then(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'mmpc_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('✅ JSON backup downloaded');
+    })
+    .catch(e => showToast('Backup failed: ' + e.message, 'err'));
+}
+
+async function restoreJSON(input) {
   const file = input.files[0];
   if (!file) return;
-  if (!file.name.endsWith('.db')) { showToast('Please select a valid .db backup file', 'err'); return; }
-  if (!confirm(`⚠️ Restore database from "${file.name}"?\n\nThis will REPLACE all current data with the backup. This cannot be undone.\n\nProceed?`)) { input.value = ''; return; }
+  if (!file.name.endsWith('.json')) { showToast('Please select a valid .json backup file', 'err'); input.value = ''; return; }
+  if (!confirm(`⚠️ Restore database from "${file.name}"?\n\nThis will REPLACE all current data with the backup contents.\nThis cannot be undone.\n\nProceed?`)) { input.value = ''; return; }
+
   const token = localStorage.getItem('mmpc_token');
   const formData = new FormData();
   formData.append('backup', file);
-  showToast('Uploading backup...');
+  showToast('Uploading and restoring...');
   try {
-    const res = await fetch('/api/auth/restore-db', {
+    const res = await fetch('/api/auth/restore-json', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token },
       body: formData
     });
     const data = await res.json();
     if (data.success) {
-      showToast('✅ Database restored successfully! Reloading...');
-      setTimeout(() => location.reload(), 1800);
+      const summary = Object.entries(data.stats || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
+      showToast(`✅ Restored! ${summary}`);
+      setTimeout(() => location.reload(), 2000);
     } else {
       showToast('Restore failed: ' + (data.message || 'Unknown error'), 'err');
     }
-  } catch(e) {
+  } catch (e) {
     showToast('Restore failed: ' + e.message, 'err');
   }
   input.value = '';

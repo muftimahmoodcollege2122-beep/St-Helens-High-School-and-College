@@ -10,6 +10,15 @@ app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
+// ── Pages (must be before static middleware) ──────────────────────────────────
+app.get('/admin',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/portal',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'portal.html')));
+app.get('/teacher',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'teacher.html')));
+app.get('/parent',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'parent.html')));
+app.get('/gallery',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'gallery.html')));
+app.get('/admission',(req, res) => res.sendFile(path.join(__dirname, 'public', 'admission.html')));
+app.get('/alumni',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'alumni.html')));
+
 // ── Static files ──────────────────────────────────────────────────────────────
 app.use('/images',  express.static(path.join(__dirname, 'public', 'images')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -33,16 +42,7 @@ app.use('/api/teacher-panel', require('./server/routes/teacher-panel'));
 app.use('/api/parent',        require('./server/routes/parent-portal'));
 app.use('/api/admissions',   require('./server/routes/admissions'));
 
-// ── Pages ─────────────────────────────────────────────────────────────────────
-app.get('/admin',     (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
-app.get('/portal',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'portal.html')));
-app.get('/teacher',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'teacher.html')));
-app.get('/parent',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'parent.html')));
-app.get('/gallery',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'gallery.html')));
-app.get('/admission',(req, res) => res.sendFile(path.join(__dirname, 'public', 'admission.html')));
-app.get('/alumni',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'alumni.html')));
-
-// ── Fallback → index.html (SPA) ───────────────────────────────────────────────
+// ── Fallback → index.html ─────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   const ext = path.extname(req.path).toLowerCase().replace('.', '');
   const staticExts = ['jpg','jpeg','png','webp','gif','svg','ico','css','js','woff','woff2','ttf'];

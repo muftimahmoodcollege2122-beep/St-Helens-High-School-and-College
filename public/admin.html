@@ -269,6 +269,7 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('students',this)"><span class="ic">🎒</span> Students</button>
       <button class="sb-link" onclick="showPage('migration',this)"><span class="ic">🎓</span> Class Migration</button>
       <button class="sb-link" onclick="showPage('admissions',this)"><span class="ic">📝</span> Admissions</button>
+      <button class="sb-link" onclick="showPage('alumni',this)"><span class="ic">🎓</span> Alumni</button>
       <button class="sb-link" onclick="showPage('attendance',this)"><span class="ic">📋</span> Attendance</button>
       <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management</button>
       <button class="sb-link" onclick="showPage('results',this)"><span class="ic">📊</span> Results</button>
@@ -576,6 +577,76 @@ textarea{resize:vertical;min-height:90px}
             <div id="mig-history-list" style="font-size:.82rem;color:#6b7280">Loading...</div>
           </div>
 
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ALUMNI ──────────────────────────────────────────────────────────── -->
+    <div class="adm-page" id="page-alumni">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🎓 Alumni Registrations</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <select id="alumni-filter-status" onchange="loadAlumni()" style="padding:5px 10px;border:1px solid var(--bd);border-radius:4px;font-size:.8rem">
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+            <select id="alumni-filter-batch" onchange="loadAlumni()" style="padding:5px 10px;border:1px solid var(--bd);border-radius:4px;font-size:.8rem">
+              <option value="">All Batches</option>
+            </select>
+            <button class="btn btn-sm" onclick="loadAlumni()" style="background:var(--nv);color:#fff;padding:5px 14px;font-size:.78rem">🔄 Refresh</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Stats row -->
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem" id="alumni-stats"></div>
+          <!-- Table -->
+          <div style="overflow-x:auto">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Batch</th>
+                  <th>Profession</th>
+                  <th>City / Country</th>
+                  <th>Phone</th>
+                  <th>Public?</th>
+                  <th>Status</th>
+                  <th>Registered</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="alumni-tbody"><tr><td colspan="9" style="text-align:center;padding:2rem;color:#9ca3af">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Modal -->
+      <div class="modal-bg" id="modal-alumni-detail">
+        <div class="modal" style="max-width:680px;width:100%">
+          <div class="modal-hdr"><h3>🎓 Alumni Details</h3><button onclick="closeModal('modal-alumni-detail')">✕</button></div>
+          <div class="modal-body" id="alumni-detail-body" style="max-height:70vh;overflow-y:auto"></div>
+          <div class="modal-foot" id="alumni-detail-foot"></div>
+        </div>
+      </div>
+
+      <!-- Delete Confirm Modal -->
+      <div class="modal-bg" id="modal-alumni-delete">
+        <div class="modal" style="max-width:420px;width:100%">
+          <div class="modal-hdr"><h3>⚠️ Delete Alumni</h3><button onclick="closeModal('modal-alumni-delete')">✕</button></div>
+          <div class="modal-body">
+            <p id="alumni-delete-msg" style="font-size:.9rem;line-height:1.6;margin-bottom:1rem"></p>
+            <p style="font-size:.82rem;color:#822727;background:#fed7d7;padding:.7rem 1rem;border-radius:6px;border:1px solid #fc8181">
+              ⚠️ This action is permanent and cannot be undone.
+            </p>
+          </div>
+          <div class="modal-foot" style="display:flex;gap:.6rem">
+            <button class="btn btn-rd" id="alumni-delete-confirm-btn">🗑️ Yes, Delete</button>
+            <button class="btn" style="background:#6b7280;color:#fff" onclick="closeModal('modal-alumni-delete')">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1767,7 +1838,8 @@ function showPage(name, btn) {
     'achievements-settings': loadAchievementsSettings,
     'teacher-accounts': loadTeacherAccounts,
     fees: loadFees,
-    admissions: loadAdmissions
+    admissions: loadAdmissions,
+    alumni: loadAlumni
   };
   if (loaders[name]) loaders[name]();
 }
@@ -3906,6 +3978,187 @@ function loadMigHistory() {
 
 // Load history when page opens
 document.addEventListener('DOMContentLoaded', loadMigHistory);
+// ── Alumni ────────────────────────────────────────────────────────────────────
+let _alumniData = [];
+
+async function loadAlumni() {
+  const token  = localStorage.getItem('mmpc_token');
+  const status = document.getElementById('alumni-filter-status')?.value || '';
+  const batch  = document.getElementById('alumni-filter-batch')?.value  || '';
+  let url = '/api/alumni/admin';
+  const params = [];
+  if (status) params.push('status=' + status);
+  if (batch)  params.push('batch='  + batch);
+  if (params.length) url += '?' + params.join('&');
+
+  try {
+    const res  = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+    const json = await res.json();
+    _alumniData = json.data || [];
+    renderAlumniTable(_alumniData);
+    renderAlumniStats(_alumniData);
+    populateAlumniBatchFilter(_alumniData);
+  } catch (e) {
+    document.getElementById('alumni-tbody').innerHTML = `<tr><td colspan="9" style="text-align:center;color:#e53e3e;padding:2rem">Failed to load: ${e.message}</td></tr>`;
+  }
+}
+
+function populateAlumniBatchFilter(data) {
+  const sel = document.getElementById('alumni-filter-batch');
+  const current = sel.value;
+  const batches = [...new Set(data.map(a => a.graduationYear || a.batch).filter(Boolean))].sort((a,b) => b-a);
+  sel.innerHTML = '<option value="">All Batches</option>' +
+    batches.map(b => `<option value="${b}"${b==current?' selected':''}>${b}</option>`).join('');
+}
+
+function renderAlumniStats(data) {
+  const el = document.getElementById('alumni-stats');
+  const pending  = data.filter(a => a.status === 'Pending').length;
+  const approved = data.filter(a => a.status === 'Approved').length;
+  const rejected = data.filter(a => a.status === 'Rejected').length;
+  el.innerHTML = `
+    <div style="background:#fff;border-left:3px solid #f59e0b;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
+      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${pending}</div>
+      <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Pending</div>
+    </div>
+    <div style="background:#fff;border-left:3px solid #38a169;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
+      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${approved}</div>
+      <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Approved</div>
+    </div>
+    <div style="background:#fff;border-left:3px solid #e53e3e;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
+      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${rejected}</div>
+      <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Rejected</div>
+    </div>
+    <div style="background:#fff;border-left:3px solid #0d1f4a;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
+      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${data.length}</div>
+      <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Total</div>
+    </div>`;
+}
+
+function renderAlumniTable(data) {
+  const tbody = document.getElementById('alumni-tbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2.5rem;color:#9ca3af">No alumni registrations found.</td></tr>';
+    return;
+  }
+  const statusColor = { Pending:'#f59e0b', Approved:'#38a169', Rejected:'#e53e3e' };
+  const statusBg    = { Pending:'#fff8e1', Approved:'#c6f6d5', Rejected:'#fed7d7' };
+  tbody.innerHTML = data.map((a, idx) => `
+    <tr>
+      <td><strong>${a.name}</strong></td>
+      <td>${a.graduationYear || a.batch || '—'}</td>
+      <td>${a.profession || '—'}</td>
+      <td style="font-size:.78rem">${[a.currentCity, a.currentCountry].filter(Boolean).join(', ') || '—'}</td>
+      <td style="font-size:.78rem">${a.phone || '—'}</td>
+      <td><span style="font-size:.72rem;font-weight:700;color:${a.public==='No'?'#e53e3e':'#38a169'}">${a.public==='No'?'🔒 Private':'✅ Public'}</span></td>
+      <td>
+        <span style="background:${statusBg[a.status]||'#f4f6fb'};color:${statusColor[a.status]||'#6b7280'};padding:3px 10px;border-radius:4px;font-size:.73rem;font-weight:800">
+          ${a.status}
+        </span>
+      </td>
+      <td style="font-size:.75rem;color:#6b7280">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-PK') : '—'}</td>
+      <td>
+        <div style="display:flex;gap:.3rem;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:var(--nv);color:#fff;padding:3px 9px;font-size:.72rem" onclick="viewAlumni(${idx})">👁 View</button>
+          ${a.status !== 'Approved' ? `<button class="btn btn-sm btn-gn" style="padding:3px 9px;font-size:.72rem" onclick="updateAlumniStatus('${a._id}','Approved')">✅</button>` : ''}
+          ${a.status !== 'Rejected' ? `<button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="updateAlumniStatus('${a._id}','Rejected')">❌</button>` : ''}
+          <button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="confirmDeleteAlumni('${a._id}','${a.name.replace(/'/g,"\\'")}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function viewAlumni(idx) {
+  const a = _alumniData[idx];
+  const row = (l, v) => v ? `<tr><td style="padding:6px 10px;font-weight:700;font-size:.78rem;background:#f4f6fb;width:38%;border:1px solid #e2e8f0;color:#0d1f4a">${l}</td><td style="padding:6px 10px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
+  const sec = t => `<tr><td colspan="2" style="background:#0d1f4a;color:#e8b84b;padding:6px 10px;font-weight:800;font-size:.8rem">${t}</td></tr>`;
+  document.getElementById('alumni-detail-body').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif">
+      ${sec('Personal Information')}
+      ${row('Full Name', a.name)}
+      ${row('Gender', a.gender)}
+      ${row('Date of Birth', a.dob)}
+      ${row('CNIC', a.cnic)}
+      ${sec('Academic Details')}
+      ${row('Graduation Year', a.graduationYear)}
+      ${row('Program / Class', a.program || a.prog)}
+      ${row('Board Roll No', a.rollNo || a.boardRollNo)}
+      ${row('Result / Grade', a.result)}
+      ${sec('Current Status')}
+      ${row('Profession', a.profession)}
+      ${row('Employer / University', a.employer)}
+      ${row('City', a.currentCity || a.city)}
+      ${row('Country', a.currentCountry || a.country)}
+      ${row('Bio / Achievement', a.bio)}
+      ${sec('Contact')}
+      ${row('Phone / WhatsApp', a.phone)}
+      ${row('Email', a.email)}
+      ${row('LinkedIn', a.linkedin)}
+      ${row('Show in Public Directory', a.public)}
+      ${sec('Registration Info')}
+      ${row('Status', a.status)}
+      ${row('Registered On', a.createdAt ? new Date(a.createdAt).toLocaleString('en-PK') : '—')}
+    </table>`;
+  const statusColor = { Pending:'#f59e0b', Approved:'#38a169', Rejected:'#e53e3e' };
+  document.getElementById('alumni-detail-foot').innerHTML = `
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      ${a.status !== 'Approved' ? `<button class="btn btn-gn" onclick="updateAlumniStatus('${a._id}','Approved');closeModal('modal-alumni-detail')">✅ Approve</button>` : ''}
+      ${a.status !== 'Rejected' ? `<button class="btn btn-rd" onclick="updateAlumniStatus('${a._id}','Rejected');closeModal('modal-alumni-detail')">❌ Reject</button>` : ''}
+      ${a.status !== 'Pending'  ? `<button class="btn" style="background:#f59e0b;color:#fff" onclick="updateAlumniStatus('${a._id}','Pending');closeModal('modal-alumni-detail')">⏳ Set Pending</button>` : ''}
+      <button class="btn btn-rd" onclick="confirmDeleteAlumni('${a._id}','${a.name.replace(/'/g,"\\'")}');closeModal('modal-alumni-detail')">🗑️ Delete</button>
+      <button class="btn" style="background:#6b7280;color:#fff" onclick="closeModal('modal-alumni-detail')">Close</button>
+    </div>`;
+  openModal('modal-alumni-detail');
+}
+
+async function updateAlumniStatus(id, status) {
+  const token = localStorage.getItem('mmpc_token');
+  const labels = { Approved: 'Approve', Rejected: 'Reject', Pending: 'set to Pending' };
+  const a = _alumniData.find(x => x._id === id);
+  if (!confirm(`${labels[status] || status} alumni registration for "${a?.name || id}"?`)) return;
+  try {
+    const res  = await fetch('/api/alumni/' + id + '/status', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ status })
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast(`✅ Alumni ${status.toLowerCase()} successfully`);
+      loadAlumni();
+    } else {
+      showToast('Failed: ' + json.message, 'err');
+    }
+  } catch (e) { showToast('Error: ' + e.message, 'err'); }
+}
+
+function confirmDeleteAlumni(id, name) {
+  document.getElementById('alumni-delete-msg').innerHTML =
+    `You are about to permanently delete the alumni registration for:<br><br>
+     <strong style="font-size:1rem;color:#0d1f4a">${name}</strong><br><br>
+     This will remove them from the directory and all records.`;
+  const btn = document.getElementById('alumni-delete-confirm-btn');
+  btn.onclick = () => deleteAlumni(id);
+  openModal('modal-alumni-delete');
+}
+
+async function deleteAlumni(id) {
+  const token = localStorage.getItem('mmpc_token');
+  try {
+    const res  = await fetch('/api/alumni/' + id, {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast('🗑️ Alumni deleted successfully');
+      closeModal('modal-alumni-delete');
+      loadAlumni();
+    } else {
+      showToast('Failed: ' + json.message, 'err');
+    }
+  } catch (e) { showToast('Error: ' + e.message, 'err'); }
+}
 </script>
 
 <!-- ── Bulk Import Students Modal ─────────────────────────────────────────── -->

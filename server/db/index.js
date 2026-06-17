@@ -148,6 +148,18 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_contact_status ON contact(status);
 
+  CREATE TABLE IF NOT EXISTS alumni (
+    _id        TEXT PRIMARY KEY,
+    name       TEXT NOT NULL,
+    batch      TEXT,
+    status     TEXT DEFAULT 'Pending',
+    public     TEXT DEFAULT 'Yes',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_alumni_status ON alumni(status);
+  CREATE INDEX IF NOT EXISTS idx_alumni_batch  ON alumni(batch);
+
   CREATE TABLE IF NOT EXISTS homework (
     _id        TEXT PRIMARY KEY,
     class      TEXT,

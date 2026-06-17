@@ -575,6 +575,31 @@ async function submitRegistration() {
   btn.disabled = true; btn.textContent = '⏳ Submitting...';
   // Simulated submission — hook to /api/alumni when backend route added
   await new Promise(r => setTimeout(r, 1200));
+  const res = await fetch('/api/alumni', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name:           document.getElementById('r-name').value.trim(),
+      gender:         document.getElementById('r-gender').value,
+      dob:            document.getElementById('r-dob').value,
+      cnic:           document.getElementById('r-cnic').value.trim(),
+      graduationYear: document.getElementById('r-year').value,
+      program:        document.getElementById('r-prog').value,
+      boardRollNo:    document.getElementById('r-roll').value.trim(),
+      result:         document.getElementById('r-result').value.trim(),
+      profession:     document.getElementById('r-prof').value,
+      employer:       document.getElementById('r-employer').value.trim(),
+      currentCity:    document.getElementById('r-city').value.trim(),
+      currentCountry: document.getElementById('r-country').value.trim(),
+      bio:            document.getElementById('r-bio').value.trim(),
+      phone:          document.getElementById('r-phone').value.trim(),
+      email:          document.getElementById('r-email').value.trim(),
+      linkedin:       document.getElementById('r-linkedin').value.trim(),
+      public:         document.getElementById('r-public').value
+    })
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || 'Submission failed');
   sucEl.innerHTML = `✅ Registration successful! Welcome to the MMPC Alumni Network. We'll be in touch soon.<br><small>Your profile will appear in the directory after review.</small>`;
   sucEl.style.display = 'block'; sucEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   btn.disabled = false; btn.textContent = '✅ Register as Alumni';

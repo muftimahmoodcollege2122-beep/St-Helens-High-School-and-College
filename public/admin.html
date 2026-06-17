@@ -267,6 +267,7 @@ textarea{resize:vertical;min-height:90px}
 
       <div class="sb-section">People</div>
       <button class="sb-link" onclick="showPage('students',this)"><span class="ic">🎒</span> Students</button>
+      <button class="sb-link" onclick="showPage('migration',this)"><span class="ic">🎓</span> Class Migration</button>
       <button class="sb-link" onclick="showPage('admissions',this)"><span class="ic">📝</span> Admissions</button>
       <button class="sb-link" onclick="showPage('attendance',this)"><span class="ic">📋</span> Attendance</button>
       <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management</button>
@@ -458,6 +459,127 @@ textarea{resize:vertical;min-height:90px}
     <!-- FEE MANAGEMENT -->
     
     <!-- ═══════════════════════════ ATTENDANCE PAGE ═══════════════════════════ -->
+    <!-- ── CLASS MIGRATION ──────────────────────────────────────────────── -->
+    <div class="adm-page" id="page-migration">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🎓 Class Migration / Year-End Promotion</h3>
+        </div>
+        <div class="card-body">
+
+          <!-- Warning banner -->
+          <div style="background:#fff8e1;border:2px solid #f59e0b;border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.4rem;display:flex;gap:.8rem;align-items:flex-start">
+            <span style="font-size:1.4rem;flex-shrink:0">⚠️</span>
+            <div>
+              <strong style="color:#92400e">Important — Read Before Proceeding</strong>
+              <p style="font-size:.82rem;color:#78350f;margin-top:.3rem;line-height:1.6">
+                Class Migration promotes students from one class to the next at year-end.
+                This operation <strong>permanently updates</strong> each student's class in the database.
+                A preview is shown first — no changes are made until you confirm.
+                Students in the highest class (FSc/FA Year 2) will be marked <strong>Passed Out</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.2rem">
+            <div>
+              <label class="field-label">Migration Type</label>
+              <select id="mig-type" onchange="migTypeChanged()">
+                <option value="single">Single Class → Next Class</option>
+                <option value="all">All Classes (Full Year-End Promotion)</option>
+              </select>
+            </div>
+            <div id="mig-from-wrap">
+              <label class="field-label">From Class</label>
+              <select id="mig-from">
+                <option value="Nursery">Nursery → Prep</option>
+                <option value="Prep">Prep → 1</option>
+                <option value="1">1 → 2</option>
+                <option value="2">2 → 3</option>
+                <option value="3">3 → 4</option>
+                <option value="4">4 → 5</option>
+                <option value="5">5 → 6</option>
+                <option value="6">6 → 7</option>
+                <option value="7">7 → 8</option>
+                <option value="8">8 → 9</option>
+                <option value="9">9 → 10</option>
+                <option value="10">10 → 11 (College)</option>
+                <option value="11">11 → 12</option>
+                <option value="12">12 → Passed Out</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Section Filter</label>
+              <select id="mig-section">
+                <option value="">All Sections</option>
+                <option>A</option><option>B</option><option>C</option><option>D</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">New Section (optional)</label>
+              <select id="mig-new-section">
+                <option value="">Keep Same Section</option>
+                <option>A</option><option>B</option><option>C</option><option>D</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Options -->
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.2rem;padding:.8rem 1rem;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0">
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.83rem;cursor:pointer">
+              <input type="checkbox" id="mig-skip-failed"> Skip students with failing results (below 40%)
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.83rem;cursor:pointer">
+              <input type="checkbox" id="mig-inactive" checked> Include inactive students
+            </label>
+          </div>
+
+          <button class="btn btn-nv" onclick="previewMigration()">🔍 Preview Migration</button>
+
+          <!-- Preview table -->
+          <div id="mig-preview" style="display:none;margin-top:1.4rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem">
+              <div>
+                <strong id="mig-preview-title" style="font-size:.95rem"></strong>
+                <span id="mig-preview-counts" style="font-size:.8rem;color:#6b7280;margin-left:.8rem"></span>
+              </div>
+              <div style="display:flex;gap:.5rem">
+                <button class="btn btn-gn" id="mig-confirm-btn" onclick="confirmMigration()">✅ Confirm & Migrate</button>
+                <button class="btn" style="background:#6b7280;color:#fff" onclick="document.getElementById('mig-preview').style.display='none'">✕ Cancel</button>
+              </div>
+            </div>
+            <div style="overflow-x:auto;max-height:420px;overflow-y:auto">
+              <table class="tbl" id="mig-preview-table">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" id="mig-check-all" onchange="migToggleAll(this)"></th>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Current Class</th>
+                    <th>Section</th>
+                    <th>→ New Class</th>
+                    <th>→ New Section</th>
+                    <th>Last Result</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="mig-preview-body"></tbody>
+              </table>
+            </div>
+            <div style="margin-top:.8rem;padding:.7rem 1rem;background:#f0fff4;border-radius:6px;border:1px solid #9ae6b4;font-size:.8rem;color:#276749" id="mig-skipped-msg" style="display:none"></div>
+          </div>
+
+          <!-- History -->
+          <div style="margin-top:2rem">
+            <h4 style="font-size:.88rem;font-weight:800;color:#1a1a2e;margin-bottom:.8rem">📋 Migration History</h4>
+            <div id="mig-history-list" style="font-size:.82rem;color:#6b7280">Loading...</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <div class="adm-page" id="page-admissions">
       <div class="card">
         <div class="card-hdr">
@@ -3570,6 +3692,220 @@ function printAdmission(idx) {
   const w = window.open('', '_blank', 'width=860,height=700');
   w.document.write(html); w.document.close();
 }
+// ── Class Migration ────────────────────────────────────────────────────────────
+const CLASS_LADDER = ['Nursery','Prep','1','2','3','4','5','6','7','8','9','10','11','12','Passed Out'];
+
+function getNextClass(cls) {
+  const i = CLASS_LADDER.indexOf(String(cls).trim());
+  return i >= 0 && i < CLASS_LADDER.length - 1 ? CLASS_LADDER[i + 1] : 'Passed Out';
+}
+
+function migTypeChanged() {
+  const single = document.getElementById('mig-type').value === 'single';
+  document.getElementById('mig-from-wrap').style.display = single ? '' : 'none';
+}
+
+let _migPreviewData = []; // holds preview rows ready for confirmation
+let _migResultsCache = {}; // rollNo → latest result percentage
+
+async function previewMigration() {
+  const token  = localStorage.getItem('mmpc_token');
+  const type   = document.getElementById('mig-type').value;
+  const fromCls= document.getElementById('mig-from').value;
+  const section= document.getElementById('mig-section').value;
+  const skipFailed = document.getElementById('mig-skip-failed').checked;
+  const inclInactive = document.getElementById('mig-inactive').checked;
+
+  showToast('Loading students...');
+
+  // Fetch all students
+  const res  = await fetch('/api/students?limit=10000', { headers:{ Authorization:'Bearer '+token } });
+  const json = await res.json();
+  let students = json.data || [];
+
+  // Fetch results for skip-failed option
+  _migResultsCache = {};
+  if (skipFailed) {
+    const rres  = await fetch('/api/results', { headers:{ Authorization:'Bearer '+token } });
+    const rjson = await rres.json();
+    (rjson.data || []).forEach(r => {
+      // pick highest percentage per rollNo
+      const existing = _migResultsCache[r.rollNo];
+      const pct = parseFloat(r.percentage) || 0;
+      if (!existing || pct > existing) _migResultsCache[r.rollNo] = pct;
+    });
+  }
+
+  // Filter by source class(es)
+  let pool = [];
+  if (type === 'single') {
+    pool = students.filter(s => String(s.class).trim() === fromCls);
+  } else {
+    pool = students.filter(s => CLASS_LADDER.indexOf(String(s.class).trim()) >= 0 && String(s.class).trim() !== 'Passed Out');
+  }
+  if (section)       pool = pool.filter(s => s.section === section);
+  if (!inclInactive) pool = pool.filter(s => (s.status||'Active') === 'Active');
+
+  // Build preview rows
+  const skipped = [];
+  _migPreviewData = [];
+
+  pool.forEach(s => {
+    const nextCls  = getNextClass(s.class);
+    const newSec   = document.getElementById('mig-new-section').value || s.section || 'A';
+    const pct      = _migResultsCache[s.rollNo];
+    const failing  = skipFailed && pct !== undefined && pct < 40;
+    if (failing) { skipped.push(s.name + ' (' + s.rollNo + ') — ' + pct.toFixed(1) + '%'); return; }
+    _migPreviewData.push({ ...s, _newClass: nextCls, _newSection: newSec, _pct: pct, _selected: true });
+  });
+
+  if (!_migPreviewData.length && !skipped.length) {
+    showToast('No students found matching this filter.', 'err');
+    document.getElementById('mig-preview').style.display = 'none';
+    return;
+  }
+
+  // Render table
+  const tbody = document.getElementById('mig-preview-body');
+  tbody.innerHTML = '';
+  _migPreviewData.forEach((s, idx) => {
+    const passedOut = s._newClass === 'Passed Out';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="checkbox" class="mig-chk" data-idx="${idx}" checked onchange="migSelectionChanged()"></td>
+      <td>${s.rollNo}</td>
+      <td>${s.name}</td>
+      <td><span style="background:#e2e8f0;padding:2px 8px;border-radius:3px;font-size:.78rem;font-weight:700">${s.class}</span></td>
+      <td>${s.section||'A'}</td>
+      <td><span style="background:${passedOut?'#fed7d7':'#c6f6d5'};color:${passedOut?'#822727':'#276749'};padding:2px 8px;border-radius:3px;font-size:.78rem;font-weight:700">${s._newClass}</span></td>
+      <td>${s._newSection}</td>
+      <td>${s._pct !== undefined ? s._pct.toFixed(1)+'%' : '<span style="color:#9ca3af">—</span>'}</td>
+      <td>
+        <select class="mig-override-class" data-idx="${idx}" style="padding:2px 6px;font-size:.75rem;border:1px solid #e2e8f0;border-radius:4px">
+          ${CLASS_LADDER.map(c=>`<option value="${c}"${c===s._newClass?' selected':''}>${c}</option>`).join('')}
+        </select>
+      </td>`;
+    tbody.appendChild(tr);
+    tr.querySelector('.mig-override-class').onchange = function() {
+      _migPreviewData[parseInt(this.dataset.idx)]._newClass = this.value;
+    };
+  });
+
+  document.getElementById('mig-check-all').checked = true;
+  document.getElementById('mig-preview-title').textContent =
+    type === 'all' ? 'Full Year-End Promotion Preview' : `Class ${fromCls} → ${getNextClass(fromCls)} Preview`;
+  document.getElementById('mig-preview-counts').textContent =
+    `${_migPreviewData.length} student(s) to migrate` + (skipped.length ? `, ${skipped.length} skipped` : '');
+
+  const skipMsg = document.getElementById('mig-skipped-msg');
+  if (skipped.length) {
+    skipMsg.style.display = 'block';
+    skipMsg.innerHTML = `<strong>Skipped (below 40%):</strong> ${skipped.join(' &nbsp;|&nbsp; ')}`;
+  } else {
+    skipMsg.style.display = 'none';
+  }
+
+  document.getElementById('mig-preview').style.display = 'block';
+  showToast(`Preview ready — ${_migPreviewData.length} students`);
+}
+
+function migToggleAll(el) {
+  document.querySelectorAll('.mig-chk').forEach(c => { c.checked = el.checked; });
+  _migPreviewData.forEach(s => s._selected = el.checked);
+  migSelectionChanged();
+}
+
+function migSelectionChanged() {
+  document.querySelectorAll('.mig-chk').forEach(c => {
+    _migPreviewData[parseInt(c.dataset.idx)]._selected = c.checked;
+  });
+  const n = _migPreviewData.filter(s => s._selected).length;
+  document.getElementById('mig-preview-counts').textContent =
+    `${n} of ${_migPreviewData.length} selected`;
+}
+
+async function confirmMigration() {
+  const selected = _migPreviewData.filter(s => s._selected);
+  if (!selected.length) { showToast('No students selected.', 'err'); return; }
+
+  const passedCount = selected.filter(s => s._newClass === 'Passed Out').length;
+  const msg = `Confirm migration of ${selected.length} student(s)?` +
+    (passedCount ? `\n\n${passedCount} student(s) will be marked "Passed Out".` : '') +
+    '\n\nThis will permanently update their class in the database.';
+  if (!confirm(msg)) return;
+
+  const token = localStorage.getItem('mmpc_token');
+  const btn   = document.getElementById('mig-confirm-btn');
+  btn.disabled = true; btn.textContent = '⏳ Migrating...';
+
+  let success = 0, failed = 0, errors = [];
+
+  // Process in batches of 20 for speed
+  const batchSize = 20;
+  for (let i = 0; i < selected.length; i += batchSize) {
+    const batch = selected.slice(i, i + batchSize);
+    await Promise.all(batch.map(async s => {
+      try {
+        const r = await fetch('/api/students/' + s._id, {
+          method: 'PUT',
+          headers: { 'Content-Type':'application/json', Authorization:'Bearer '+token },
+          body: JSON.stringify({
+            ...s,
+            class:   s._newClass,
+            section: s._newSection,
+            status:  s._newClass === 'Passed Out' ? 'Passed Out' : (s.status||'Active'),
+            _newClass: undefined, _newSection: undefined, _pct: undefined, _selected: undefined
+          })
+        });
+        const d = await r.json();
+        d.success ? success++ : (failed++, errors.push(s.name + ': ' + d.message));
+      } catch(e) { failed++; errors.push(s.name + ': ' + e.message); }
+    }));
+  }
+
+  // Save to migration history in localStorage
+  const hist = JSON.parse(localStorage.getItem('mmpc_mig_history') || '[]');
+  hist.unshift({
+    date: new Date().toLocaleString('en-PK'),
+    migrated: success, failed,
+    desc: document.getElementById('mig-preview-title').textContent
+  });
+  localStorage.setItem('mmpc_mig_history', JSON.stringify(hist.slice(0, 20)));
+
+  btn.disabled = false; btn.textContent = '✅ Confirm & Migrate';
+
+  if (failed === 0) {
+    showToast(`✅ Migration complete! ${success} students promoted.`);
+    document.getElementById('mig-preview').style.display = 'none';
+  } else {
+    showToast(`⚠️ Done: ${success} migrated, ${failed} failed.`, 'err');
+    alert('Errors:\n' + errors.join('\n'));
+  }
+
+  loadMigHistory();
+  if (typeof loadStudents === 'function') loadStudents();
+}
+
+function loadMigHistory() {
+  const hist = JSON.parse(localStorage.getItem('mmpc_mig_history') || '[]');
+  const el   = document.getElementById('mig-history-list');
+  if (!hist.length) { el.innerHTML = '<em>No migrations performed yet in this browser.</em>'; return; }
+  el.innerHTML = hist.map(h => `
+    <div style="display:flex;align-items:center;gap:1rem;padding:.55rem .8rem;background:#fff;border-radius:6px;border:1px solid #e2e8f0;margin-bottom:.4rem">
+      <span style="font-size:1rem">🎓</span>
+      <div style="flex:1">
+        <div style="font-weight:700;color:#1a1a2e;font-size:.83rem">${h.desc}</div>
+        <div style="font-size:.74rem;color:#6b7280">${h.date}</div>
+      </div>
+      <div style="text-align:right">
+        <span style="background:#c6f6d5;color:#276749;padding:2px 8px;border-radius:3px;font-size:.75rem;font-weight:700">${h.migrated} migrated</span>
+        ${h.failed ? `<span style="background:#fed7d7;color:#822727;padding:2px 8px;border-radius:3px;font-size:.75rem;font-weight:700;margin-left:.3rem">${h.failed} failed</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// Load history when page opens
+document.addEventListener('DOMContentLoaded', loadMigHistory);
 </script>
 
 <!-- ── Bulk Import Students Modal ─────────────────────────────────────────── -->

@@ -1,37 +1,33 @@
-const express = require('express');
-const router  = express.Router();
-const { readDB, writeDB, newId } = require('../db');
+const express     = require('express');
+const router      = express.Router();
+const { db, newId } = require('../db');
 const { protect } = require('../middleware/auth');
-const upload  = require('../middleware/upload');
+const upload      = require('../middleware/upload');
 
-// PUBLIC: get all toppers
 router.get('/', (req, res) => {
-  const data = readDB('toppers').sort((a,b) => (a.rank||99) - (b.rank||99));
-  res.json({ success: true, data });
+  try {
+    const data = db.prepare('SELECT json_data FROM toppers ORDER BY rank ASC, createdAt ASC').all().map(r=>JSON.parse(r.json_data));
+    res.json({ success: true, data });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-// ADMIN: add topper
-router.post('/', protect, (req, res, next) => { req.uploadDir = 'toppers'; next(); },
-  upload.single('photo'), (req, res) => {
-    const { name, class: cls, exam, year, percentage, position, subject } = req.body;
-    if (!name || !cls || !exam) return res.status(400).json({ success: false, message: 'name, class, exam required.' });
-    const all  = readDB('toppers');
-    const item = { _id: newId(), name, class: cls, exam, year: year||'', percentage: percentage||'', position: position||'', subject: subject||'', rank: all.length+1, createdAt: new Date().toISOString() };
-    if (req.file) item.photo = `/uploads/toppers/${req.file.filename}`;
-    all.push(item);
-    writeDB('toppers', all);
+router.post('/', protect, (req,res,next)=>{req.uploadDir='toppers';next();}, upload.single('photo'), (req, res) => {
+  try {
+    const { name, class: cls, exam } = req.body;
+    if (!name||!cls||!exam) return res.status(400).json({ success: false, message: 'name, class, exam required.' });
+    const count = db.prepare('SELECT COUNT(*) as c FROM toppers').get().c;
+    const item = { _id: newId(), name, class: cls, exam, year: req.body.year||'', percentage: req.body.percentage||'', position: req.body.position||'', subject: req.body.subject||'', rank: count+1, photo: req.file?`/uploads/toppers/${req.file.filename}`:'', createdAt: new Date().toISOString() };
+    db.prepare('INSERT INTO toppers(_id,rank,json_data,createdAt) VALUES (?,?,?,?)').run(item._id,item.rank,JSON.stringify(item),item.createdAt);
     res.status(201).json({ success: true, data: item });
-  }
-);
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
 
-// ADMIN: delete topper
 router.delete('/:id', protect, (req, res) => {
-  let all = readDB('toppers');
-  const idx = all.findIndex(t => t._id === req.params.id);
-  if (idx === -1) return res.status(404).json({ success: false, message: 'Not found.' });
-  all.splice(idx, 1);
-  writeDB('toppers', all);
-  res.json({ success: true, message: 'Deleted.' });
+  try {
+    const changes = db.prepare('DELETE FROM toppers WHERE _id=?').run(req.params.id).changes;
+    if (!changes) return res.status(404).json({ success: false, message: 'Not found.' });
+    res.json({ success: true, message: 'Deleted.' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
 module.exports = router;

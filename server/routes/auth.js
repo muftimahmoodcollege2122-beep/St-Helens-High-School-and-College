@@ -3,7 +3,7 @@ const express   = require('express');
 const router    = express.Router();
 const jwt       = require('jsonwebtoken');
 const bcrypt    = require('bcryptjs');
-const { readDB, writeDB } = require('../db');
+const { db, readDB, writeDB } = require('../db');
 const { protect }         = require('../middleware/auth');
 const { loginRateLimit }  = require('../middleware/rateLimit');
 
@@ -17,29 +17,25 @@ router.post('/login', loginRateLimit, async (req, res) => {
     if (!username || !password)
       return res.status(400).json({ success: false, message: 'Username and password required.' });
 
-    const users = readDB('users');
-    const user  = users.find(u => u.username === username.toLowerCase().trim());
-
-    if (!user) {
+    const row = db.prepare('SELECT json_data FROM users WHERE username=?').get(username.toLowerCase().trim());
+    if (!row) {
       res.loginFailed();
       return res.status(401).json({ success: false, message: 'Invalid username or password.' });
     }
+    const user = JSON.parse(row.json_data);
 
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
       res.loginFailed();
       return res.status(401).json({ success: false, message: 'Invalid username or password.' });
     }
-
     res.loginSuccess();
 
-    // Update lastLogin
-    const idx = users.findIndex(u => u._id === user._id);
-    users[idx].lastLogin = new Date().toISOString();
-    writeDB('users', users);
+    user.lastLogin = new Date().toISOString();
+    db.prepare('UPDATE users SET json_data=? WHERE _id=?').run(JSON.stringify(user), user._id);
 
     const token = makeToken(user._id);
-    const { password: _, ...safeUser } = users[idx];
+    const { password: _, ...safeUser } = user;
     res.json({ success: true, message: 'Login successful', token, user: safeUser });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

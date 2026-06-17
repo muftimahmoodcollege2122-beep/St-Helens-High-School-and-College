@@ -1,28 +1,51 @@
 // ── Students CRUD ─────────────────────────────────────────────────────────────
-const express        = require('express');
-const router         = express.Router();
-const { readDB, writeDB, newId } = require('../db');
-const { protect }    = require('../middleware/auth');
-const upload         = require('../middleware/upload');
+const express     = require('express');
+const router      = express.Router();
+const { db, newId } = require('../db');
+const { protect } = require('../middleware/auth');
+const upload      = require('../middleware/upload');
+
+// ── helpers ───────────────────────────────────────────────────────────────────
+function getOne(id) {
+  const row = db.prepare('SELECT json_data FROM students WHERE _id=?').get(id);
+  if (!row) return null;
+  try { return JSON.parse(row.json_data); } catch { return null; }
+}
+
+function insertStudent(item) {
+  db.prepare(`INSERT INTO students(_id,rollNo,name,class,section,status,json_data,createdAt)
+    VALUES (?,?,?,?,?,?,?,?)`)
+    .run(item._id, item.rollNo, item.name, item.class, item.section||'A',
+         item.status||'Active', JSON.stringify(item), item.createdAt);
+}
+
+function updateStudent(item) {
+  db.prepare(`UPDATE students SET rollNo=?,name=?,class=?,section=?,status=?,json_data=? WHERE _id=?`)
+    .run(item.rollNo, item.name, item.class, item.section||'A',
+         item.status||'Active', JSON.stringify(item), item._id);
+}
 
 // GET /api/students
 router.get('/', protect, (req, res) => {
   try {
     const { limit = 50, page = 1, class: cls, status, search } = req.query;
-    let data = readDB('students').sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    if (cls)    data = data.filter(s => s.class  === cls);
-    if (status) data = data.filter(s => s.status === status);
+    let sql = 'SELECT json_data FROM students WHERE 1=1';
+    const p = [];
+    if (cls)    { sql += ' AND class=?';  p.push(cls); }
+    if (status) { sql += ' AND status=?'; p.push(status); }
+    sql += ' ORDER BY createdAt DESC';
+    let data = db.prepare(sql).all(...p).map(r => { try { return JSON.parse(r.json_data); } catch { return null; } }).filter(Boolean);
     if (search) {
       const q = search.toLowerCase();
       data = data.filter(s =>
-        (s.name   || '').toLowerCase().includes(q) ||
-        (s.rollNo || '').toLowerCase().includes(q) ||
-        (s.fatherName || '').toLowerCase().includes(q)
+        (s.name||'').toLowerCase().includes(q) ||
+        (s.rollNo||'').toLowerCase().includes(q) ||
+        (s.fatherName||'').toLowerCase().includes(q)
       );
     }
     const total = data.length;
-    const pg    = Math.max(1, parseInt(page));
-    const lim   = Math.min(10000, Math.max(1, parseInt(limit)));
+    const pg  = Math.max(1, parseInt(page));
+    const lim = Math.min(10000, Math.max(1, parseInt(limit)));
     data = data.slice((pg - 1) * lim, pg * lim);
     res.json({ success: true, data, total, page: pg });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
@@ -31,7 +54,7 @@ router.get('/', protect, (req, res) => {
 // GET /api/students/:id
 router.get('/:id', protect, (req, res) => {
   try {
-    const item = readDB('students').find(s => s._id === req.params.id);
+    const item = getOne(req.params.id);
     if (!item) return res.status(404).json({ success: false, message: 'Student not found.' });
     res.json({ success: true, data: item });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
@@ -45,31 +68,28 @@ router.post('/',
   (req, res) => {
     try {
       const { rollNo, name, class: cls, gender } = req.body;
-      if (!rollNo || !name || !cls || !gender) {
+      if (!rollNo || !name || !cls || !gender)
         return res.status(400).json({ success: false, message: 'rollNo, name, class, gender are required.' });
-      }
-      const all = readDB('students');
-      // Duplicate roll number check
-      if (all.find(s => s.rollNo === rollNo.trim())) {
-        return res.status(409).json({ success: false, message: `Roll number "${rollNo}" already exists.` });
-      }
+
+      const dup = db.prepare('SELECT _id FROM students WHERE rollNo=?').get(rollNo.trim());
+      if (dup) return res.status(409).json({ success: false, message: `Roll number "${rollNo}" already exists.` });
+
       const item = {
         _id:        newId(),
         rollNo:     rollNo.trim(),
         name:       name.trim(),
-        fatherName: (req.body.fatherName || '').trim(),
-        phone:      (req.body.phone      || '').trim(),
-        fatherPhone:(req.body.fatherPhone|| '').trim(),
+        fatherName: (req.body.fatherName  || '').trim(),
+        phone:      (req.body.phone       || '').trim(),
+        fatherPhone:(req.body.fatherPhone || '').trim(),
         class:      cls.trim(),
-        section:    (req.body.section    || 'A').trim(),
+        section:    (req.body.section     || 'A').trim(),
         gender:     gender.trim(),
-        address:    (req.body.address    || '').trim(),
+        address:    (req.body.address     || '').trim(),
         status:     req.body.status || 'Active',
         photo:      req.file ? `/uploads/students/${req.file.filename}` : '',
         createdAt:  new Date().toISOString()
       };
-      all.push(item);
-      writeDB('students', all);
+      insertStudent(item);
       res.status(201).json({ success: true, message: 'Student added.', data: item });
     } catch (e) { res.status(500).json({ success: false, message: e.message }); }
   }
@@ -78,61 +98,51 @@ router.post('/',
 // PUT /api/students/:id
 router.put('/:id', protect, (req, res) => {
   try {
-    const all = readDB('students');
-    const idx = all.findIndex(s => s._id === req.params.id);
-    if (idx === -1) return res.status(404).json({ success: false, message: 'Student not found.' });
-    all[idx] = {
-      ...all[idx],
-      ...req.body,
-      _id:    req.params.id,
-      status: req.body.status || all[idx].status || 'Active'
-    };
-    writeDB('students', all);
-    res.json({ success: true, message: 'Updated.', data: all[idx] });
+    const existing = getOne(req.params.id);
+    if (!existing) return res.status(404).json({ success: false, message: 'Student not found.' });
+    const updated = { ...existing, ...req.body, _id: req.params.id };
+    updateStudent(updated);
+    res.json({ success: true, message: 'Updated.', data: updated });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-// DELETE /api/students/bulk/delete  — delete all or filtered students (MUST be before /:id)
+// DELETE /api/students/bulk/delete (MUST be before /:id)
 router.delete('/bulk/delete', protect, (req, res) => {
   try {
     const { ids, class: cls, deleteAll } = req.body;
-    let all = readDB('students');
-    const before = all.length;
+    let changes = 0;
     if (deleteAll) {
-      all = [];
+      changes = db.prepare('DELETE FROM students').run().changes;
     } else if (Array.isArray(ids) && ids.length) {
-      const idSet = new Set(ids);
-      all = all.filter(s => !idSet.has(s._id));
+      const del = db.prepare('DELETE FROM students WHERE _id=?');
+      db.transaction(() => { ids.forEach(id => { changes += del.run(id).changes; }); })();
     } else if (cls) {
-      all = all.filter(s => s.class !== cls);
+      changes = db.prepare('DELETE FROM students WHERE class=?').run(cls).changes;
     } else {
       return res.status(400).json({ success: false, message: 'Provide ids, class, or deleteAll:true' });
     }
-    writeDB('students', all);
-    res.json({ success: true, message: `Deleted ${before - all.length} student(s).`, deleted: before - all.length });
+    res.json({ success: true, message: `Deleted ${changes} student(s).`, deleted: changes });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-// POST /api/students/bulk/import  — direct SQL upsert, chunked-safe (no full table rewrite)
+// POST /api/students/bulk/import
 router.post('/bulk/import', protect, (req, res) => {
   try {
     const { rows, overwrite } = req.body;
     if (!Array.isArray(rows) || rows.length === 0)
       return res.status(400).json({ success: false, message: 'No rows provided.' });
 
-    const { db } = require('../db');
     const added = [], skipped = [], errors = [];
-
-    const tx = db.transaction(() => {
+    db.transaction(() => {
       rows.forEach((row, idx) => {
         try {
           const rollNo      = (row.rollNo || row.roll_no || row['Roll No'] || row['Roll Number'] || '').toString().trim();
           const name        = (row.name || row.Name || row['Student Name'] || row.studentName || '').toString().trim();
           const cls         = (row.class || row.Class || '').toString().trim();
           const gender      = (row.gender || row.Gender || 'Male').toString().trim();
-          const fatherName  = (row.fatherName || row['Father Name'] || row.father_name || '').toString().trim();
+          const fatherName  = (row.fatherName || row['Father Name'] || '').toString().trim();
           const phone       = (row.phone || row.Phone || '').toString().trim();
-          const fatherPhone = (row.fatherPhone || row['Father Phone'] || row.father_phone || '').toString().trim();
+          const fatherPhone = (row.fatherPhone || row['Father Phone'] || '').toString().trim();
           const section     = (row.section || row.Section || 'A').toString().trim();
           const address     = (row.address || row.Address || '').toString().trim();
           const status      = (row.status || row.Status || 'Active').toString().trim();
@@ -157,30 +167,25 @@ router.post('/bulk/import', protect, (req, res) => {
           added.push(rollNo);
         } catch (e) { errors.push(`Row ${idx+2}: ${e.message}`); }
       });
-    });
-    tx();
-
+    })();
     res.json({ success: true, message: `Import complete. Added: ${added.length}, Skipped: ${skipped.length}, Errors: ${errors.length}`, added: added.length, skipped: skipped.length, errors });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
+
 // DELETE /api/students/:id
 router.delete('/:id', protect, (req, res) => {
   try {
-    let all = readDB('students');
-    const idx = all.findIndex(s => s._id === req.params.id);
-    if (idx === -1) return res.status(404).json({ success: false, message: 'Student not found.' });
-    all.splice(idx, 1);
-    writeDB('students', all);
+    const changes = db.prepare('DELETE FROM students WHERE _id=?').run(req.params.id).changes;
+    if (!changes) return res.status(404).json({ success: false, message: 'Student not found.' });
     res.json({ success: true, message: 'Student deleted.' });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-module.exports = router;
-
-// ── CSV Export ────────────────────────────────────────────────────────────────
+// GET /api/students/export/csv (MUST be before /:id — already is via order)
 router.get('/export/csv', protect, (req, res) => {
   try {
-    const rows = readDB('students');
+    const rows = db.prepare('SELECT json_data FROM students ORDER BY createdAt ASC').all()
+      .map(r => { try { return JSON.parse(r.json_data); } catch { return null; } }).filter(Boolean);
     if (!rows.length) return res.send('No data');
     const keys = ['_id','rollNo','name','class','section','status','phone','fatherName','createdAt'];
     const header = keys.join(',');
@@ -190,3 +195,5 @@ router.get('/export/csv', protect, (req, res) => {
     res.send(header + '\n' + csv.join('\n'));
   } catch(e) { res.status(500).json({ message: e.message }); }
 });
+
+module.exports = router;

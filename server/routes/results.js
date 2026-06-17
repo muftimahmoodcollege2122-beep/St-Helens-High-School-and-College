@@ -1,226 +1,149 @@
-const express = require('express');
-const router  = express.Router();
-const { readDB, writeDB, newId } = require('../db');
+const express     = require('express');
+const router      = express.Router();
+const { db, newId } = require('../db');
 const { protect } = require('../middleware/auth');
 
-// ── PUBLIC: lookup result by roll number (no auth needed) ─────────────────────
+// PUBLIC: lookup by roll number
 router.get('/lookup', (req, res) => {
   const { rollNo, exam, year } = req.query;
   if (!rollNo) return res.status(400).json({ success: false, message: 'Roll number is required.' });
-
-  let data = readDB('results');
-  let matches = data.filter(r => r.rollNo.toLowerCase() === rollNo.toLowerCase().trim());
-
-  if (exam)  matches = matches.filter(r => r.exam === exam);
-  if (year)  matches = matches.filter(r => r.year === year);
-
-  if (matches.length === 0) {
-    return res.status(404).json({ success: false, message: 'No result found for this roll number.' });
-  }
-
-  // Return result(s) but never expose internal _id details we don't need
-  const safe = matches.map(r => ({
-    rollNo: r.rollNo,
-    studentName: r.studentName,
-    class: r.class,
-    section: r.section,
-    exam: r.exam,
-    year: r.year,
-    subjects: r.subjects,
-    remarks: r.remarks,
-    createdAt: r.createdAt
-  }));
-
+  let sql = 'SELECT json_data FROM results WHERE rollNo=? COLLATE NOCASE';
+  const p = [rollNo.trim()];
+  if (exam) { sql += ' AND exam=?'; p.push(exam); }
+  if (year) { sql += ' AND year=?'; p.push(year); }
+  const matches = db.prepare(sql).all(...p).map(r => JSON.parse(r.json_data));
+  if (!matches.length) return res.status(404).json({ success: false, message: 'No result found for this roll number.' });
+  const safe = matches.map(r => ({ rollNo: r.rollNo, studentName: r.studentName, class: r.class, section: r.section, exam: r.exam, year: r.year, subjects: r.subjects, remarks: r.remarks, createdAt: r.createdAt }));
   res.json({ success: true, data: safe });
 });
 
-// ── ADMIN: get all results (protected) ────────────────────────────────────────
+// GET /api/results
 router.get('/', protect, (req, res) => {
   const { search, exam, year } = req.query;
-  let data = readDB('results').sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  if (exam)   data = data.filter(r => r.exam === exam);
-  if (year)   data = data.filter(r => r.year === year);
+  let sql = 'SELECT json_data FROM results WHERE 1=1';
+  const p = [];
+  if (exam) { sql += ' AND exam=?'; p.push(exam); }
+  if (year) { sql += ' AND year=?'; p.push(year); }
+  sql += ' ORDER BY createdAt DESC';
+  let data = db.prepare(sql).all(...p).map(r => JSON.parse(r.json_data));
   if (search) {
     const q = search.toLowerCase();
-    data = data.filter(r =>
-      (r.rollNo || '').toLowerCase().includes(q) ||
-      (r.studentName || '').toLowerCase().includes(q)
-    );
+    data = data.filter(r => (r.rollNo||'').toLowerCase().includes(q) || (r.studentName||'').toLowerCase().includes(q));
   }
   res.json({ success: true, data, total: data.length });
 });
 
-// ── ADMIN: add result (protected) ─────────────────────────────────────────────
+// POST /api/results
 router.post('/', protect, (req, res) => {
   const { rollNo, studentName, class: cls, section, exam, year, subjects, remarks } = req.body;
-
-  if (!rollNo || !studentName || !cls || !exam || !year) {
+  if (!rollNo||!studentName||!cls||!exam||!year)
     return res.status(400).json({ success: false, message: 'rollNo, studentName, class, exam and year are required.' });
-  }
-  if (!Array.isArray(subjects) || subjects.length === 0) {
+  if (!Array.isArray(subjects)||!subjects.length)
     return res.status(400).json({ success: false, message: 'At least one subject is required.' });
-  }
-
-  const all = readDB('results');
-
-  // Prevent duplicate result for same rollNo + exam + year
-  const exists = all.find(r => r.rollNo.toLowerCase() === rollNo.toLowerCase() && r.exam === exam && r.year === year);
-  if (exists) {
-    return res.status(409).json({ success: false, message: `Result for Roll No "${rollNo}" in "${exam} ${year}" already exists. Delete and re-add to update.` });
-  }
-
-  const item = {
-    _id: newId(),
-    rollNo: rollNo.trim(),
-    studentName: studentName.trim(),
-    class: cls.trim(),
-    section: (section || 'A').trim(),
-    exam: exam.trim(),
-    year: year.trim(),
-    subjects,
-    remarks: remarks || '',
-    createdAt: new Date().toISOString()
-  };
-
-  all.push(item);
-  writeDB('results', all);
+  const dup = db.prepare('SELECT _id FROM results WHERE rollNo=? AND exam=? AND year=? COLLATE NOCASE').get(rollNo.trim(), exam, year);
+  if (dup) return res.status(409).json({ success: false, message: `Result for "${rollNo}" in "${exam} ${year}" already exists.` });
+  const item = { _id: newId(), rollNo: rollNo.trim(), studentName: studentName.trim(), class: cls.trim(), section: (section||'A').trim(), exam: exam.trim(), year: year.trim(), subjects, remarks: remarks||'', createdAt: new Date().toISOString() };
+  db.prepare('INSERT INTO results(_id,rollNo,exam,year,class,json_data,createdAt) VALUES (?,?,?,?,?,?,?)').run(item._id, item.rollNo, item.exam, item.year, item.class, JSON.stringify(item), item.createdAt);
   res.status(201).json({ success: true, message: 'Result added.', data: item });
 });
 
-// ── ADMIN: bulk import results — direct SQL upsert, chunked-safe ─────────────
+// POST /api/results/bulk
 router.post('/bulk', protect, (req, res) => {
   const { rows, exam, year, overwrite } = req.body;
-
-  if (!Array.isArray(rows) || rows.length === 0)
-    return res.status(400).json({ success: false, message: 'No rows provided.' });
-  if (!exam || !year)
-    return res.status(400).json({ success: false, message: 'exam and year are required.' });
-
+  if (!Array.isArray(rows)||!rows.length) return res.status(400).json({ success: false, message: 'No rows provided.' });
+  if (!exam||!year) return res.status(400).json({ success: false, message: 'exam and year are required.' });
   try {
-    const { db } = require('../db');
     const added = [], skipped = [], errors = [];
-
-    const tx = db.transaction(() => {
+    db.transaction(() => {
       rows.forEach((row, idx) => {
         try {
-          const rollNo      = (row.rollNo || row.roll_no || row['Roll No'] || '').toString().trim();
-          const studentName = (row.studentName || row.student_name || row['Student Name'] || row.name || '').toString().trim();
-          const cls         = (row.class || row.Class || row['Class'] || '').toString().trim();
-          const section     = (row.section || row.Section || 'A').toString().trim();
-          const remarks     = (row.remarks || row.Remarks || '').toString().trim();
-
-          if (!rollNo || !studentName || !cls) {
-            errors.push(`Row ${idx+2}: Missing rollNo, studentName or class.`); return;
-          }
-
-          // Build subjects from columns
-          const subjects = [];
+          const rollNo      = (row.rollNo||row['Roll No']||'').toString().trim();
+          const studentName = (row.studentName||row['Student Name']||row.name||'').toString().trim();
+          const cls         = (row.class||row.Class||'').toString().trim();
+          const section     = (row.section||'A').toString().trim();
+          const remarks     = (row.remarks||'').toString().trim();
+          if (!rollNo||!studentName||!cls) { errors.push(`Row ${idx+2}: Missing fields.`); return; }
           const metaKeys = new Set(['rollNo','roll_no','Roll No','studentName','student_name','Student Name','name','class','Class','section','Section','remarks','Remarks','exam','year']);
-          const keys = Object.keys(row);
-
+          const subjects = [];
           const subjectNames = new Set();
-          keys.forEach(k => {
+          Object.keys(row).forEach(k => {
             if (metaKeys.has(k)) return;
-            const lower = k.toLowerCase();
-            if (lower.endsWith('_total') || lower.endsWith('_obtained') || lower.endsWith(' total') || lower.endsWith(' obtained')) {
-              const sub = k.replace(/_total$/i,'').replace(/_obtained$/i,'').replace(/ total$/i,'').replace(/ obtained$/i,'').trim();
-              subjectNames.add(sub);
+            const l = k.toLowerCase();
+            if (l.endsWith('_total')||l.endsWith(' total')||l.endsWith('_obtained')||l.endsWith(' obtained')) {
+              subjectNames.add(k.replace(/_total$/i,'').replace(/_obtained$/i,'').replace(/ total$/i,'').replace(/ obtained$/i,'').trim());
             }
           });
-
-          if (subjectNames.size > 0) {
+          if (subjectNames.size) {
             subjectNames.forEach(sub => {
-              const totalKey = keys.find(k => k.toLowerCase() === (sub+'_total').toLowerCase() || k.toLowerCase() === (sub+' total').toLowerCase());
-              const obtKey   = keys.find(k => k.toLowerCase() === (sub+'_obtained').toLowerCase() || k.toLowerCase() === (sub+' obtained').toLowerCase());
-              const total    = totalKey ? Number(row[totalKey]) : 100;
-              const obtained = obtKey   ? Number(row[obtKey])   : 0;
-              if (sub) subjects.push({ name: sub, totalMarks: total, obtainedMarks: obtained });
+              const tKey = Object.keys(row).find(k=>k.toLowerCase()===(sub+'_total').toLowerCase()||(sub+' total').toLowerCase());
+              const oKey = Object.keys(row).find(k=>k.toLowerCase()===(sub+'_obtained').toLowerCase()||(sub+' obtained').toLowerCase());
+              subjects.push({ name: sub, totalMarks: tKey?Number(row[tKey]):100, obtainedMarks: oKey?Number(row[oKey]):0 });
             });
           } else {
-            keys.forEach(k => {
-              if (metaKeys.has(k)) return;
-              const val = Number(row[k]);
-              if (!isNaN(val) && val >= 0) subjects.push({ name: k, totalMarks: 100, obtainedMarks: val });
-            });
+            Object.keys(row).forEach(k => { if (metaKeys.has(k)) return; const v=Number(row[k]); if(!isNaN(v)&&v>=0) subjects.push({name:k,totalMarks:100,obtainedMarks:v}); });
           }
-
-          if (!subjects.length) { errors.push(`Row ${idx+2}: No subjects found for roll no ${rollNo}.`); return; }
-
+          if (!subjects.length) { errors.push(`Row ${idx+2}: No subjects.`); return; }
           const existing = db.prepare('SELECT _id FROM results WHERE rollNo=? AND exam=? AND year=? COLLATE NOCASE').get(rollNo, exam, year);
           if (existing) {
             if (overwrite) {
               const upd = { _id: existing._id, rollNo, studentName, class: cls, section, exam, year, subjects, remarks, createdAt: new Date().toISOString() };
               db.prepare('UPDATE results SET json_data=? WHERE _id=?').run(JSON.stringify(upd), existing._id);
-              skipped.push(`Row ${idx+2}: Roll No ${rollNo} updated.`);
-            } else {
-              skipped.push(`Row ${idx+2}: Roll No ${rollNo} in "${exam} ${year}" already exists — skipped.`);
-            }
+              skipped.push(`Row ${idx+2}: updated.`);
+            } else { skipped.push(`Row ${idx+2}: skipped.`); }
             return;
           }
-
           const item = { _id: newId(), rollNo, studentName, class: cls, section, exam, year, subjects, remarks, createdAt: new Date().toISOString() };
-          db.prepare('INSERT INTO results(_id,rollNo,exam,year,class,json_data,createdAt) VALUES (?,?,?,?,?,?,?)')
-            .run(item._id, rollNo, exam, year, cls, JSON.stringify(item), item.createdAt);
+          db.prepare('INSERT INTO results(_id,rollNo,exam,year,class,json_data,createdAt) VALUES (?,?,?,?,?,?,?)').run(item._id,rollNo,exam,year,cls,JSON.stringify(item),item.createdAt);
           added.push(rollNo);
-        } catch (e) { errors.push(`Row ${idx+2}: ${e.message}`); }
+        } catch(e) { errors.push(`Row ${idx+2}: ${e.message}`); }
       });
-    });
-    tx();
-
-    res.json({
-      success: true,
-      message: `Import complete. Added: ${added.length}, Skipped: ${skipped.length}, Errors: ${errors.length}`,
-      added: added.length, skipped: skipped.length, errors
-    });
-  } catch (e) { res.status(400).json({ success: false, message: e.message }); }
+    })();
+    res.json({ success: true, message: `Added: ${added.length}, Skipped: ${skipped.length}, Errors: ${errors.length}`, added: added.length, skipped: skipped.length, errors });
+  } catch(e) { res.status(400).json({ success: false, message: e.message }); }
 });
-// ── ADMIN: bulk delete results (protected) ────────────────────────────────────
+
+// DELETE /api/results/bulk/delete
 router.delete('/bulk/delete', protect, (req, res) => {
   try {
     const { ids, exam, year, deleteAll } = req.body;
-    let all = readDB('results');
-    const before = all.length;
+    let changes = 0;
     if (deleteAll) {
-      all = [];
-    } else if (Array.isArray(ids) && ids.length) {
-      const idSet = new Set(ids);
-      all = all.filter(r => !idSet.has(r._id));
-    } else if (exam || year) {
-      all = all.filter(r => {
-        if (exam && year) return !(r.exam === exam && r.year === year);
-        if (exam) return r.exam !== exam;
-        return r.year !== year;
-      });
+      changes = db.prepare('DELETE FROM results').run().changes;
+    } else if (Array.isArray(ids)&&ids.length) {
+      const del = db.prepare('DELETE FROM results WHERE _id=?');
+      db.transaction(()=>{ ids.forEach(id=>{ changes+=del.run(id).changes; }); })();
+    } else if (exam||year) {
+      let sql = 'DELETE FROM results WHERE 1=1';
+      const p = [];
+      if (exam) { sql+=' AND exam=?'; p.push(exam); }
+      if (year) { sql+=' AND year=?'; p.push(year); }
+      changes = db.prepare(sql).run(...p).changes;
     } else {
       return res.status(400).json({ success: false, message: 'Provide ids, exam/year, or deleteAll:true' });
     }
-    writeDB('results', all);
-    res.json({ success: true, message: `Deleted ${before - all.length} result(s).`, deleted: before - all.length });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+    res.json({ success: true, message: `Deleted ${changes} result(s).`, deleted: changes });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
-// ── ADMIN: delete result (protected) ──────────────────────────────────────────
+// DELETE /api/results/:id
 router.delete('/:id', protect, (req, res) => {
-  let all = readDB('results');
-  const idx = all.findIndex(r => r._id === req.params.id);
-  if (idx === -1) return res.status(404).json({ success: false, message: 'Not found.' });
-  all.splice(idx, 1);
-  writeDB('results', all);
+  const changes = db.prepare('DELETE FROM results WHERE _id=?').run(req.params.id).changes;
+  if (!changes) return res.status(404).json({ success: false, message: 'Not found.' });
   res.json({ success: true, message: 'Deleted.' });
 });
 
-module.exports = router;
-
-// ── CSV Export ────────────────────────────────────────────────────────────────
+// GET /api/results/export/csv
 router.get('/export/csv', protect, (req, res) => {
   try {
-    const rows = readDB('results');
+    const rows = db.prepare('SELECT json_data FROM results ORDER BY createdAt ASC').all().map(r=>JSON.parse(r.json_data));
     if (!rows.length) return res.send('No data');
-    const keys = ['_id','rollNo','name','class','exam','year','total','obtained','grade','createdAt'];
+    const keys = ['_id','rollNo','studentName','class','exam','year','remarks','createdAt'];
     const header = keys.join(',');
-    const csv = rows.map(r => keys.map(k => `"${String(r[k]||'').replace(/"/g,'""')}"`).join(','));
+    const csv = rows.map(r => keys.map(k=>`"${String(r[k]||'').replace(/"/g,'""')}"`).join(','));
     res.setHeader('Content-Type','text/csv');
     res.setHeader('Content-Disposition','attachment; filename=results.csv');
-    res.send(header + '\n' + csv.join('\n'));
+    res.send(header+'\n'+csv.join('\n'));
   } catch(e) { res.status(500).json({ message: e.message }); }
 });
+
+module.exports = router;

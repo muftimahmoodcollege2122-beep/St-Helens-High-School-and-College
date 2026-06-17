@@ -1,40 +1,46 @@
-const express = require('express');
-const router  = express.Router();
-const { readDB, writeDB, newId } = require('../db');
+const router      = require('express').Router();
+const { db, newId } = require('../db');
 const { protect } = require('../middleware/auth');
 
 router.post('/', (req, res) => {
-  const { name, email, subject, message } = req.body;
-  if (!name || !email || !subject || !message)
-    return res.status(400).json({ success: false, message: 'name, email, subject, message required.' });
-  const all  = readDB('contact');
-  const item = { _id: newId(), name, email, phone: req.body.phone||'', subject, message, status:'unread', createdAt: new Date().toISOString() };
-  all.push(item);
-  writeDB('contact', all);
-  res.status(201).json({ success: true, message: 'Message sent! We will get back to you soon.' });
+  try {
+    const { name, email, subject, message } = req.body;
+    if (!name||!email||!subject||!message)
+      return res.status(400).json({ success: false, message: 'name, email, subject, message required.' });
+    const item = { _id: newId(), name, email, phone: req.body.phone||'', subject, message, status:'unread', createdAt: new Date().toISOString() };
+    db.prepare('INSERT INTO contact(_id,status,json_data,createdAt) VALUES (?,?,?,?)').run(item._id,'unread',JSON.stringify(item),item.createdAt);
+    res.status(201).json({ success: true, message: 'Message sent! We will get back to you soon.' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
 router.get('/', protect, (req, res) => {
-  const data = readDB('contact').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  res.json({ success: true, data, total: data.length });
+  try {
+    const { status } = req.query;
+    let sql = 'SELECT json_data FROM contact WHERE 1=1';
+    const p = [];
+    if (status) { sql += ' AND status=?'; p.push(status); }
+    sql += ' ORDER BY createdAt DESC';
+    const data = db.prepare(sql).all(...p).map(r=>JSON.parse(r.json_data));
+    res.json({ success: true, data, total: data.length });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
 router.put('/:id', protect, (req, res) => {
-  const all = readDB('contact');
-  const idx = all.findIndex(c => c._id === req.params.id);
-  if (idx === -1) return res.status(404).json({ success: false, message: 'Not found.' });
-  all[idx] = { ...all[idx], ...req.body, _id: req.params.id };
-  writeDB('contact', all);
-  res.json({ success: true, message: 'Updated.', data: all[idx] });
+  try {
+    const row = db.prepare('SELECT json_data FROM contact WHERE _id=?').get(req.params.id);
+    if (!row) return res.status(404).json({ success: false, message: 'Not found.' });
+    const updated = { ...JSON.parse(row.json_data), ...req.body, _id: req.params.id };
+    db.prepare('UPDATE contact SET status=?,json_data=? WHERE _id=?').run(updated.status||'unread',JSON.stringify(updated),req.params.id);
+    res.json({ success: true, message: 'Updated.', data: updated });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
 router.delete('/:id', protect, (req, res) => {
-  let all = readDB('contact');
-  const idx = all.findIndex(c => c._id === req.params.id);
-  if (idx === -1) return res.status(404).json({ success: false, message: 'Not found.' });
-  all.splice(idx, 1);
-  writeDB('contact', all);
-  res.json({ success: true, message: 'Deleted.' });
+  try {
+    const changes = db.prepare('DELETE FROM contact WHERE _id=?').run(req.params.id).changes;
+    if (!changes) return res.status(404).json({ success: false, message: 'Not found.' });
+    res.json({ success: true, message: 'Deleted.' });
+  } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
 module.exports = router;

@@ -73,15 +73,89 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_results_year   ON results(year);
 
   CREATE TABLE IF NOT EXISTS admissions (
-    _id        TEXT PRIMARY KEY,
-    studentName TEXT,
+    _id           TEXT PRIMARY KEY,
+    studentName   TEXT,
     applyingClass TEXT,
-    status     TEXT DEFAULT 'Pending',
-    json_data  TEXT NOT NULL,
-    createdAt  TEXT
+    status        TEXT DEFAULT 'Pending',
+    json_data     TEXT NOT NULL,
+    createdAt     TEXT
   );
   CREATE INDEX IF NOT EXISTS idx_admissions_status ON admissions(status);
   CREATE INDEX IF NOT EXISTS idx_admissions_class  ON admissions(applyingClass);
+
+  CREATE TABLE IF NOT EXISTS users (
+    _id        TEXT PRIMARY KEY,
+    username   TEXT NOT NULL UNIQUE,
+    role       TEXT DEFAULT 'admin',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+
+  CREATE TABLE IF NOT EXISTS teacher_accounts (
+    _id        TEXT PRIMARY KEY,
+    username   TEXT NOT NULL UNIQUE,
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_ta_username ON teacher_accounts(username);
+
+  CREATE TABLE IF NOT EXISTS teachers (
+    _id        TEXT PRIMARY KEY,
+    name       TEXT NOT NULL,
+    status     TEXT DEFAULT 'Active',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS news (
+    _id        TEXT PRIMARY KEY,
+    category   TEXT DEFAULT 'General',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_news_category ON news(category);
+
+  CREATE TABLE IF NOT EXISTS events (
+    _id        TEXT PRIMARY KEY,
+    date       TEXT,
+    status     TEXT DEFAULT 'upcoming',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_events_date ON events(date);
+
+  CREATE TABLE IF NOT EXISTS gallery (
+    _id        TEXT PRIMARY KEY,
+    category   TEXT DEFAULT 'Other',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_gallery_category ON gallery(category);
+
+  CREATE TABLE IF NOT EXISTS toppers (
+    _id        TEXT PRIMARY KEY,
+    rank       INTEGER DEFAULT 99,
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS contact (
+    _id        TEXT PRIMARY KEY,
+    status     TEXT DEFAULT 'unread',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_contact_status ON contact(status);
+
+  CREATE TABLE IF NOT EXISTS homework (
+    _id        TEXT PRIMARY KEY,
+    class      TEXT,
+    section    TEXT DEFAULT 'A',
+    json_data  TEXT NOT NULL,
+    createdAt  TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_homework_class ON homework(class);
 
   CREATE TABLE IF NOT EXISTS documents (
     _id        TEXT PRIMARY KEY,
@@ -97,7 +171,24 @@ db.exec(`
   );
 `);
 
-// ── ID generator ─────────────────────────────────────────────────────────────
+// ── Seed admin user on first run ──────────────────────────────────────────────
+const bcrypt = require('bcryptjs');
+const existing = db.prepare('SELECT _id FROM users WHERE username=?').get('admin');
+if (!existing) {
+  const hash = bcrypt.hashSync('admin123', 10);
+  const adminId = newId();
+  const adminUser = {
+    _id: adminId, username: 'admin', password: hash,
+    role: 'admin', name: 'Administrator',
+    createdAt: new Date().toISOString()
+  };
+  db.prepare('INSERT INTO users(_id,username,role,json_data,createdAt) VALUES (?,?,?,?,?)')
+    .run(adminId, 'admin', 'admin', JSON.stringify(adminUser), adminUser.createdAt);
+  console.log('✅  Default admin created — username: admin / password: admin123');
+  console.log('⚠️   Change the password immediately after first login!');
+}
+
+
 function newId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
 }
@@ -108,12 +199,25 @@ function parseRows(rows) {
 
 // ── readDB ────────────────────────────────────────────────────────────────────
 function readDB(collection) {
-  if (collection === 'students')   return parseRows(db.prepare('SELECT json_data FROM students ORDER BY createdAt ASC').all());
-  if (collection === 'attendance') return parseRows(db.prepare('SELECT json_data FROM attendance ORDER BY date ASC, createdAt ASC').all());
-  if (collection === 'fees')       return parseRows(db.prepare('SELECT json_data FROM fees ORDER BY createdAt ASC').all());
-  if (collection === 'results')    return parseRows(db.prepare('SELECT json_data FROM results ORDER BY createdAt ASC').all());
-  if (collection === 'admissions') return parseRows(db.prepare('SELECT json_data FROM admissions ORDER BY createdAt DESC').all());
-  return parseRows(db.prepare('SELECT json_data FROM documents WHERE collection = ? ORDER BY createdAt ASC').all(collection));
+  const TABLE_MAP = {
+    students:         'SELECT json_data FROM students ORDER BY createdAt ASC',
+    attendance:       'SELECT json_data FROM attendance ORDER BY date ASC, createdAt ASC',
+    fees:             'SELECT json_data FROM fees ORDER BY createdAt ASC',
+    results:          'SELECT json_data FROM results ORDER BY createdAt ASC',
+    admissions:       'SELECT json_data FROM admissions ORDER BY createdAt DESC',
+    users:            'SELECT json_data FROM users ORDER BY createdAt ASC',
+    'teacher-accounts': 'SELECT json_data FROM teacher_accounts ORDER BY createdAt ASC',
+    teachers:         'SELECT json_data FROM teachers ORDER BY createdAt ASC',
+    news:             'SELECT json_data FROM news ORDER BY createdAt DESC',
+    events:           'SELECT json_data FROM events ORDER BY date ASC',
+    gallery:          'SELECT json_data FROM gallery ORDER BY createdAt DESC',
+    toppers:          'SELECT json_data FROM toppers ORDER BY rank ASC',
+    contact:          'SELECT json_data FROM contact ORDER BY createdAt DESC',
+    homework:         'SELECT json_data FROM homework ORDER BY createdAt DESC',
+  };
+  const sql = TABLE_MAP[collection];
+  if (sql) return parseRows(db.prepare(sql).all());
+  return parseRows(db.prepare('SELECT json_data FROM documents WHERE collection=? ORDER BY createdAt ASC').all(collection));
 }
 
 // ── writeDB ───────────────────────────────────────────────────────────────────
@@ -123,39 +227,81 @@ function writeDB(collection, dataArray) {
   const tx = db.transaction((rows) => {
     if (collection === 'students') {
       db.prepare('DELETE FROM students').run();
-      const ins = db.prepare(`INSERT INTO students(_id,rollNo,name,class,section,status,json_data,createdAt) VALUES (@_id,@rollNo,@name,@class,@section,@status,@json_data,@createdAt)`);
-      for (const r of rows) ins.run({ _id: r._id, rollNo: r.rollNo||'', name: r.name||'', class: r.class||'', section: r.section||'A', status: r.status||'Active', json_data: JSON.stringify(r), createdAt: r.createdAt||new Date().toISOString() });
+      const ins = db.prepare('INSERT INTO students(_id,rollNo,name,class,section,status,json_data,createdAt) VALUES (@_id,@rollNo,@name,@class,@section,@status,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), rollNo:r.rollNo||'', name:r.name||'', class:r.class||'', section:r.section||'A', status:r.status||'Active', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
       return;
     }
     if (collection === 'attendance') {
       db.prepare('DELETE FROM attendance').run();
-      const ins = db.prepare(`INSERT INTO attendance(_id,rollNo,date,class,section,status,json_data,createdAt) VALUES (@_id,@rollNo,@date,@class,@section,@status,@json_data,@createdAt)`);
-      for (const r of rows) ins.run({ _id: r._id, rollNo: r.rollNo||'', date: r.date||'', class: r.class||'', section: r.section||'A', status: r.status||'Present', json_data: JSON.stringify(r), createdAt: r.createdAt||new Date().toISOString() });
+      const ins = db.prepare('INSERT INTO attendance(_id,rollNo,date,class,section,status,json_data,createdAt) VALUES (@_id,@rollNo,@date,@class,@section,@status,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), rollNo:r.rollNo||'', date:r.date||'', class:r.class||'', section:r.section||'A', status:r.status||'Present', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
       return;
     }
     if (collection === 'fees') {
       db.prepare('DELETE FROM fees').run();
-      const ins = db.prepare(`INSERT INTO fees(_id,student_id,month,status,json_data,createdAt) VALUES (@_id,@student_id,@month,@status,@json_data,@createdAt)`);
-      for (const r of rows) ins.run({ _id: r._id, student_id: r.student||'', month: r.month||'', status: r.status||'Unpaid', json_data: JSON.stringify(r), createdAt: r.createdAt||new Date().toISOString() });
+      const ins = db.prepare('INSERT INTO fees(_id,student_id,month,status,json_data,createdAt) VALUES (@_id,@student_id,@month,@status,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), student_id:r.student||'', month:r.month||'', status:r.status||'Unpaid', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
       return;
     }
     if (collection === 'results') {
       db.prepare('DELETE FROM results').run();
-      const ins = db.prepare(`INSERT INTO results(_id,rollNo,exam,year,class,json_data,createdAt) VALUES (@_id,@rollNo,@exam,@year,@class,@json_data,@createdAt)`);
-      for (const r of rows) ins.run({ _id: r._id, rollNo: r.rollNo||'', exam: r.exam||'', year: r.year||'', class: r.class||'', json_data: JSON.stringify(r), createdAt: r.createdAt||new Date().toISOString() });
+      const ins = db.prepare('INSERT INTO results(_id,rollNo,exam,year,class,json_data,createdAt) VALUES (@_id,@rollNo,@exam,@year,@class,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), rollNo:r.rollNo||'', exam:r.exam||'', year:r.year||'', class:r.class||'', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
       return;
     }
     if (collection === 'admissions') {
       db.prepare('DELETE FROM admissions').run();
       const ins = db.prepare('INSERT INTO admissions(_id,studentName,applyingClass,status,json_data,createdAt) VALUES (@_id,@studentName,@applyingClass,@status,@json_data,@createdAt)');
-      for (const r of rows) ins.run({ _id: r._id||newId(), studentName: r.studentName||'', applyingClass: r.applyingClass||'', status: r.status||'Pending', json_data: JSON.stringify(r), createdAt: r.createdAt||new Date().toISOString() });
+      for (const r of rows) ins.run({ _id:r._id||newId(), studentName:r.studentName||'', applyingClass:r.applyingClass||'', status:r.status||'Pending', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
       return;
     }
-    db.prepare('DELETE FROM documents WHERE collection = ?').run(collection);
-    const ins = db.prepare(`INSERT INTO documents(_id,collection,json_data,createdAt) VALUES (@_id,@collection,@json_data,@createdAt)`);
-    for (const r of rows) ins.run({ _id: r._id||newId(), collection, json_data: JSON.stringify(r), createdAt: r.createdAt||new Date().toISOString() });
+    if (collection === 'teachers') {
+      db.prepare('DELETE FROM teachers').run();
+      const ins = db.prepare('INSERT INTO teachers(_id,name,status,json_data,createdAt) VALUES (@_id,@name,@status,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), name:r.name||'', status:r.status||'Active', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
+      return;
+    }
+    if (collection === 'news') {
+      db.prepare('DELETE FROM news').run();
+      const ins = db.prepare('INSERT INTO news(_id,category,json_data,createdAt) VALUES (@_id,@category,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), category:r.category||'General', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
+      return;
+    }
+    if (collection === 'events') {
+      db.prepare('DELETE FROM events').run();
+      const ins = db.prepare('INSERT INTO events(_id,date,status,json_data,createdAt) VALUES (@_id,@date,@status,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), date:r.date||'', status:r.status||'upcoming', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
+      return;
+    }
+    if (collection === 'gallery') {
+      db.prepare('DELETE FROM gallery').run();
+      const ins = db.prepare('INSERT INTO gallery(_id,category,json_data,createdAt) VALUES (@_id,@category,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), category:r.category||'Other', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
+      return;
+    }
+    if (collection === 'toppers') {
+      db.prepare('DELETE FROM toppers').run();
+      const ins = db.prepare('INSERT INTO toppers(_id,rank,json_data,createdAt) VALUES (@_id,@rank,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), rank:r.rank||99, json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
+      return;
+    }
+    if (collection === 'contact') {
+      db.prepare('DELETE FROM contact').run();
+      const ins = db.prepare('INSERT INTO contact(_id,status,json_data,createdAt) VALUES (@_id,@status,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), status:r.status||'unread', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
+      return;
+    }
+    if (collection === 'homework') {
+      db.prepare('DELETE FROM homework').run();
+      const ins = db.prepare('INSERT INTO homework(_id,class,section,json_data,createdAt) VALUES (@_id,@class,@section,@json_data,@createdAt)');
+      for (const r of rows) ins.run({ _id:r._id||newId(), class:r.class||'', section:r.section||'A', json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
+      return;
+    }
+    // Generic fallback
+    db.prepare('DELETE FROM documents WHERE collection=?').run(collection);
+    const ins = db.prepare('INSERT INTO documents(_id,collection,json_data,createdAt) VALUES (@_id,@collection,@json_data,@createdAt)');
+    for (const r of rows) ins.run({ _id:r._id||newId(), collection, json_data:JSON.stringify(r), createdAt:r.createdAt||new Date().toISOString() });
   });
-
   tx(dataArray);
 }
 

@@ -82,7 +82,7 @@ router.post('/bulk', protect, async (req, res) => {
           const r = await fetch(`https://graph.facebook.com/v19.0/${waPhoneId}/messages`, {
             method: 'POST',
             headers: { 'Content-Type':'application/json','Authorization':`Bearer ${waToken}` },
-            body: JSON.stringify({ messaging_product:'whatsapp', to: phone.replace(/[^0-9]/g,''), type:'text', text:{ body:`Dear Parent, your child *${a.studentName}* was *Absent* today (${date}).\nPlease contact school if needed.\n— SHHS Pakistan` } })
+            body: JSON.stringify({ messaging_product:'whatsapp', to: phone.replace(/[^0-9]/g,''), type:'text', text:{ body:`Dear Parent, your child *${a.studentName}* was *Absent* today (${date}).\nPlease contact school if needed.\n— St. Helen&#39;s High School &amp; College` } })
           });
           if (r.ok) waSent++;
         } catch(_) {}

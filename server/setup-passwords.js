@@ -1,4 +1,4 @@
-// ── SHHS Password & Security Setup ───────────────────────────────────────────
+// ── St. Helen's Password & Security Setup ───────────────────────────────────────────
 // Run ONCE after npm install to set strong passwords and JWT secret.
 // Usage: node server/setup-passwords.js
 //
@@ -110,7 +110,7 @@ async function updateTeacherPassword(hash) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('\n🔐  SHHS Security Setup\n' + '─'.repeat(44));
+  console.log('\n🔐  St. Helen's Security Setup\n' + '─'.repeat(44));
 
   const adminPwd   = genPassword(16);
   const teacherPwd = genPassword(16);

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Photo Gallery — St. Helen's High School & College</title>
-<meta name="description" content="Explore SHHS's photo gallery — campus life, events, sports, labs and more.">
+<title>Photo Gallery — St. Helen&#39;s High School &amp; College</title>
+<meta name="description" content="Explore St. Helen's photo gallery — campus life, events, sports, labs and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@400;600;700;800;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -19,7 +19,7 @@ body{font-family:'Nunito',sans-serif;background:var(--of);color:#111827;overflow
 nav{position:sticky;top:0;z-index:999;background:var(--nv2);border-bottom:3px solid var(--gd);box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .navi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:64px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);overflow:hidden;flex-shrink:0}
+.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.5);overflow:hidden;flex-shrink:0}
 .brand-logo img{width:100%;height:100%;object-fit:cover}
 .brand-txt{color:var(--wh);font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2}
 .brand-txt small{display:block;font-family:'Nunito',sans-serif;font-size:.6rem;color:var(--gd2);letter-spacing:.07em;font-weight:600}
@@ -146,7 +146,7 @@ footer ul li a:hover{color:var(--gd2)}
   <span>📍 Qasim Road, Cantt, Dera Ismail Khan, KP</span>
   <span>
     📞 <a href="tel:+92xxxxxxxxxx">+92-xxx-xxxxxxx</a>
-    ✉️ <a href="mailto:info@shhs.edu.pk">info@shhs.edu.pk</a>
+    ✉️ <a href="mailto:info@sthelens.edu.pk">info@sthelens.edu.pk</a>
     <a href="/admin" style="margin-left:1.2rem;background:rgba(200,149,42,.2);padding:2px 8px;border-radius:3px">🔐 Admin</a>
   </span>
 </div>
@@ -155,7 +155,7 @@ footer ul li a:hover{color:var(--gd2)}
 <nav>
   <div class="navi">
     <a class="brand" href="/">
-      <div class="brand-logo"><img src="/images/logo.jpg" alt="SHHS"></div>
+      <div class="brand-logo"><img src="/images/logo.jpg" alt="St. Helen&#39;s High School &amp; College"></div>
       <div class="brand-txt">St. Helen&#39;s High School &amp; College<small>Wisdom &bull; Justice &bull; Peace &mdash; Est. 1955</small></div>
     </a>
     <ul class="nav-ul">
@@ -270,7 +270,7 @@ footer ul li a:hover{color:var(--gd2)}
   <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-brand">
-        <span class="fl">St. Helen's High School & College</span>
+        <span class="fl">St. Helen&#39;s High School &amp; College</span>
         <p>Quality education in Pakistan since our establishment. Combining modern academics with Islamic values.</p>
       </div>
       <div>
@@ -304,7 +304,7 @@ footer ul li a:hover{color:var(--gd2)}
 <script>
 const STATIC = [
   {_id:'s1',imageUrl:'/images/campus8.png',title:'Main Building',description:'Front view of the main school building',category:'Campus',featured:true},
-  {_id:'s2',imageUrl:'/images/campus2.webp',title:'College Entrance',description:'The grand entrance to SHHS',category:'Campus',featured:false},
+  {_id:'s2',imageUrl:'/images/campus2.webp',title:'College Entrance',description:'The grand entrance to St. Helen's',category:'Campus',featured:false},
   {_id:'s3',imageUrl:'/images/campus1.webp',title:'Boys Senior Block',description:'Senior section academic block',category:'Campus',featured:false},
   {_id:'s4',imageUrl:'/images/campus6.webp',title:'College Hall',description:'Main auditorium for events and assemblies',category:'Events',featured:true},
   {_id:'s5',imageUrl:'/images/campus3.webp',title:'Campus Garden',description:'Green spaces for students',category:'Campus',featured:false},
@@ -386,7 +386,7 @@ function renderPage(append = false) {
     el.dataset.idx = filteredItems.indexOf(item);
     el.onclick = () => openLightbox(parseInt(el.dataset.idx));
     el.innerHTML = `
-      <img src="${item.imageUrl}" alt="${item.title}" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a3270,#2a4494)'">
+      <img src="${item.imageUrl}" alt="${item.title}" loading="lazy" onerror="this.parentElement.style.background='linear-gradient(135deg,#283593,#3949ab)'">
       <div class="git-overlay">
         <div class="git-title">${item.title}</div>
         <div class="git-cat">${item.category}</div>

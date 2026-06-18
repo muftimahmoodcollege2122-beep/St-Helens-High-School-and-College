@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel – SHHS Pakistan</title>
+<title>Admin Panel – St. Helen&#39;s High School &amp; College</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --nv:#0d1f4a;--nv2:#1a3270;--nv3:#2a4494;
-  --gd:#c8952a;--gd2:#e8b84b;
+  --nv:#1a237e;--nv2:#283593;--nv3:#3949ab;
+  --gd:#E8541A;--gd2:#f5a623;
   --wh:#fff;--of:#f0f4ff;--gr:#6b7280;
   --gn:#38a169;--rd:#e53e3e;--or:#dd6b20;--bl:#3182ce;
   --sb-w:240px;--hdr-h:60px;
@@ -20,7 +20,7 @@ body{font-family:'Nunito',sans-serif;background:var(--of);color:#111827;overflow
 #login-screen{min-height:100vh;background:linear-gradient(160deg,var(--nv) 0%,var(--nv2) 60%,#1e3d8f 100%);display:flex;align-items:center;justify-content:center}
 #login-screen::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 80px)}
 .lbox{background:rgba(255,255,255,.04);border:1px solid rgba(200,149,42,.25);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative;backdrop-filter:blur(10px)}
-.lbox-logo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--nv3),var(--nv));border:3px solid var(--gd);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--gd2);margin:0 auto 1.2rem}
+.lbox-logo{width:90px;height:90px;border-radius:50%;border:3px solid var(--gd);overflow:hidden;margin:0 auto 1.2rem;background:var(--nv)}
 .lbox h2{text-align:center;font-family:'Playfair Display',serif;color:var(--wh);font-size:1.35rem;margin-bottom:.25rem}
 .lbox p{text-align:center;color:rgba(255,255,255,.5);font-size:.78rem;margin-bottom:1.8rem}
 .lf label{display:block;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
@@ -37,7 +37,7 @@ body{font-family:'Nunito',sans-serif;background:var(--of);color:#111827;overflow
 /* Sidebar */
 .sb{position:fixed;top:0;left:0;width:var(--sb-w);height:100vh;background:var(--nv);display:flex;flex-direction:column;z-index:100;overflow-y:auto;transition:.3s}
 .sb-brand{padding:1.2rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.7rem}
-.sb-logo{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--nv3),var(--nv));border:2px solid var(--gd);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1rem;font-weight:900;color:var(--gd2);flex-shrink:0}
+.sb-logo{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.4);overflow:hidden;flex-shrink:0;background:var(--nv)}
 .sb-brand-txt{font-size:.75rem;font-weight:800;color:var(--wh);line-height:1.2}
 .sb-brand-txt span{display:block;font-size:.6rem;color:rgba(255,255,255,.45);font-weight:600}
 .sb-nav{padding:.8rem 0;flex:1}
@@ -230,7 +230,7 @@ textarea{resize:vertical;min-height:90px}
 <!-- ════════════════════ LOGIN ════════════════════ -->
 <div id="login-screen">
   <div class="lbox">
-    <div class="lbox-logo" style="background:none;padding:0;overflow:hidden"><img src="/images/logo.jpg" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+    <div class="lbox-logo" style="background:none;padding:0;overflow:hidden"><img src="/images/logo.jpg" alt="St. Helen&#39;s High School &amp; College" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
     <h2>Admin Panel</h2>
     <p>St. Helen's High School &amp; College<br>Pakistan – Secure Access</p>
     <div class="lf">
@@ -253,8 +253,8 @@ textarea{resize:vertical;min-height:90px}
   <!-- Sidebar -->
   <aside class="sb" id="sidebar">
     <div class="sb-brand">
-      <div class="sb-logo" style="background:none;padding:0;overflow:hidden"><img src="/images/logo.jpg" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
-      <div class="sb-brand-txt">SHHS Admin<span>Pakistan Control Panel</span></div>
+      <div class="sb-logo" style="background:none;padding:0;overflow:hidden"><img src="/images/logo.jpg" alt="St. Helen&#39;s High School &amp; College" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>
+      <div class="sb-brand-txt">St. Helen&#39;s<span style="font-size:.6rem;opacity:.6">Wisdom • Justice • Peace</span><span>Admin Panel</span></div>
     </div>
     <nav class="sb-nav">
       <div class="sb-section">Main</div>
@@ -971,11 +971,11 @@ textarea{resize:vertical;min-height:90px}
           <div class="card-body">
             <div class="form-group">
               <label>Tagline (small text above title)</label>
-              <input type="text" id="s-heroTagline" placeholder="⭐ St. Helen's High School & College">
+              <input type="text" id="s-heroTagline" placeholder="⭐ St. Helen&#39;s High School &amp; College">
             </div>
             <div class="form-group">
               <label>Main Title</label>
-              <input type="text" id="s-heroTitle" placeholder="St. Helen's High School & College">
+              <input type="text" id="s-heroTitle" placeholder="St. Helen&#39;s High School &amp; College">
             </div>
             <div class="form-group">
               <label>Subtitle / Location</label>
@@ -1112,11 +1112,11 @@ textarea{resize:vertical;min-height:90px}
             </div>
             <div class="form-group">
               <label>Email 1 (Main)</label>
-              <input type="text" id="s-contactEmail1" placeholder="info@shhs.edu.pk">
+              <input type="text" id="s-contactEmail1" placeholder="info@sthelens.edu.pk">
             </div>
             <div class="form-group">
               <label>Email 2 (Admissions)</label>
-              <input type="text" id="s-contactEmail2" placeholder="admissions@shhs.edu.pk">
+              <input type="text" id="s-contactEmail2" placeholder="admissions@sthelens.edu.pk">
             </div>
           </div>
           <div class="form-group">
@@ -1223,7 +1223,7 @@ textarea{resize:vertical;min-height:90px}
           <div class="form-row">
             <div class="form-group"><label>WhatsApp Number (with country code)</label><input type="text" id="s-whatsappNumber" placeholder="923001234567"></div>
           </div>
-          <div class="form-group"><label>Default Message (shown when they open WhatsApp)</label><input type="text" id="s-whatsappMessage" placeholder="Assalamu Alaikum! I would like to get information about SHHS."></div>
+          <div class="form-group"><label>Default Message (shown when they open WhatsApp)</label><input type="text" id="s-whatsappMessage" placeholder="Assalamu Alaikum! I would like to get information about St. Helen&#39;s High School &amp; College."></div>
           <div class="form-group" style="display:flex;align-items:center;gap:.8rem">
             <input type="checkbox" id="s-whatsappEnabled" style="width:auto;accent-color:var(--gd)">
             <label for="s-whatsappEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:.85rem">Enable WhatsApp button on website</label>
@@ -1475,7 +1475,7 @@ textarea{resize:vertical;min-height:90px}
       <div id="tch-alert" class="alert alert-err"></div>
       <input type="hidden" id="tc-id">
       <div class="form-group" style="text-align:center;margin-bottom:1.2rem">
-        <div id="tc-photo-preview" style="width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#1a3270,#2a4494);margin:0 auto .8rem;overflow:hidden;border:3px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:rgba(255,255,255,.4)">👤</div>
+        <div id="tc-photo-preview" style="width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#283593,#3949ab);margin:0 auto .8rem;overflow:hidden;border:3px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:rgba(255,255,255,.4)">👤</div>
         <label style="cursor:pointer;display:inline-block">
           <span class="btn" style="font-size:.75rem;padding:.35rem .9rem">📷 Upload Photo</span>
           <input type="file" id="tc-photo" accept="image/*" style="display:none" onchange="previewFacultyPhoto(this)">
@@ -2440,7 +2440,7 @@ function renderResults(data) {
     const totalMax = (r.subjects || []).reduce((s, sub) => s + Number(sub.totalMarks), 0);
     const pct = totalMax > 0 ? ((totalObt / totalMax) * 100).toFixed(1) : 0;
     const grade = getGradeAdmin(totalObt, totalMax);
-    const gradeColor = { A:'#38a169', B:'#2c7a7b', C:'#c8952a', F:'#e53e3e' }[grade] || '#666';
+    const gradeColor = { A:'#38a169', B:'#2c7a7b', C:'#E8541A', F:'#e53e3e' }[grade] || '#666';
     return `<tr>
       <td><strong>${r.rollNo}</strong></td>
       <td>${r.studentName}</td>
@@ -3624,8 +3624,8 @@ async function loadAdmissions() {
 function showAdmissionDetail(idx) {
   const a = window._admissions[idx];
   if (!a) return;
-  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f4f6fb;width:40%;border-bottom:1px solid #e2e8f0;color:#0d1f4a">${label}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${val}</td></tr>` : '';
-  const sec = (title) => `<tr><td colspan="2" style="background:#0d1f4a;color:#e8b84b;padding:7px 10px;font-weight:700;font-size:.82rem">${title}</td></tr>`;
+  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f8f9ff;width:40%;border-bottom:1px solid #e2e8f0;color:#1a237e">${label}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${val}</td></tr>` : '';
+  const sec = (title) => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:7px 10px;font-weight:700;font-size:.82rem">${title}</td></tr>`;
   const statusBg = a.status==='Approved'?'#c6f6d5':a.status==='Rejected'?'#fed7d7':'#fefcbf';
   const statusClr = a.status==='Approved'?'#276749':a.status==='Rejected'?'#9b2c2c':'#744210';
   document.getElementById('admission-detail-body').innerHTML = `
@@ -3836,15 +3836,15 @@ async function restoreJSON(input) {
 function printAdmission(idx) {
   const a = window._admissions[idx];
   if (!a) return;
-  const row = (l, v) => v ? `<tr><td style="padding:5px 8px;font-weight:600;font-size:.8rem;background:#f4f6fb;width:38%;border:1px solid #e2e8f0;color:#0d1f4a">${l}</td><td style="padding:5px 8px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
-  const sec = t => `<tr><td colspan="2" style="background:#0d1f4a;color:#e8b84b;padding:6px 10px;font-weight:700;font-size:.8rem">${t}</td></tr>`;
+  const row = (l, v) => v ? `<tr><td style="padding:5px 8px;font-weight:600;font-size:.8rem;background:#f8f9ff;width:38%;border:1px solid #e2e8f0;color:#1a237e">${l}</td><td style="padding:5px 8px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
+  const sec = t => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:6px 10px;font-weight:700;font-size:.8rem">${t}</td></tr>`;
   const html = `<html><head><title>Admission — ${a.studentName}</title>
   <style>body{font-family:Arial,sans-serif;padding:20px;font-size:13px}table{width:100%;border-collapse:collapse;margin-bottom:12px}.sig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:2rem}.sig-box{text-align:center}.sig-line{border-top:1px solid #333;margin-top:40px;padding-top:6px;font-size:.72rem;color:#666}@media print{button{display:none}}</style></head>
   <body>
-    <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0d1f4a;padding-bottom:12px;margin-bottom:16px">
-      <div><div style="font-size:1.1rem;font-weight:900;color:#0d1f4a">St. Helen's High School & College</div>
+    <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #1a237e;padding-bottom:12px;margin-bottom:16px">
+      <div><div style="font-size:1.1rem;font-weight:900;color:#1a237e">St. Helen&#39;s High School &amp; College</div>
       <div style="font-size:.75rem;color:#666">Pakistan &nbsp;|&nbsp; Tel: +92-xxx-xxxxxxx</div></div>
-      <div style="margin-left:auto;background:#0d1f4a;color:#e8b84b;padding:5px 14px;border-radius:4px;font-weight:700;font-size:.82rem">ADMISSION FORM 2026-27</div>
+      <div style="margin-left:auto;background:#1a237e;color:#f5a623;padding:5px 14px;border-radius:4px;font-weight:700;font-size:.82rem">ADMISSION FORM 2026-27</div>
     </div>
     <table>
       ${sec('A — Student Information')}${row('Full Name',a.studentName)}${row('Gender',a.gender)}${row('Date of Birth',a.dob)}${row('B-Form',a.bForm)}${row('Religion',a.religion)}${row('Nationality',a.nationality)}${row('Applying Class',a.applyingClass)}${row('Section',a.section)}${row('Stream',a.stream)}
@@ -3861,7 +3861,7 @@ function printAdmission(idx) {
       <div class="sig-box"><div class="sig-line">Student Signature</div></div>
       <div class="sig-box"><div class="sig-line">Principal Signature & Stamp</div></div>
     </div>
-    <button onclick="window.print()" style="margin-top:1rem;padding:8px 20px;background:#0d1f4a;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:.85rem">🖨️ Print</button>
+    <button onclick="window.print()" style="margin-top:1rem;padding:8px 20px;background:#1a237e;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:.85rem">🖨️ Print</button>
   </body></html>`;
   const w = window.open('', '_blank', 'width=860,height=700');
   w.document.write(html); w.document.close();
@@ -4120,19 +4120,19 @@ function renderAlumniStats(data) {
   const rejected = data.filter(a => a.status === 'Rejected').length;
   el.innerHTML = `
     <div style="background:#fff;border-left:3px solid #f59e0b;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
-      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${pending}</div>
+      <div style="font-size:1.3rem;font-weight:900;color:#1a237e">${pending}</div>
       <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Pending</div>
     </div>
     <div style="background:#fff;border-left:3px solid #38a169;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
-      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${approved}</div>
+      <div style="font-size:1.3rem;font-weight:900;color:#1a237e">${approved}</div>
       <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Approved</div>
     </div>
     <div style="background:#fff;border-left:3px solid #e53e3e;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
-      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${rejected}</div>
+      <div style="font-size:1.3rem;font-weight:900;color:#1a237e">${rejected}</div>
       <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Rejected</div>
     </div>
-    <div style="background:#fff;border-left:3px solid #0d1f4a;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
-      <div style="font-size:1.3rem;font-weight:900;color:#0d1f4a">${data.length}</div>
+    <div style="background:#fff;border-left:3px solid #1a237e;border-radius:6px;padding:.6rem 1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)">
+      <div style="font-size:1.3rem;font-weight:900;color:#1a237e">${data.length}</div>
       <div style="font-size:.68rem;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Total</div>
     </div>`;
 }
@@ -4154,7 +4154,7 @@ function renderAlumniTable(data) {
       <td style="font-size:.78rem">${a.phone || '—'}</td>
       <td><span style="font-size:.72rem;font-weight:700;color:${a.public==='No'?'#e53e3e':'#38a169'}">${a.public==='No'?'🔒 Private':'✅ Public'}</span></td>
       <td>
-        <span style="background:${statusBg[a.status]||'#f4f6fb'};color:${statusColor[a.status]||'#6b7280'};padding:3px 10px;border-radius:4px;font-size:.73rem;font-weight:800">
+        <span style="background:${statusBg[a.status]||'#f8f9ff'};color:${statusColor[a.status]||'#6b7280'};padding:3px 10px;border-radius:4px;font-size:.73rem;font-weight:800">
           ${a.status}
         </span>
       </td>
@@ -4172,8 +4172,8 @@ function renderAlumniTable(data) {
 
 function viewAlumni(idx) {
   const a = _alumniData[idx];
-  const row = (l, v) => v ? `<tr><td style="padding:6px 10px;font-weight:700;font-size:.78rem;background:#f4f6fb;width:38%;border:1px solid #e2e8f0;color:#0d1f4a">${l}</td><td style="padding:6px 10px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
-  const sec = t => `<tr><td colspan="2" style="background:#0d1f4a;color:#e8b84b;padding:6px 10px;font-weight:800;font-size:.8rem">${t}</td></tr>`;
+  const row = (l, v) => v ? `<tr><td style="padding:6px 10px;font-weight:700;font-size:.78rem;background:#f8f9ff;width:38%;border:1px solid #e2e8f0;color:#1a237e">${l}</td><td style="padding:6px 10px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
+  const sec = t => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:6px 10px;font-weight:800;font-size:.8rem">${t}</td></tr>`;
   document.getElementById('alumni-detail-body').innerHTML = `
     <table style="width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif">
       ${sec('Personal Information')}
@@ -4237,7 +4237,7 @@ async function updateAlumniStatus(id, status) {
 function confirmDeleteAlumni(id, name) {
   document.getElementById('alumni-delete-msg').innerHTML =
     `You are about to permanently delete the alumni registration for:<br><br>
-     <strong style="font-size:1rem;color:#0d1f4a">${name}</strong><br><br>
+     <strong style="font-size:1rem;color:#1a237e">${name}</strong><br><br>
      This will remove them from the directory and all records.`;
   const btn = document.getElementById('alumni-delete-confirm-btn');
   btn.onclick = () => deleteAlumni(id);

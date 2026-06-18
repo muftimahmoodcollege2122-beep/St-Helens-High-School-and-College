@@ -1,4 +1,4 @@
-// ── SHHS SQLite Database Layer ────────────────────────────────────────────────
+// ── St. Helen's SQLite Database Layer ────────────────────────────────────────────────
 // Drop-in replacement for the old JSON db.
 // Uses better-sqlite3 (synchronous) so all existing routes work unchanged.
 const Database = require('better-sqlite3');

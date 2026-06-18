@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admissions 2026-27 — St. Helen's High School & College</title>
-<meta name="description" content="Apply for admission to SHHS Pakistan. Online admission form for Nursery to FSc/FA. Admissions open for 2026-27 academic year.">
+<title>Admissions 2026-27 — St. Helen&#39;s High School &amp; College</title>
+<meta name="description" content="Apply for admission to St. Helen&#39;s High School &amp; College. Online admission form for Nursery to FSc/FA. Admissions open for 2026-27 academic year.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@400;600;700;800;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -17,7 +17,7 @@ body{font-family:'Nunito',sans-serif;background:var(--of);color:#111827;overflow
 nav{position:sticky;top:0;z-index:999;background:var(--nv2);border-bottom:3px solid var(--gd);box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .navi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:64px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);overflow:hidden;flex-shrink:0}
+.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.5);overflow:hidden;flex-shrink:0}
 .brand-logo img{width:100%;height:100%;object-fit:cover}
 .brand-txt{color:var(--wh);font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2}
 .brand-txt small{display:block;font-family:'Nunito',sans-serif;font-size:.6rem;color:var(--gd2);letter-spacing:.07em;font-weight:600}
@@ -145,7 +145,7 @@ footer ul li a:hover{color:var(--gd2)}
   <span>📍 Qasim Road, Cantt, Dera Ismail Khan, KP</span>
   <span>
     📞 <a href="tel:+92xxxxxxxxxx">+92-xxx-xxxxxxx</a>
-    ✉️ <a href="mailto:info@shhs.edu.pk">info@shhs.edu.pk</a>
+    ✉️ <a href="mailto:info@sthelens.edu.pk">info@sthelens.edu.pk</a>
     <a href="/admin" style="margin-left:1.2rem;background:rgba(200,149,42,.2);padding:2px 8px;border-radius:3px">🔐 Admin</a>
   </span>
 </div>
@@ -153,7 +153,7 @@ footer ul li a:hover{color:var(--gd2)}
 <nav>
   <div class="navi">
     <a class="brand" href="/">
-      <div class="brand-logo"><img src="/images/logo.jpg" alt="SHHS"></div>
+      <div class="brand-logo"><img src="/images/logo.jpg" alt="St. Helen&#39;s High School &amp; College"></div>
       <div class="brand-txt">St. Helen&#39;s High School &amp; College<small>Wisdom &bull; Justice &bull; Peace &mdash; Est. 1955</small></div>
     </a>
     <ul class="nav-ul">
@@ -184,7 +184,7 @@ footer ul li a:hover{color:var(--gd2)}
 <div class="page-hero">
   <div class="page-hero-inner">
     <div class="stag">Admissions Open 2026-27</div>
-    <h1>Join the <em>SHHS Family</em></h1>
+    <h1>Join the <em>St. Helen's Family</em></h1>
     <p>Online admission form for Nursery to FSc/FA. Complete all sections and submit your application.</p>
   </div>
 </div>
@@ -493,7 +493,7 @@ footer ul li a:hover{color:var(--gd2)}
       <div class="sc-head">📞 Need Help?</div>
       <div class="sc-body">
         <div class="contact-item"><span class="icon">📞</span><div><a href="tel:+92xxxxxxxxxx">+92-xxx-xxxxxxx</a><div style="font-size:.72rem;color:var(--gr)">Mon–Sat 7:30 AM – 2:30 PM</div></div></div>
-        <div class="contact-item"><span class="icon">✉️</span><div><a href="mailto:info@shhs.edu.pk">info@shhs.edu.pk</a></div></div>
+        <div class="contact-item"><span class="icon">✉️</span><div><a href="mailto:info@sthelens.edu.pk">info@sthelens.edu.pk</a></div></div>
         <div class="contact-item"><span class="icon">📍</span><div style="font-size:.8rem;color:var(--gr)">Pakistan, KPK</div></div>
       </div>
     </div>
@@ -516,7 +516,7 @@ footer ul li a:hover{color:var(--gd2)}
   <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-brand">
-        <span class="fl">St. Helen's High School & College</span>
+        <span class="fl">St. Helen&#39;s High School &amp; College</span>
         <p>Quality education in Pakistan since our establishment. Combining modern academics with Islamic values.</p>
       </div>
       <div>
@@ -665,19 +665,19 @@ function printForm() {
   };
   let rows = '';
   for (const [sec, fields] of Object.entries(sections)) {
-    rows += `<tr><td colspan="4" style="background:#0d1f4a;color:#fff;padding:7px 12px;font-weight:800;font-size:.83rem">${sec}</td></tr>`;
+    rows += `<tr><td colspan="4" style="background:#1a237e;color:#fff;padding:7px 12px;font-weight:800;font-size:.83rem">${sec}</td></tr>`;
     for (let i = 0; i < fields.length; i += 2) {
       const [l1, v1] = fields[i]; const [l2, v2] = fields[i + 1] || ['', ''];
-      rows += `<tr><td style="width:18%;padding:6px 10px;font-size:.78rem;font-weight:700;background:#f4f6fb;border:1px solid #e2e8f0">${l1}</td><td style="width:32%;padding:6px 10px;font-size:.8rem;border:1px solid #e2e8f0">${v1 || '—'}</td><td style="width:18%;padding:6px 10px;font-size:.78rem;font-weight:700;background:#f4f6fb;border:1px solid #e2e8f0">${l2}</td><td style="width:32%;padding:6px 10px;font-size:.8rem;border:1px solid #e2e8f0">${v2 || (l2 ? '—' : '')}</td></tr>`;
+      rows += `<tr><td style="width:18%;padding:6px 10px;font-size:.78rem;font-weight:700;background:#f8f9ff;border:1px solid #e2e8f0">${l1}</td><td style="width:32%;padding:6px 10px;font-size:.8rem;border:1px solid #e2e8f0">${v1 || '—'}</td><td style="width:18%;padding:6px 10px;font-size:.78rem;font-weight:700;background:#f8f9ff;border:1px solid #e2e8f0">${l2}</td><td style="width:32%;padding:6px 10px;font-size:.8rem;border:1px solid #e2e8f0">${v2 || (l2 ? '—' : '')}</td></tr>`;
     }
   }
   const html = `<div style="font-family:Arial,sans-serif">
-    <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #0d1f4a;padding-bottom:12px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:12px;border-bottom:3px solid #1a237e;padding-bottom:12px;margin-bottom:16px">
       <img src="/images/logo.jpg" style="width:64px;height:64px;object-fit:cover;border-radius:6px" onerror="this.style.display='none'">
-      <div><div style="font-size:1.1rem;font-weight:900;color:#0d1f4a">St. Helen's High School & College</div>
+      <div><div style="font-size:1.1rem;font-weight:900;color:#1a237e">St. Helen&#39;s High School &amp; College</div>
       <div style="font-size:.78rem;color:#6b7280">Pakistan, KPK &nbsp;|&nbsp; Tel: +92-xxx-xxxxxxx</div></div>
       <div style="margin-left:auto;text-align:right">
-        <div style="background:#0d1f4a;color:#fff;padding:5px 14px;border-radius:4px;font-weight:800;font-size:.82rem">ADMISSION FORM 2026-27</div>
+        <div style="background:#1a237e;color:#fff;padding:5px 14px;border-radius:4px;font-weight:800;font-size:.82rem">ADMISSION FORM 2026-27</div>
         <div style="font-size:.72rem;color:#6b7280;margin-top:3px">Date: ${new Date().toLocaleDateString('en-PK')}</div>
       </div>
     </div>
@@ -687,7 +687,7 @@ function printForm() {
       <div style="text-align:center"><div style="border-top:1px solid #333;margin-top:40px;padding-top:6px;font-size:.72rem;color:#6b7280">Student Signature</div></div>
       <div style="text-align:center"><div style="border-top:1px solid #333;margin-top:40px;padding-top:6px;font-size:.72rem;color:#6b7280">Principal Signature & Stamp</div></div>
     </div>
-    <div style="margin-top:1rem;padding:.7rem;background:#f4f6fb;border-radius:4px;font-size:.72rem;color:#6b7280;text-align:center">For office use only — Reviewed by: __________________ | Date: __________________ | Status: __________________</div>
+    <div style="margin-top:1rem;padding:.7rem;background:#f8f9ff;border-radius:4px;font-size:.72rem;color:#6b7280;text-align:center">For office use only — Reviewed by: __________________ | Date: __________________ | Status: __________________</div>
   </div>`;
   document.getElementById('print-content').innerHTML = html;
   let pa = document.getElementById('print-area');

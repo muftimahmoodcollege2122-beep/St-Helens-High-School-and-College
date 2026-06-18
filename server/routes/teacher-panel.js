@@ -53,7 +53,7 @@ router.post('/attendance', teacherProtect, async (req, res) => {
         try {
           const r = await fetch(`https://graph.facebook.com/v19.0/${waPhoneId}/messages`, {
             method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${waToken}`},
-            body: JSON.stringify({ messaging_product:'whatsapp', to: ph.replace(/[^0-9]/g,''), type:'text', text:{ body:`Dear Parent, *${a.studentName}* was *Absent* today (${date}).\nClass ${cls}-${section} — SHHS Pakistan` } })
+            body: JSON.stringify({ messaging_product:'whatsapp', to: ph.replace(/[^0-9]/g,''), type:'text', text:{ body:`Dear Parent, *${a.studentName}* was *Absent* today (${date}).\nClass ${cls}-${section} — St. Helen&#39;s High School &amp; College` } })
           });
           if (r.ok) waSent++;
         } catch(_) {}

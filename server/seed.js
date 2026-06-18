@@ -1,4 +1,4 @@
-// ── SHHS Seed Script ──────────────────────────────────────────────────────────
+// ── St. Helen's Seed Script ──────────────────────────────────────────────────────────
 // Creates admin user + sample data in server/db/schools/shhs/
 // Run once: npm run seed
 require('dotenv').config();
@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const path   = require('path');
 const fs     = require('fs');
 
-// ── DB path: single-tenant, hardcoded to SHHS ────────────────────────────────
+// ── DB path: single-tenant, hardcoded to St. Helen's ────────────────────────────────
 const DB_DIR = path.join(__dirname, 'db', 'schools', 'sthelens');
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
@@ -23,7 +23,7 @@ function writeDB(name, data) {
 function newId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); }
 
 async function seed() {
-  console.log('\n🌱  Seeding SHHS database...\n');
+  console.log('\n🌱  Seeding St. Helen's database...\n');
 
   // ── Admin user ──────────────────────────────────────────────────────────────
   const users = readDB('users');
@@ -89,7 +89,7 @@ async function seed() {
   // ── Gallery ─────────────────────────────────────────────────────────────────
   if (readDB('gallery').length === 0) {
     writeDB('gallery', [
-      { _id: newId(), title: 'St. Helen's High School & College – Main Building', imageUrl: '/images/campus8.png',  category: 'Campus', createdAt: new Date().toISOString() },
+      { _id: newId(), title: 'St. Helen&#39;s High School &amp; College – Main Building', imageUrl: '/images/campus8.png',  category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'College Entrance & Administration',      imageUrl: '/images/campus2.webp', category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'Boys Senior Block',                      imageUrl: '/images/campus1.webp', category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'College Hall',                           imageUrl: '/images/campus6.webp', category: 'Events', createdAt: new Date().toISOString() },
@@ -150,24 +150,24 @@ async function seed() {
   const settingsFile = dbFile('settings');
   if (!fs.existsSync(settingsFile)) {
     fs.writeFileSync(settingsFile, JSON.stringify({
-      heroTagline:   '⭐ St. Helen's High School & College',
-      heroTitle:     'St. Helen's High School & College',
+      heroTagline:   '⭐ St. Helen&#39;s High School &amp; College',
+      heroTitle:     'St. Helen&#39;s High School &amp; College',
       heroSubtitle:  'Pakistan',
       heroMotto:     '"Knowledge is the Light that Illuminates the Path"',
       statStudents:  '2000+', statFaculty: '80+', statYears: '40+', statPassRate: '95%', statPrograms: '15+',
-      aboutPara1:    'St. Helen's High School & College, committed to excellence in education.',
+      aboutPara1:    'St. Helen&#39;s High School &amp; College, committed to excellence in education.',
       aboutPara2:    'We offer a comprehensive curriculum from Nursery to FA/FSc.',
       aboutMission:  'Provide quality education blending modern knowledge with Islamic values.',
       aboutVision:   'To become the leading school in the region producing well-rounded graduates.',
       aboutAcademics:'Matric, FSc, FA programmes with science & arts streams.',
       aboutCoCurr:   'Sports, debate, science fair, cultural events & more.',
       contactPhone1: '+92-xxx-xxxxxxx', contactPhone2: '+92-xxx-xxxxxxx',
-      contactEmail1: 'info@shhs.edu.pk', contactEmail2: 'admissions@shhs.edu.pk',
+      contactEmail1: 'info@sthelens.edu.pk', contactEmail2: 'admissions@sthelens.edu.pk',
       contactAddress:'Pakistan',
       contactHours:  'Mon–Sat: 7:30 AM – 2:30 PM',
       noticeActive:  false, noticeText: '', noticeType: 'info',
       admissionsOpen:true, admissionsText: 'Admissions Open for 2025–26 Session',
-      whatsappEnabled: false, whatsappNumber: '', whatsappMessage: 'Assalamu Alaikum! I would like to get information about SHHS.'
+      whatsappEnabled: false, whatsappNumber: '', whatsappMessage: 'Assalamu Alaikum! I would like to get information about St. Helen&#39;s High School &amp; College.'
     }, null, 2), 'utf8');
     console.log('✅ Default site settings created');
   }

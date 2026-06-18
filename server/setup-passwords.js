@@ -1,4 +1,4 @@
-// ── MMPC Password & Security Setup ───────────────────────────────────────────
+// ── SHHS Password & Security Setup ───────────────────────────────────────────
 // Run ONCE after npm install to set strong passwords and JWT secret.
 // Usage: node server/setup-passwords.js
 //
@@ -15,8 +15,8 @@ const path    = require('path');
 const readline = require('readline');
 
 const ENV_FILE   = path.join(__dirname, '..', '.env');
-const USERS_JSON = path.join(__dirname, 'db', 'schools', 'mmpc', 'users.json');
-const TEACH_JSON = path.join(__dirname, 'db', 'schools', 'mmpc', 'teacher-accounts.json');
+const USERS_JSON = path.join(__dirname, 'db', 'schools', 'shhs', 'users.json');
+const TEACH_JSON = path.join(__dirname, 'db', 'schools', 'shhs', 'teacher-accounts.json');
 
 // ── Password generator ────────────────────────────────────────────────────────
 function genPassword(len = 16) {
@@ -110,7 +110,7 @@ async function updateTeacherPassword(hash) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('\n🔐  MMPC Security Setup\n' + '─'.repeat(44));
+  console.log('\n🔐  SHHS Security Setup\n' + '─'.repeat(44));
 
   const adminPwd   = genPassword(16);
   const teacherPwd = genPassword(16);

@@ -56,7 +56,7 @@ router.get('/backup-json', protect, (req, res) => {
     const backup = {
       version: 2,
       exportedAt: new Date().toISOString(),
-      school: 'mmpc',
+      school: 'shhs',
       data: {}
     };
     for (const col of COLLECTIONS) {
@@ -64,7 +64,7 @@ router.get('/backup-json', protect, (req, res) => {
     }
     try { backup.settings = readSettings(); } catch { backup.settings = null; }
 
-    const filename = 'mmpc_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+    const filename = 'shhs_backup_' + new Date().toISOString().slice(0, 10) + '.json';
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.send(JSON.stringify(backup, null, 2));

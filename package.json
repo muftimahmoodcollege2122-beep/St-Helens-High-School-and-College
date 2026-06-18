@@ -1,7 +1,7 @@
 {
-  "name": "mmpc-school-system",
+  "name": "shhs-school-system",
   "version": "2.0.0",
-  "description": "Mufti Mehmood College — D.I. Khan — Single-Tenant School Management System",
+  "description": "St. Helen's High School & College — Pakistan — Single-Tenant School Management System",
   "main": "server.js",
   "scripts": {
     "start":    "node server.js",

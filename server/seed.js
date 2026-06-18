@@ -1,13 +1,13 @@
-// ── MMPC Seed Script ──────────────────────────────────────────────────────────
-// Creates admin user + sample data in server/db/schools/mmpc/
+// ── SHHS Seed Script ──────────────────────────────────────────────────────────
+// Creates admin user + sample data in server/db/schools/shhs/
 // Run once: npm run seed
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const path   = require('path');
 const fs     = require('fs');
 
-// ── DB path: single-tenant, hardcoded to MMPC ────────────────────────────────
-const DB_DIR = path.join(__dirname, 'db', 'schools', 'mmpc');
+// ── DB path: single-tenant, hardcoded to SHHS ────────────────────────────────
+const DB_DIR = path.join(__dirname, 'db', 'schools', 'shhs');
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
 function dbFile(name) { return path.join(DB_DIR, `${name}.json`); }
@@ -23,7 +23,7 @@ function writeDB(name, data) {
 function newId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); }
 
 async function seed() {
-  console.log('\n🌱  Seeding MMPC database...\n');
+  console.log('\n🌱  Seeding SHHS database...\n');
 
   // ── Admin user ──────────────────────────────────────────────────────────────
   const users = readDB('users');
@@ -89,14 +89,14 @@ async function seed() {
   // ── Gallery ─────────────────────────────────────────────────────────────────
   if (readDB('gallery').length === 0) {
     writeDB('gallery', [
-      { _id: newId(), title: 'Mufti Mahmood College – Main Building', imageUrl: '/images/campus8.png',  category: 'Campus', createdAt: new Date().toISOString() },
+      { _id: newId(), title: 'St. Helen's High School & College – Main Building', imageUrl: '/images/campus8.png',  category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'College Entrance & Administration',      imageUrl: '/images/campus2.webp', category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'Boys Senior Block',                      imageUrl: '/images/campus1.webp', category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'College Hall',                           imageUrl: '/images/campus6.webp', category: 'Events', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'Campus Garden Area',                     imageUrl: '/images/campus3.webp', category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'Arch Classrooms Block',                  imageUrl: '/images/campus4.webp', category: 'Campus', createdAt: new Date().toISOString() },
       { _id: newId(), title: 'Art & Activity Block',                   imageUrl: '/images/campus5.webp', category: 'Campus', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'Inauguration Stone – 2006',              imageUrl: '/images/campus7.webp', category: 'Campus', createdAt: new Date().toISOString() },
+      { _id: newId(), title: 'Inauguration Stone – ',              imageUrl: '/images/campus7.webp', category: 'Campus', createdAt: new Date().toISOString() },
     ]);
     console.log('✅ Campus gallery seeded');
   }
@@ -150,24 +150,24 @@ async function seed() {
   const settingsFile = dbFile('settings');
   if (!fs.existsSync(settingsFile)) {
     fs.writeFileSync(settingsFile, JSON.stringify({
-      heroTagline:   '⭐ Established 2006 — D.I. Khan',
-      heroTitle:     'Mufti Mahmood Public School & College',
-      heroSubtitle:  'Dera Ismail Khan, Khyber Pakhtunkhwa, Pakistan',
+      heroTagline:   '⭐ St. Helen's High School & College',
+      heroTitle:     'St. Helen's High School & College',
+      heroSubtitle:  'Pakistan',
       heroMotto:     '"Knowledge is the Light that Illuminates the Path"',
       statStudents:  '2000+', statFaculty: '80+', statYears: '40+', statPassRate: '95%', statPrograms: '15+',
-      aboutPara1:    'Mufti Mahmood Public School & College, established in 2006 in Dera Ismail Khan.',
+      aboutPara1:    'St. Helen's High School & College, committed to excellence in education.',
       aboutPara2:    'We offer a comprehensive curriculum from Nursery to FA/FSc.',
       aboutMission:  'Provide quality education blending modern knowledge with Islamic values.',
-      aboutVision:   'To become the leading school in KPK producing well-rounded graduates.',
+      aboutVision:   'To become the leading school in the region producing well-rounded graduates.',
       aboutAcademics:'Matric, FSc, FA programmes with science & arts streams.',
       aboutCoCurr:   'Sports, debate, science fair, cultural events & more.',
-      contactPhone1: '+92-966-123456', contactPhone2: '+92-300-9876543',
-      contactEmail1: 'info@mmpc.edu.pk', contactEmail2: 'admissions@mmpc.edu.pk',
-      contactAddress:'Kacheri Road, Dera Ismail Khan, KPK, Pakistan',
+      contactPhone1: '+92-xxx-xxxxxxx', contactPhone2: '+92-xxx-xxxxxxx',
+      contactEmail1: 'info@shhs.edu.pk', contactEmail2: 'admissions@shhs.edu.pk',
+      contactAddress:'Pakistan',
       contactHours:  'Mon–Sat: 7:30 AM – 2:30 PM',
       noticeActive:  false, noticeText: '', noticeType: 'info',
       admissionsOpen:true, admissionsText: 'Admissions Open for 2025–26 Session',
-      whatsappEnabled: false, whatsappNumber: '', whatsappMessage: 'Assalamu Alaikum! I would like to get information about MMPC.'
+      whatsappEnabled: false, whatsappNumber: '', whatsappMessage: 'Assalamu Alaikum! I would like to get information about SHHS.'
     }, null, 2), 'utf8');
     console.log('✅ Default site settings created');
   }

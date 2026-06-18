@@ -1,12 +1,12 @@
 // ── JSON → SQLite Migration ───────────────────────────────────────────────────
 // Run once: node server/db/migrate.js
-// Reads all existing .json files and imports them into mmpc.db
+// Reads all existing .json files and imports them into shhs.db
 // Safe to run multiple times — skips records already in DB by _id.
 
 const path = require('path');
 const fs   = require('fs');
 
-const JSON_DIR = path.join(__dirname, 'schools', 'mmpc');
+const JSON_DIR = path.join(__dirname, 'schools', 'shhs');
 const { readDB, writeDB, readSettings, writeSettings, db } = require('./index');
 
 const COLLECTIONS = ['students','attendance','fees','results','admissions','teachers','teacher_accounts','users','news','events','gallery','toppers','contact','homework'];
@@ -54,4 +54,4 @@ if (fs.existsSync(settingsFile)) {
 }
 
 console.log(`\n🎉 Migration complete. Total records: ${totalMigrated}`);
-console.log(`   Database: ${path.join(JSON_DIR, 'mmpc.db')}\n`);
+console.log(`   Database: ${path.join(JSON_DIR, 'shhs.db')}\n`);

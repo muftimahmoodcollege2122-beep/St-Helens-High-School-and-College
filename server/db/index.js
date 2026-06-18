@@ -1,14 +1,14 @@
-// ── MMPC SQLite Database Layer ────────────────────────────────────────────────
+// ── SHHS SQLite Database Layer ────────────────────────────────────────────────
 // Drop-in replacement for the old JSON db.
 // Uses better-sqlite3 (synchronous) so all existing routes work unchanged.
 const Database = require('better-sqlite3');
 const path     = require('path');
 const fs       = require('fs');
 
-const DB_DIR  = path.join(__dirname, 'schools', 'mmpc');
+const DB_DIR  = path.join(__dirname, 'schools', 'shhs');
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
-const DB_FILE = path.join(DB_DIR, 'mmpc.db');
+const DB_FILE = path.join(DB_DIR, 'shhs.db');
 const db      = new Database(DB_FILE);
 
 // ── Performance pragmas ───────────────────────────────────────────────────────

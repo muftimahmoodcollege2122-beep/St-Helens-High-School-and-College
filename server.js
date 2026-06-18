@@ -18,6 +18,7 @@ app.get('/parent',   (req, res) => res.sendFile(path.join(__dirname, 'public', '
 app.get('/gallery',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'gallery.html')));
 app.get('/admission',(req, res) => res.sendFile(path.join(__dirname, 'public', 'admission.html')));
 app.get('/alumni',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'alumni.html')));
+app.get('/faculty',  (req, res) => res.sendFile(path.join(__dirname, 'public', 'faculty.html')));
 
 // ── Static files ──────────────────────────────────────────────────────────────
 app.use('/images',  express.static(path.join(__dirname, 'public', 'images')));

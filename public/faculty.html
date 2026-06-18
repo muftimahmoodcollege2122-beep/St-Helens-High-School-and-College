@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faculty – Mufti Mahmood Public School & College, D.I. Khan</title>
+<meta name="description" content="Meet the dedicated faculty of Mufti Mahmood Public School & College, D.I. Khan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0d1f4a;--nv2:#1a3270;--nv3:#2a4494;--gd:#c8952a;--gd2:#e8b84b;--gd3:#f5d78e;--wh:#fff;--of:#f4f6fb;--gr:#6b7280;--gn:#38a169;--rd:#e53e3e;--bd:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--of);color:#1a1a2e;overflow-x:hidden}
+/* Topbar */
+.topbar{background:var(--nv);color:rgba(255,255,255,.7);font-size:.72rem;padding:5px 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem}
+.topbar a{color:var(--gd2);text-decoration:none;margin-left:.8rem}
+/* Nav */
+nav{position:sticky;top:0;z-index:999;background:var(--nv2);border-bottom:3px solid var(--gd);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.navi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-logo{width:44px;height:44px;border-radius:50%;border:2px solid var(--gd);overflow:hidden;flex-shrink:0}
+.brand-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.brand-txt{color:var(--wh);font-family:'Playfair Display',serif;font-size:.88rem;line-height:1.2}
+.brand-txt small{display:block;font-family:'Nunito',sans-serif;font-size:.6rem;color:var(--gd2);letter-spacing:.07em;font-weight:600}
+.nav-ul{display:flex;list-style:none;gap:0}
+.nav-ul a{color:rgba(255,255,255,.85);text-decoration:none;font-size:.73rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:8px 10px;border-radius:4px;white-space:nowrap;transition:.2s;display:block}
+.nav-ul a:hover,.nav-ul a.on{background:rgba(200,149,42,.18);color:var(--gd2)}
+.burger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.burger span{display:block;width:24px;height:2px;background:var(--wh);border-radius:2px}
+.mob-menu{display:none;position:fixed;inset:0;background:var(--nv);z-index:9999;padding:1.5rem;overflow-y:auto;flex-direction:column}
+.mob-menu.open{display:flex}
+.mob-close{align-self:flex-end;background:none;border:1px solid rgba(255,255,255,.2);color:var(--wh);width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;margin-bottom:1.5rem}
+.mob-menu a{color:var(--wh);text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:.95rem;font-weight:700;display:block}
+.mob-menu a:hover{color:var(--gd2)}
+/* Hero */
+.hero{background:linear-gradient(135deg,var(--nv) 0%,var(--nv3) 100%);padding:5rem 1.5rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 80px)}
+.hero-inner{position:relative;z-index:2;max-width:700px;margin:0 auto}
+.hero-tag{display:inline-block;background:var(--gd);color:var(--nv);font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:4px 16px;border-radius:2px;margin-bottom:1rem}
+.hero h1{font-family:'Playfair Display',serif;color:var(--wh);font-size:clamp(2rem,5vw,3.2rem);line-height:1.2;margin-bottom:.8rem}
+.hero h1 em{color:var(--gd2);font-style:italic}
+.hero p{color:rgba(255,255,255,.75);font-size:1rem;max-width:520px;margin:0 auto}
+/* Filters */
+.filters{background:var(--wh);border-bottom:1px solid var(--bd);padding:1rem 1.5rem;position:sticky;top:67px;z-index:90;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.filters-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.filters-inner input{flex:1;min-width:200px;padding:.5rem .9rem;border:1.5px solid var(--bd);border-radius:8px;font-size:.85rem;font-family:'Nunito',sans-serif;outline:none;transition:.2s}
+.filters-inner input:focus{border-color:var(--nv3)}
+.filter-btn{padding:.45rem 1rem;border:1.5px solid var(--bd);border-radius:20px;background:var(--wh);font-size:.75rem;font-weight:700;cursor:pointer;transition:.2s;font-family:'Nunito',sans-serif;white-space:nowrap;color:var(--gr)}
+.filter-btn:hover{border-color:var(--nv3);color:var(--nv)}
+.filter-btn.active{background:var(--nv2);border-color:var(--nv2);color:var(--wh)}
+.count-badge{margin-left:auto;font-size:.8rem;color:var(--gr);white-space:nowrap}
+/* Grid */
+.section{max-width:1200px;margin:0 auto;padding:3rem 1.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+/* Card */
+.fac-card{background:var(--wh);border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);transition:.3s;border:1px solid var(--bd);display:flex;flex-direction:column}
+.fac-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(13,31,74,.12)}
+.card-photo{height:220px;background:linear-gradient(135deg,var(--nv2),var(--nv3));position:relative;overflow:hidden;flex-shrink:0}
+.card-photo img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.fac-card:hover .card-photo img{transform:scale(1.04)}
+.card-photo .placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;color:rgba(255,255,255,.25)}
+.dept-tag{position:absolute;top:.7rem;left:.7rem;background:var(--gd);color:var(--nv);font-size:.6rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.status-dot{position:absolute;top:.7rem;right:.7rem;width:10px;height:10px;border-radius:50%;border:2px solid var(--wh)}
+.status-dot.active{background:#22c55e}
+.status-dot.inactive{background:#f87171}
+.card-body{padding:1.2rem;flex:1;display:flex;flex-direction:column;gap:.3rem}
+.card-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--nv);line-height:1.2}
+.card-desg{font-size:.75rem;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.05em}
+.card-subject{font-size:.82rem;color:var(--gr);margin-top:.1rem}
+.card-meta{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+.meta-pill{font-size:.7rem;font-weight:700;background:var(--of);border:1px solid var(--bd);border-radius:12px;padding:2px 9px;color:var(--gr)}
+.card-bio{font-size:.8rem;color:var(--gr);line-height:1.55;margin-top:.6rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{padding:.8rem 1.2rem;border-top:1px solid var(--bd);display:flex;gap:.6rem;align-items:center}
+.contact-link{font-size:.75rem;font-weight:700;color:var(--nv3);text-decoration:none;transition:.15s}
+.contact-link:hover{color:var(--gd)}
+/* Empty */
+.empty{text-align:center;padding:4rem 2rem;color:var(--gr)}
+.empty-ic{font-size:3.5rem;margin-bottom:.8rem}
+.empty h3{font-size:1.1rem;margin-bottom:.4rem;color:var(--nv)}
+/* Stats bar */
+.stats-bar{background:var(--nv);padding:1.5rem;margin-bottom:0}
+.stats-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.stat-i{text-align:center}
+.stat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gd2)}
+.stat-l{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.08em}
+/* Footer */
+footer{background:var(--nv);color:rgba(255,255,255,.7);padding:3rem 1.5rem 1.5rem;margin-top:3rem}
+.footer-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2rem}
+.footer-brand .fl{font-family:'Playfair Display',serif;font-size:1rem;color:var(--wh);display:block;margin-bottom:.6rem}
+.footer-brand p{font-size:.78rem;line-height:1.7}
+footer h4{color:var(--gd2);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem}
+footer ul{list-style:none}
+footer ul li{margin-bottom:.4rem}
+footer ul a{color:rgba(255,255,255,.65);text-decoration:none;font-size:.8rem;transition:.15s}
+footer ul a:hover{color:var(--gd2)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.72rem;color:rgba(255,255,255,.4)}
+/* Loader */
+.loader{display:flex;justify-content:center;padding:4rem;gap:.5rem}
+.loader span{width:10px;height:10px;background:var(--nv3);border-radius:50%;animation:bounce .7s infinite alternate}
+.loader span:nth-child(2){animation-delay:.15s}
+.loader span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+/* Modal (profile view) */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;padding:1rem;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--wh);border-radius:16px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.25)}
+.modal-photo{height:260px;background:linear-gradient(135deg,var(--nv2),var(--nv3));overflow:hidden;border-radius:16px 16px 0 0;position:relative}
+.modal-photo img{width:100%;height:100%;object-fit:cover}
+.modal-photo .placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:6rem;color:rgba(255,255,255,.2)}
+.modal-body{padding:1.5rem}
+.modal-name{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--nv);margin-bottom:.2rem}
+.modal-desg{color:var(--gd);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem}
+.modal-info{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
+.mi-row{font-size:.82rem}
+.mi-row strong{color:var(--nv);display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.1rem}
+.mi-row span{color:var(--gr)}
+.modal-bio{font-size:.88rem;color:var(--gr);line-height:1.7;border-top:1px solid var(--bd);padding-top:1rem;margin-top:.4rem}
+.modal-close-btn{position:absolute;top:.8rem;right:.8rem;background:rgba(0,0,0,.4);color:var(--wh);border:none;width:32px;height:32px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+@media(max-width:768px){
+  .nav-ul{display:none}
+  .burger{display:flex}
+  .filters-inner{flex-direction:column;align-items:stretch}
+  .filters-inner input{min-width:unset}
+  .stats-inner{gap:1.5rem}
+  .stat-n{font-size:1.5rem}
+  .modal-info{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <span>📍 Kacheri Road, D.I. Khan, KPK, Pakistan</span>
+  <span>
+    📞 <a href="tel:+92966123456">+92-966-123456</a>
+    ✉️ <a href="mailto:info@mmpc.edu.pk">info@mmpc.edu.pk</a>
+    <a href="/admin" style="margin-left:1.2rem;background:rgba(200,149,42,.2);padding:2px 8px;border-radius:3px">🔐 Admin</a>
+  </span>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="navi">
+    <a class="brand" href="/">
+      <div class="brand-logo"><img src="/images/logo.jpg" alt="MMPC" onerror="this.style.display='none'"></div>
+      <div class="brand-txt">Mufti Mahmood Public School & College<small>D.I. Khan • Est. 2006 • Excellence in Education</small></div>
+    </a>
+    <ul class="nav-ul">
+      <li><a href="/">🏠 Home</a></li>
+      <li><a href="/faculty" class="on">👨‍🏫 Faculty</a></li>
+      <li><a href="/gallery">🖼 Gallery</a></li>
+      <li><a href="/admission">📝 Admissions</a></li>
+      <li><a href="/alumni">🎓 Alumni</a></li>
+      <li><a href="/portal" style="background:rgba(200,149,42,.15);color:var(--gd2)">🎓 Portal</a></li>
+      <li><a href="/parent" style="background:rgba(25,118,210,.15);color:#90caf9">👨‍👩‍👦 Parents</a></li>
+    </ul>
+    <button class="burger" onclick="toggleMob()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mob-menu" id="mob-menu">
+  <button class="mob-close" onclick="toggleMob()">✕</button>
+  <a href="/">🏠 Home</a>
+  <a href="/faculty">👨‍🏫 Faculty</a>
+  <a href="/gallery">🖼 Gallery</a>
+  <a href="/admission">📝 Admissions</a>
+  <a href="/alumni">🎓 Alumni</a>
+  <a href="/portal" style="color:var(--gd2);font-weight:800">🎓 Student Portal</a>
+  <a href="/parent" style="color:#90caf9;font-weight:800">👨‍👩‍👦 Parent Portal</a>
+  <a href="/teacher" style="color:#86efac;font-weight:800">👨‍🏫 Teacher Panel</a>
+  <a href="/admin" style="color:var(--gd2)">🔐 Admin Panel</a>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">👨‍🏫 Meet Our Team</div>
+    <h1>Our <em>Dedicated</em> Faculty</h1>
+    <p>Qualified, experienced educators committed to nurturing every student's potential at Mufti Mahmood Public School & College.</p>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-i"><div class="stat-n" id="stat-total">—</div><div class="stat-l">Total Faculty</div></div>
+    <div class="stat-i"><div class="stat-n" id="stat-active">—</div><div class="stat-l">Active Members</div></div>
+    <div class="stat-i"><div class="stat-n" id="stat-depts">—</div><div class="stat-l">Departments</div></div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+  <div class="filters-inner">
+    <input type="text" id="search-input" placeholder="🔍 Search by name, subject or department…" oninput="filterFaculty()">
+    <div id="dept-filters"></div>
+    <span class="count-badge" id="count-badge"></span>
+  </div>
+</div>
+
+<!-- Grid -->
+<div class="section">
+  <div id="loader" class="loader"><span></span><span></span><span></span></div>
+  <div class="grid" id="faculty-grid" style="display:none"></div>
+  <div id="empty-state" class="empty" style="display:none">
+    <div class="empty-ic">🔍</div>
+    <h3>No results found</h3>
+    <p>Try a different search or department filter.</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="fl">Mufti Mahmood Public School & College</span>
+      <p>Providing quality education in D.I. Khan since 2006. Combining modern academics with Islamic values.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="/">🏠 Home</a></li>
+        <li><a href="/faculty">👨‍🏫 Faculty</a></li>
+        <li><a href="/gallery">🖼 Gallery</a></li>
+        <li><a href="/admission">📝 Admissions</a></li>
+        <li><a href="/alumni">🎓 Alumni</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Portals</h4>
+      <ul>
+        <li><a href="/portal">🎓 Student Portal</a></li>
+        <li><a href="/parent">👨‍👩‍👦 Parent Portal</a></li>
+        <li><a href="/teacher">👨‍🏫 Teacher Panel</a></li>
+        <li><a href="/admin">🔐 Admin Panel</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">📍 Kacheri Road, D.I. Khan</a></li>
+        <li><a href="tel:+92966123456">📞 +92-966-123456</a></li>
+        <li><a href="mailto:info@mmpc.edu.pk">✉️ info@mmpc.edu.pk</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Mufti Mahmood Public School & College. All rights reserved.</span>
+    <span>D.I. Khan, Khyber Pakhtunkhwa, Pakistan</span>
+  </div>
+</footer>
+
+<!-- Profile Modal -->
+<div class="modal-bg" id="profile-modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-inner">
+    <div class="modal-photo" id="modal-photo">
+      <button class="modal-close-btn" onclick="document.getElementById('profile-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let allFaculty = [];
+let activeFilter = 'All';
+
+async function loadFaculty() {
+  try {
+    const res = await fetch(`${API}/api/teachers`);
+    const json = await res.json();
+    allFaculty = json.data || [];
+
+    document.getElementById('stat-total').textContent = allFaculty.length;
+    document.getElementById('stat-active').textContent = allFaculty.filter(f => f.status === 'Active').length;
+
+    const depts = [...new Set(allFaculty.map(f => f.department).filter(Boolean))];
+    document.getElementById('stat-depts').textContent = depts.length || '—';
+
+    buildDeptFilters(depts);
+    renderGrid(allFaculty);
+  } catch(e) {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'block';
+  }
+}
+
+function buildDeptFilters(depts) {
+  const container = document.getElementById('dept-filters');
+  const all = ['All', ...depts.sort()];
+  container.innerHTML = all.map(d =>
+    `<button class="filter-btn ${d === 'All' ? 'active' : ''}" onclick="setFilter('${d}', this)">${d}</button>`
+  ).join('');
+}
+
+function setFilter(dept, btn) {
+  activeFilter = dept;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterFaculty();
+}
+
+function filterFaculty() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let filtered = allFaculty;
+  if (activeFilter !== 'All') filtered = filtered.filter(f => f.department === activeFilter);
+  if (q) filtered = filtered.filter(f =>
+    (f.name||'').toLowerCase().includes(q) ||
+    (f.subject||'').toLowerCase().includes(q) ||
+    (f.department||'').toLowerCase().includes(q) ||
+    (f.designation||'').toLowerCase().includes(q)
+  );
+  renderGrid(filtered);
+}
+
+function renderGrid(list) {
+  document.getElementById('loader').style.display = 'none';
+  const grid = document.getElementById('faculty-grid');
+  const empty = document.getElementById('empty-state');
+  const badge = document.getElementById('count-badge');
+
+  badge.textContent = `${list.length} member${list.length !== 1 ? 's' : ''}`;
+
+  if (!list.length) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.style.display = 'grid';
+  grid.innerHTML = list.map(f => `
+    <div class="fac-card" onclick="openProfile(${JSON.stringify(f).replace(/"/g,'&quot;')})">
+      <div class="card-photo">
+        ${f.photo
+          ? `<img src="${f.photo}" alt="${f.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>👤</div>'">`
+          : '<div class="placeholder">👤</div>'}
+        ${f.department ? `<div class="dept-tag">${f.department}</div>` : ''}
+        <div class="status-dot ${f.status === 'Active' ? 'active' : 'inactive'}" title="${f.status}"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${f.name}</div>
+        ${f.designation ? `<div class="card-desg">${f.designation}</div>` : ''}
+        <div class="card-subject">📚 ${f.subject || '—'}</div>
+        <div class="card-meta">
+          ${f.qualification ? `<span class="meta-pill">🎓 ${f.qualification}</span>` : ''}
+          ${f.experience ? `<span class="meta-pill">⏱ ${f.experience}</span>` : ''}
+        </div>
+        ${f.bio ? `<div class="card-bio">${f.bio}</div>` : ''}
+      </div>
+      ${f.phone || f.email ? `
+      <div class="card-footer">
+        ${f.phone ? `<a class="contact-link" href="tel:${f.phone}" onclick="event.stopPropagation()">📞 ${f.phone}</a>` : ''}
+        ${f.email ? `<a class="contact-link" href="mailto:${f.email}" onclick="event.stopPropagation()">✉️ Email</a>` : ''}
+      </div>` : ''}
+    </div>`).join('');
+}
+
+function openProfile(f) {
+  const photo = document.getElementById('modal-photo');
+  photo.innerHTML = `
+    <button class="modal-close-btn" onclick="document.getElementById('profile-modal').classList.remove('open')">✕</button>
+    ${f.photo
+      ? `<img src="${f.photo}" alt="${f.name}">`
+      : '<div class="placeholder">👤</div>'}
+    ${f.department ? `<div style="position:absolute;bottom:.8rem;left:.8rem;background:var(--gd);color:var(--nv);font-size:.65rem;font-weight:800;padding:3px 12px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase">${f.department}</div>` : ''}`;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-name">${f.name}</div>
+    ${f.designation ? `<div class="modal-desg">${f.designation}</div>` : ''}
+    <div class="modal-info">
+      ${f.subject ? `<div class="mi-row"><strong>Subject</strong><span>📚 ${f.subject}</span></div>` : ''}
+      ${f.qualification ? `<div class="mi-row"><strong>Qualification</strong><span>🎓 ${f.qualification}</span></div>` : ''}
+      ${f.experience ? `<div class="mi-row"><strong>Experience</strong><span>⏱ ${f.experience}</span></div>` : ''}
+      ${f.status ? `<div class="mi-row"><strong>Status</strong><span>${f.status === 'Active' ? '🟢' : '🔴'} ${f.status}</span></div>` : ''}
+      ${f.phone ? `<div class="mi-row"><strong>Phone</strong><span><a href="tel:${f.phone}" style="color:var(--nv3);text-decoration:none">📞 ${f.phone}</a></span></div>` : ''}
+      ${f.email ? `<div class="mi-row"><strong>Email</strong><span><a href="mailto:${f.email}" style="color:var(--nv3);text-decoration:none">✉️ ${f.email}</a></span></div>` : ''}
+    </div>
+    ${f.bio ? `<div class="modal-bio">${f.bio}</div>` : ''}`;
+
+  document.getElementById('profile-modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('profile-modal')) {
+    document.getElementById('profile-modal').classList.remove('open');
+  }
+}
+
+function toggleMob() {
+  document.getElementById('mob-menu').classList.toggle('open');
+}
+
+loadFaculty();
+</script>
+</body>
+</html>

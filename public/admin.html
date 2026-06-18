@@ -372,7 +372,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn btn-nv" onclick="showPage('news',null);openModal('modal-news')">+ Add News</button>
             <button class="btn btn-gd" onclick="showPage('events',null);openModal('modal-event')">+ Add Event</button>
             <button class="btn btn-gn" onclick="showPage('students',null);openModal('modal-student')">+ Add Student</button>
-            <button class="btn" style="background:#805ad5;color:#fff" onclick="showPage('teachers',null);openModal('modal-teacher')">+ Add Teacher</button>
+            <button class="btn" style="background:#805ad5;color:#fff" onclick="showPage('teachers',null);openAddTeacher()">+ Add Teacher</button>
             <button class="btn" style="background:var(--bl);color:#fff;grid-column:1/-1" onclick="showPage('gallery',null);openModal('modal-gallery')">📸 Upload Image</button>
           </div>
         </div>
@@ -897,14 +897,17 @@ textarea{resize:vertical;min-height:90px}
     <div class="adm-page" id="page-teachers">
       <div class="card">
         <div class="card-hdr">
-          <h3>👨‍🏫 All Teachers</h3>
-          <button class="btn btn-gd" onclick="openModal('modal-teacher')">+ Add Teacher</button>
+          <h3>&#128105;&#8205;&#127979; Faculty Management</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <a href="/faculty" target="_blank" class="btn" style="font-size:.75rem;background:#4a5568;color:#fff">&#127760; View Faculty Page</a>
+            <button class="btn btn-gd" onclick="openAddTeacher()">+ Add Faculty</button>
+          </div>
         </div>
         <div class="card-body">
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Name</th><th>Subject</th><th>Qualification</th><th>Experience</th><th>Status</th><th>Actions</th></tr></thead>
-              <tbody id="tb-teachers"><tr><td colspan="6" class="empty-state"><div class="es-ic">👨‍🏫</div><p>Loading...</p></td></tr></tbody>
+              <thead><tr><th>Photo</th><th>Name</th><th>Subject</th><th>Department</th><th>Qualification</th><th>Experience</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="tb-teachers"><tr><td colspan="8" class="empty-state"><div class="es-ic">&#128105;&#8205;&#127979;</div><p>Loading...</p></td></tr></tbody>
             </table>
           </div>
         </div>
@@ -1464,29 +1467,50 @@ textarea{resize:vertical;min-height:90px}
   </div>
 </div>
 
-<!-- Add Teacher Modal -->
+<!-- Add/Edit Faculty Modal -->
 <div class="modal-bg" id="modal-teacher">
-  <div class="modal">
-    <div class="modal-hdr"><h3>👨‍🏫 Add Teacher</h3><button class="modal-close" onclick="closeModal('modal-teacher')">✕</button></div>
+  <div class="modal" style="max-width:700px">
+    <div class="modal-hdr"><h3 id="modal-teacher-title">👨‍🏫 Add Faculty Member</h3><button class="modal-close" onclick="closeModal('modal-teacher')">✕</button></div>
     <div class="modal-body">
       <div id="tch-alert" class="alert alert-err"></div>
+      <input type="hidden" id="tc-id">
+      <div class="form-group" style="text-align:center;margin-bottom:1.2rem">
+        <div id="tc-photo-preview" style="width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#1a3270,#2a4494);margin:0 auto .8rem;overflow:hidden;border:3px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:rgba(255,255,255,.4)">👤</div>
+        <label style="cursor:pointer;display:inline-block">
+          <span class="btn" style="font-size:.75rem;padding:.35rem .9rem">📷 Upload Photo</span>
+          <input type="file" id="tc-photo" accept="image/*" style="display:none" onchange="previewFacultyPhoto(this)">
+        </label>
+        <div style="font-size:.7rem;color:#999;margin-top:.3rem">JPG, PNG, WEBP — max 5MB</div>
+      </div>
       <div class="form-row">
-        <div class="form-group"><label>Full Name *</label><input type="text" id="tc-name" placeholder="Teacher name"></div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="tc-name" placeholder="e.g. Mr. Ahmed Ali"></div>
         <div class="form-group"><label>Subject *</label><input type="text" id="tc-subject" placeholder="e.g. Mathematics"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Qualification</label><input type="text" id="tc-qual" placeholder="e.g. M.Sc Physics"></div>
         <div class="form-group"><label>Designation</label><input type="text" id="tc-desg" placeholder="e.g. Senior Teacher"></div>
+        <div class="form-group"><label>Department</label><input type="text" id="tc-dept" placeholder="e.g. Science, Arts, Commerce"></div>
       </div>
       <div class="form-row">
+        <div class="form-group"><label>Qualification</label><input type="text" id="tc-qual" placeholder="e.g. M.Sc Physics"></div>
         <div class="form-group"><label>Experience</label><input type="text" id="tc-exp" placeholder="e.g. 10 years"></div>
-        <div class="form-group"><label>Phone</label><input type="tel" id="tc-phone" placeholder="+92-xxx-xxxxxxx"></div>
       </div>
-      <div class="form-group"><label>Bio / Note</label><textarea id="tc-bio" placeholder="Short biography…"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone</label><input type="tel" id="tc-phone" placeholder="+92-xxx-xxxxxxx"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="tc-email" placeholder="teacher@mmpc.edu.pk"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Status</label>
+          <select id="tc-status" style="width:100%;padding:.5rem .8rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:.88rem">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Bio / Note</label><textarea id="tc-bio" placeholder="Short biography or note about this faculty member..." style="min-height:80px"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('modal-teacher')">Cancel</button>
-      <button class="btn btn-gd" onclick="addTeacher()">Add Teacher</button>
+      <button class="btn btn-gd" id="tc-submit-btn" onclick="submitTeacher()">Add Faculty</button>
     </div>
   </div>
 </div>
@@ -2088,47 +2112,124 @@ async function addStudent() {
   } catch { showAlert('std-alert', 'Network error.'); }
 }
 
-// ── Teachers ──────────────────────────────────────────────────────────────────
+// ── Teachers / Faculty ──────────────────────────────────────────────────────
 async function loadTeachers() {
   try {
     const res = await fetch(`${API}/api/teachers/all`, { headers: apiHeaders() });
     const json = await res.json();
     const tb = document.getElementById('tb-teachers');
     if (!json.data || json.data.length === 0) {
-      tb.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="es-ic">👨‍🏫</div><p>No teachers yet.</p></div></td></tr>`;
+      tb.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="es-ic">👨‍🏫</div><p>No faculty members yet.</p></div></td></tr>`;
       return;
     }
     tb.innerHTML = json.data.map(t => `
       <tr>
-        <td><strong>${t.name}</strong></td>
-        <td>${t.subject}</td>
+        <td>
+          ${t.photo
+            ? `<img src="${t.photo}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0" onerror="this.outerHTML='<span style=\'font-size:1.6rem\'>👤</span>'">`
+            : '<span style="font-size:1.6rem">👤</span>'}
+        </td>
+        <td><strong>${t.name}</strong>${t.designation ? `<br><span style="font-size:.72rem;color:#888">${t.designation}</span>` : ''}</td>
+        <td>${t.subject || '—'}</td>
+        <td>${t.department || '—'}</td>
         <td>${t.qualification || '—'}</td>
         <td>${t.experience || '—'}</td>
         <td><span class="badge ${t.status === 'Active' ? 'badge-gn' : 'badge-or'}">${t.status}</span></td>
-        <td><button class="btn btn-sm btn-rd" onclick="deleteRecord('teachers','${t._id}','tch-reload')">🗑</button></td>
+        <td style="display:flex;gap:.3rem;flex-wrap:wrap">
+          <button class="btn btn-sm" style="background:#3182ce;color:#fff" onclick="editTeacher(${JSON.stringify(JSON.stringify(t))})">✏️</button>
+          <button class="btn btn-sm btn-rd" onclick="deleteRecord('teachers','${t._id}','tch-reload')">🗑</button>
+        </td>
       </tr>`).join('');
-  } catch { showToast('Failed to load teachers', 'err'); }
+  } catch { showToast('Failed to load faculty', 'err'); }
 }
 
-async function addTeacher() {
+function previewFacultyPhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('tc-photo-preview');
+    prev.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function openAddTeacher() {
+  // Reset modal to add mode
+  document.getElementById('modal-teacher-title').textContent = '👨‍🏫 Add Faculty Member';
+  document.getElementById('tc-submit-btn').textContent = 'Add Faculty';
+  document.getElementById('tc-id').value = '';
+  document.getElementById('tc-name').value = '';
+  document.getElementById('tc-subject').value = '';
+  document.getElementById('tc-desg').value = '';
+  document.getElementById('tc-dept').value = '';
+  document.getElementById('tc-qual').value = '';
+  document.getElementById('tc-exp').value = '';
+  document.getElementById('tc-phone').value = '';
+  document.getElementById('tc-email').value = '';
+  document.getElementById('tc-bio').value = '';
+  document.getElementById('tc-status').value = 'Active';
+  document.getElementById('tc-photo').value = '';
+  document.getElementById('tc-photo-preview').innerHTML = '👤';
+  document.getElementById('tch-alert').style.display = 'none';
+  openModal('modal-teacher');
+}
+
+function editTeacher(jsonStr) {
+  const t = JSON.parse(jsonStr);
+  document.getElementById('modal-teacher-title').textContent = '✏️ Edit Faculty Member';
+  document.getElementById('tc-submit-btn').textContent = 'Save Changes';
+  document.getElementById('tc-id').value = t._id;
+  document.getElementById('tc-name').value = t.name || '';
+  document.getElementById('tc-subject').value = t.subject || '';
+  document.getElementById('tc-desg').value = t.designation || '';
+  document.getElementById('tc-dept').value = t.department || '';
+  document.getElementById('tc-qual').value = t.qualification || '';
+  document.getElementById('tc-exp').value = t.experience || '';
+  document.getElementById('tc-phone').value = t.phone || '';
+  document.getElementById('tc-email').value = t.email || '';
+  document.getElementById('tc-bio').value = t.bio || '';
+  document.getElementById('tc-status').value = t.status || 'Active';
+  document.getElementById('tc-photo').value = '';
+  const prev = document.getElementById('tc-photo-preview');
+  prev.innerHTML = t.photo
+    ? `<img src="${t.photo}" style="width:100%;height:100%;object-fit:cover">`
+    : '👤';
+  document.getElementById('tch-alert').style.display = 'none';
+  openModal('modal-teacher');
+}
+
+async function submitTeacher() {
+  const id = document.getElementById('tc-id').value;
   const name = document.getElementById('tc-name').value.trim();
   const subject = document.getElementById('tc-subject').value.trim();
   if (!name || !subject) { showAlert('tch-alert', 'Name and subject are required.'); return; }
+
+  const fd = new FormData();
+  fd.append('name', name);
+  fd.append('subject', subject);
+  fd.append('designation', document.getElementById('tc-desg').value);
+  fd.append('department', document.getElementById('tc-dept').value);
+  fd.append('qualification', document.getElementById('tc-qual').value);
+  fd.append('experience', document.getElementById('tc-exp').value);
+  fd.append('phone', document.getElementById('tc-phone').value);
+  fd.append('email', document.getElementById('tc-email').value);
+  fd.append('bio', document.getElementById('tc-bio').value);
+  fd.append('status', document.getElementById('tc-status').value);
+  const photoFile = document.getElementById('tc-photo').files[0];
+  if (photoFile) fd.append('photo', photoFile);
+
+  const token = localStorage.getItem('mmpc_token');
   try {
-    const res = await fetch(`${API}/api/teachers`, {
-      method: 'POST', headers: apiHeaders(),
-      body: JSON.stringify({
-        name, subject,
-        qualification: document.getElementById('tc-qual').value,
-        designation: document.getElementById('tc-desg').value,
-        experience: document.getElementById('tc-exp').value,
-        phone: document.getElementById('tc-phone').value,
-        bio: document.getElementById('tc-bio').value
-      })
-    });
+    const url = id ? `${API}/api/teachers/${id}` : `${API}/api/teachers`;
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}` }, body: fd });
     const json = await res.json();
-    if (json.success) { closeModal('modal-teacher'); showToast('Teacher added!', 'ok'); loadTeachers(); }
-    else showAlert('tch-alert', json.message || 'Failed.');
+    if (json.success) {
+      closeModal('modal-teacher');
+      showToast(id ? 'Faculty member updated!' : 'Faculty member added!', 'ok');
+      loadTeachers();
+      loadDashboard();
+    } else showAlert('tch-alert', json.message || 'Failed.');
   } catch { showAlert('tch-alert', 'Network error.'); }
 }
 

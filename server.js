@@ -55,7 +55,7 @@ app.get('*', (req, res) => {
 // ── Start ─────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log('\n🏫  St. Helen's High School & College – SHHS, Pakistan');
+  console.log('\n🏫  St. Helen\'s High School & College — Pakistan');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`🌐  Website        →  http://localhost:${PORT}`);
   console.log(`🔐  Admin Panel    →  http://localhost:${PORT}/admin`);

@@ -1,4 +1,4 @@
-// ── St. Helen's Seed Script ──────────────────────────────────────────────────────────
+// ── St. Helens Seed Script ──────────────────────────────────────────────────────────
 // Creates admin user + sample data in server/db/schools/shhs/
 // Run once: npm run seed
 require('dotenv').config();
@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const path   = require('path');
 const fs     = require('fs');
 
-// ── DB path: single-tenant, hardcoded to St. Helen's ────────────────────────────────
+// ── DB path: single-tenant, hardcoded to St. Helens ────────────────────────────────
 const DB_DIR = path.join(__dirname, 'db', 'schools', 'sthelens');
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
@@ -23,7 +23,7 @@ function writeDB(name, data) {
 function newId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); }
 
 async function seed() {
-  console.log('\n🌱  Seeding St. Helen's database...\n');
+  console.log('\n🌱  Seeding St. Helen\'s database...\n');
 
   // ── Admin user ──────────────────────────────────────────────────────────────
   const users = readDB('users');

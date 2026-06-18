@@ -1,0 +1,13 @@
+/* ═══════════════════════════════════════════════════════════
+   ST. HELEN'S HIGH SCHOOL & COLLEGE — SHARED THEME
+   Colors: Orange #E8541A | Navy #1a237e | Gold #f5a623
+   Motto: Wisdom • Justice • Peace | Est. 1955
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --or:#E8541A;--or2:#d4420e;--or3:#ff6b35;
+  --nv:#1a237e;--nv2:#283593;--nv3:#3949ab;
+  --gd:#f5a623;--gd2:#ffc107;
+  --wh:#fff;--of:#fafafa;--gr:#6b7280;
+  --bd:#e5e7eb;--dk:#111827;
+  --gn:#16a34a;--rd:#dc2626;
+}

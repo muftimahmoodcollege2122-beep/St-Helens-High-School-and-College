@@ -7,7 +7,7 @@ const path   = require('path');
 const fs     = require('fs');
 
 // ── DB path: single-tenant, hardcoded to SHHS ────────────────────────────────
-const DB_DIR = path.join(__dirname, 'db', 'schools', 'shhs');
+const DB_DIR = path.join(__dirname, 'db', 'schools', 'sthelens');
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
 function dbFile(name) { return path.join(DB_DIR, `${name}.json`); }

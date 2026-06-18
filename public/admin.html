@@ -14,7 +14,7 @@
   --sb-w:240px;--hdr-h:60px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Nunito',sans-serif;background:var(--of);color:#1a1a2e;overflow-x:hidden}
+body{font-family:'Nunito',sans-serif;background:var(--of);color:#111827;overflow-x:hidden}
 
 /* ── Login Screen ── */
 #login-screen{min-height:100vh;background:linear-gradient(160deg,var(--nv) 0%,var(--nv2) 60%,#1e3d8f 100%);display:flex;align-items:center;justify-content:center}
@@ -1696,7 +1696,7 @@ textarea{resize:vertical;min-height:90px}
 
 <script>
 const API = '';
-let authToken = localStorage.getItem('shhs_token');
+let authToken = localStorage.getItem('sthelens_token');
 let currentUser = null;
 
 // ── Auth Helpers ─────────────────────────────────────────────────────────────
@@ -1748,7 +1748,7 @@ async function doLogin() {
     if (json.success) {
       authToken = json.token;
       currentUser = json.user;
-      localStorage.setItem('shhs_token', authToken);
+      localStorage.setItem('sthelens_token', authToken);
       startApp();
     } else {
       errEl.textContent = json.message || 'Invalid credentials.';
@@ -1764,7 +1764,7 @@ async function doLogin() {
 
 function doLogout() {
   if (!confirm('Are you sure you want to logout?')) return;
-  localStorage.removeItem('shhs_token');
+  localStorage.removeItem('sthelens_token');
   authToken = null;
   currentUser = null;
   document.getElementById('admin-app').style.display = 'none';
@@ -1778,7 +1778,7 @@ async function checkAuth() {
     const json = await res.json();
     if (json.success) { currentUser = json.user; return true; }
   } catch {}
-  localStorage.removeItem('shhs_token');
+  localStorage.removeItem('sthelens_token');
   authToken = null;
   return false;
 }
@@ -2218,7 +2218,7 @@ async function submitTeacher() {
   const photoFile = document.getElementById('tc-photo').files[0];
   if (photoFile) fd.append('photo', photoFile);
 
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
   try {
     const url = id ? `${API}/api/teachers/${id}` : `${API}/api/teachers`;
     const method = id ? 'PUT' : 'POST';
@@ -2663,7 +2663,8 @@ async function loadPrincipalSettings() {
 async function savePrincipalSettings() {
   try {
     const payload = {
-      principalName: document.getElementById('s-principalName').value.trim(),
+      principalName: 'Fr. Emmanuel Fazal OP',  // updated
+      _principalName: document.getElementById('s-principalName').value.trim(),
       principalDesignation: document.getElementById('s-principalDesignation').value.trim(),
       principalMessage: document.getElementById('s-principalMessage').value.trim(),
       principalPhoto: document.getElementById('s-principalPhoto').value.trim(),
@@ -2702,7 +2703,7 @@ async function uploadStaffPhoto(role) {
   formData.append('photo', file);
   formData.append('field', role + 'Photo');
   try {
-    const token = localStorage.getItem('shhs_token');
+    const token = localStorage.getItem('sthelens_token');
     const res = await fetch('/api/settings/upload-photo', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token },
@@ -3003,7 +3004,7 @@ function downloadTemplate() {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href = url;
-  a.download = 'SHHS_Results_Template.csv';
+  a.download = 'StHelens_Results_Template.csv';
   a.click();
   URL.revokeObjectURL(url);
   showToast('✅ Template downloaded!', 'ok');
@@ -3219,7 +3220,7 @@ function downloadStudentTemplate() {
     '1001,Ahmed Ali,Ali Khan,0300-1234567,0301-7654321,10,A,Male,House 5 Street 2 DIKhan,Active',
     '1002,Sara Bibi,Usman Bibi,0312-9876543,0312-1234567,9,B,Female,Mohallah Qasim DIKhan,Active',
     '1003,Zain Tariq,Tariq Mehmood,,0333-5551234,8,A,Male,,Active'].join('\n');
-  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})), download: 'SHHS_Students_Template.csv' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})), download: 'StHelens_Students_Template.csv' });
   a.click(); showToast('✅ Template downloaded!', 'ok');
 }
 
@@ -3272,7 +3273,7 @@ function downloadFeeTemplate() {
     '1001,April 2025,2500,2025-04-10,',
     '1002,April 2025,2500,2025-04-10,Partial payment allowed',
     '1003,April 2025,2000,2025-04-10,'].join('\n');
-  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})), download: 'SHHS_Fees_Template.csv' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})), download: 'StHelens_Fees_Template.csv' });
   a.click(); showToast('✅ Template downloaded!', 'ok');
 }
 
@@ -3591,7 +3592,7 @@ async function loadAdmissions() {
   const tbody = document.getElementById('tb-admissions');
   tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="es-ic">⏳</div><p>Loading...</p></td></tr>';
   try {
-    const token = localStorage.getItem('shhs_token');
+    const token = localStorage.getItem('sthelens_token');
     const res = await fetch('/api/admissions', { headers: { 'Authorization': 'Bearer ' + token } });
     const data = await res.json();
     if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="es-ic">📝</div><p>No applications yet</p></td></tr>'; return; }
@@ -3684,7 +3685,7 @@ function showAdmissionDetail(idx) {
 }
 
 async function updateAdmissionStatus(id, status) {
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
 
   // Find the admission record
   const admission = (window._admissions || []).find(a => a._id === id);
@@ -3757,7 +3758,7 @@ async function updateAdmissionStatus(id, status) {
 
 async function deleteAdmission(id) {
   if (!confirm('Delete this application?')) return;
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
   await fetch('/api/admissions/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
   showToast('Deleted');
   loadAdmissions();
@@ -3765,7 +3766,7 @@ async function deleteAdmission(id) {
 
 
 function dlDB(){
-  const token=localStorage.getItem('shhs_token');
+  const token=localStorage.getItem('sthelens_token');
   if(!token){showToast('Not logged in','err');return;}
   showToast('Preparing backup...');
   fetch('/api/auth/backup-db',{headers:{'Authorization':'Bearer '+token}})
@@ -3776,7 +3777,7 @@ function dlDB(){
   .then(blob=>{
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='shhs_backup_'+new Date().toISOString().slice(0,10)+'.db';
+    a.download='sthelens_backup_'+new Date().toISOString().slice(0,10)+'.db';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -3784,7 +3785,7 @@ function dlDB(){
   }).catch(e=>showToast('Backup failed: '+e.message,'err'));
 }
 function dlJSON() {
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
   if (!token) { showToast('Not logged in', 'err'); return; }
   showToast('Preparing JSON backup...');
   fetch('/api/auth/backup-json', { headers: { 'Authorization': 'Bearer ' + token } })
@@ -3795,7 +3796,7 @@ function dlJSON() {
     .then(blob => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'shhs_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+      a.download = 'sthelens_backup_' + new Date().toISOString().slice(0, 10) + '.json';
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       showToast('✅ JSON backup downloaded');
     })
@@ -3808,7 +3809,7 @@ async function restoreJSON(input) {
   if (!file.name.endsWith('.json')) { showToast('Please select a valid .json backup file', 'err'); input.value = ''; return; }
   if (!confirm(`⚠️ Restore database from "${file.name}"?\n\nThis will REPLACE all current data with the backup contents.\nThis cannot be undone.\n\nProceed?`)) { input.value = ''; return; }
 
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
   const formData = new FormData();
   formData.append('backup', file);
   showToast('Uploading and restoring...');
@@ -3882,7 +3883,7 @@ let _migPreviewData = []; // holds preview rows ready for confirmation
 let _migResultsCache = {}; // rollNo → latest result percentage
 
 async function previewMigration() {
-  const token  = localStorage.getItem('shhs_token');
+  const token  = localStorage.getItem('sthelens_token');
   const type   = document.getElementById('mig-type').value;
   const fromCls= document.getElementById('mig-from').value;
   const section= document.getElementById('mig-section').value;
@@ -4007,7 +4008,7 @@ async function confirmMigration() {
     '\n\nThis will permanently update their class in the database.';
   if (!confirm(msg)) return;
 
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
   const btn   = document.getElementById('mig-confirm-btn');
   btn.disabled = true; btn.textContent = '⏳ Migrating...';
 
@@ -4037,13 +4038,13 @@ async function confirmMigration() {
   }
 
   // Save to migration history in localStorage
-  const hist = JSON.parse(localStorage.getItem('shhs_mig_history') || '[]');
+  const hist = JSON.parse(localStorage.getItem('sthelens_mig_history') || '[]');
   hist.unshift({
     date: new Date().toLocaleString('en-PK'),
     migrated: success, failed,
     desc: document.getElementById('mig-preview-title').textContent
   });
-  localStorage.setItem('shhs_mig_history', JSON.stringify(hist.slice(0, 20)));
+  localStorage.setItem('sthelens_mig_history', JSON.stringify(hist.slice(0, 20)));
 
   btn.disabled = false; btn.textContent = '✅ Confirm & Migrate';
 
@@ -4060,7 +4061,7 @@ async function confirmMigration() {
 }
 
 function loadMigHistory() {
-  const hist = JSON.parse(localStorage.getItem('shhs_mig_history') || '[]');
+  const hist = JSON.parse(localStorage.getItem('sthelens_mig_history') || '[]');
   const el   = document.getElementById('mig-history-list');
   if (!hist.length) { el.innerHTML = '<em>No migrations performed yet in this browser.</em>'; return; }
   el.innerHTML = hist.map(h => `
@@ -4083,7 +4084,7 @@ document.addEventListener('DOMContentLoaded', loadMigHistory);
 let _alumniData = [];
 
 async function loadAlumni() {
-  const token  = localStorage.getItem('shhs_token');
+  const token  = localStorage.getItem('sthelens_token');
   const status = document.getElementById('alumni-filter-status')?.value || '';
   const batch  = document.getElementById('alumni-filter-batch')?.value  || '';
   let url = '/api/alumni/admin';
@@ -4213,7 +4214,7 @@ function viewAlumni(idx) {
 }
 
 async function updateAlumniStatus(id, status) {
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
   const labels = { Approved: 'Approve', Rejected: 'Reject', Pending: 'set to Pending' };
   const a = _alumniData.find(x => x._id === id);
   if (!confirm(`${labels[status] || status} alumni registration for "${a?.name || id}"?`)) return;
@@ -4244,7 +4245,7 @@ function confirmDeleteAlumni(id, name) {
 }
 
 async function deleteAlumni(id) {
-  const token = localStorage.getItem('shhs_token');
+  const token = localStorage.getItem('sthelens_token');
   try {
     const res  = await fetch('/api/alumni/' + id, {
       method: 'DELETE',

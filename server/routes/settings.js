@@ -5,10 +5,10 @@ const { readSettings, writeSettings } = require('../db');
 const { protect } = require('../middleware/auth');
 
 const DEFAULTS = {
-  heroTagline:    '⭐ St. Helen's High School & College',
+  heroTagline:    '⭐ Established 1955 — Wisdom • Justice • Peace',
   heroTitle:      'St. Helen's High School & College',
   heroSubtitle:   'Pakistan',
-  heroMotto:      '"Knowledge is the Light that Illuminates the Path"',
+  heroMotto:      'Wisdom • Justice • Peace',
   statStudents:   '2000+', statFaculty: '80+', statYears: '40+', statPassRate: '95%', statPrograms: '15+',
   aboutPara1:     'St. Helen's High School & College, committed to excellence in education.',
   aboutPara2:     'We offer a comprehensive curriculum from Nursery to FA/FSc, with a dedicated faculty of over 80 qualified teachers.',
@@ -23,7 +23,8 @@ const DEFAULTS = {
   noticeActive:   false, noticeText: '', noticeType: 'info',
   admissionsOpen: true, admissionsText: 'Admissions Open for 2026-27 Session',
   whatsappNumber: '', whatsappMessage: 'Assalamu Alaikum! I would like to get information about SHHS.', whatsappEnabled: false,
-  principalName:        'Prof. Muhammad Khalid', principalDesignation: 'Principal',
+  principalName: 'Fr. Emmanuel Fazal OP',
+      principalName2:        'Prof. Muhammad Khalid', principalDesignation: 'Principal',
   principalMessage:     'Welcome to St. Helen's High School & College.',
   principalPhoto:       '', principalEnabled: true,
   secretaryName:        'Mr. Muhammad Khalid', secretaryDesignation: 'Province education secretary',

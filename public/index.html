@@ -75,7 +75,7 @@ nav{position:sticky;top:0;z-index:999;background:var(--wh);border-bottom:3px sol
 
 /* ── Hero ── */
 .hero{min-height:92vh;background:linear-gradient(135deg,var(--dk) 0%,var(--nv) 60%,var(--nv2) 100%);display:flex;align-items:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-20%;right:-10%;width:55%;height:140%;background:var(--or);opacity:.06;transform:skewX(-12deg)}
+.hero::before{content:'';position:absolute;top:0;right:0;width:40%;height:100%;background:var(--or);opacity:.05;clip-path:polygon(20% 0,100% 0,100% 100%,0% 100%)}
 .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top,var(--of),transparent)}
 .hc{max-width:1200px;margin:0 auto;width:100%;padding:2rem 1.5rem;display:grid;grid-template-columns:1fr 260px;gap:3rem;align-items:center;position:relative;z-index:2;animation:fadeUp .7s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -119,10 +119,10 @@ section{padding:72px 1.5rem}
 
 /* ── Quick Links ── */
 .ql{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.7rem;margin-top:1.5rem}
-.qi{background:var(--wh);padding:1rem .6rem;text-align:center;border-bottom:3px solid var(--or);box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer;transition:.2s;text-decoration:none;display:block}
+.qi{background:rgba(255,255,255,.07);padding:1rem .6rem;text-align:center;border-bottom:3px solid var(--or);box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer;transition:.2s;text-decoration:none;display:block}
 .qi:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(232,84,26,.12);border-bottom-color:var(--nv)}
 .qi-ic{font-size:1.5rem;margin-bottom:.3rem}
-.qi-lb{font-size:.63rem;font-weight:700;color:var(--nv);text-transform:uppercase;letter-spacing:.06em}
+.qi-lb{font-size:.63rem;font-weight:700;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.06em}
 
 /* ── News ── */
 .g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem}
@@ -194,9 +194,9 @@ section{padding:72px 1.5rem}
 
 /* ── Achievements ── */
 .ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
-.ach-item{background:var(--wh);padding:1rem 1.2rem;display:flex;align-items:center;gap:.9rem;box-shadow:0 1px 6px rgba(0,0,0,.05);border-left:3px solid var(--or);transition:.2s}
-.ach-item:hover{transform:translateX(4px);background:#fff8f5}
-.ach-item span{font-size:.84rem;font-weight:600;color:var(--nv)}
+.ach-item{background:rgba(255,255,255,.12);padding:1rem 1.2rem;display:flex;align-items:center;gap:.9rem;border-left:3px solid rgba(255,255,255,.5);transition:.2s}
+.ach-item:hover{transform:translateX(4px);background:rgba(255,255,255,.18)}
+.ach-item span{font-size:.84rem;font-weight:600;color:var(--wh)}
 
 /* ── Faculty ── */
 .fc{background:var(--wh);padding:1.3rem 1rem;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.06);transition:.2s;border-bottom:3px solid var(--or)}
@@ -459,65 +459,30 @@ footer ul li a:hover{color:var(--or);padding-left:4px}
   </div>
 </section>
 
-<!-- Stats Bar -->
-<div class="sbar">
-  <div class="si"><div class="sn" id="stat-students">2000+</div><div class="sl">Students</div></div>
-  <div class="si"><div class="sn" id="stat-faculty">80+</div><div class="sl">Faculty</div></div>
-  <div class="si"><div class="sn" id="stat-years">40+</div><div class="sl">Years of Excellence</div></div>
-  <div class="si"><div class="sn" id="stat-passrate">95%</div><div class="sl">Pass Rate</div></div>
-  <div class="si"><div class="sn" id="stat-programs">15+</div><div class="sl">Programmes</div></div>
-</div>
-
-<!-- Quick Links -->
-<section style="padding:40px 1.5rem;background:var(--wh)">
+<!-- ABOUT -->
+<section id="about" class="wbg">
   <div class="con">
-    <div class="ql">
-      <a class="qi" href="#news"><div class="qi-ic">📢</div><div class="qi-lb">News</div></a>
-      <a class="qi" href="#events"><div class="qi-ic">📅</div><div class="qi-lb">Events</div></a>
-      <a class="qi" href="#toppers"><div class="qi-ic">🏆</div><div class="qi-lb">Toppers</div></a>
-      <a class="qi" href="/faculty"><div class="qi-ic">👨‍🏫</div><div class="qi-lb">Faculty</div></a>
-      <a class="qi" href="/gallery"><div class="qi-ic">🖼</div><div class="qi-lb">Gallery</div></a>
-      <a class="qi" href="/admission"><div class="qi-ic">📝</div><div class="qi-lb">Admissions</div></a>
-      <a class="qi" href="/alumni"><div class="qi-ic">🎓</div><div class="qi-lb">Alumni</div></a>
-      <a class="qi" href="#contact"><div class="qi-ic">📞</div><div class="qi-lb">Contact</div></a>
-      <a class="qi" href="/portal"><div class="qi-ic">🎓</div><div class="qi-lb">Portal</div></a>
-      <a class="qi" href="/parent"><div class="qi-ic">👨‍👩‍👦</div><div class="qi-lb">Parents</div></a>
-      <a class="qi" href="/teacher" style="border-top-color:#2e7d32"><div class="qi-ic">👨‍🏫</div><div class="qi-lb">Teachers</div></a>
-    </div>
-  </div>
-</section>
-
-<!-- NEWS -->
-<section id="news">
-  <div class="con">
-    <div class="stag">Latest Updates</div>
-    <h2 class="stitle">News &amp; <span>Announcements</span></h2>
-    <div class="dvd"></div>
-    <div class="g3" id="news-grid">
-      <div class="nc skeleton" style="height:160px"></div>
-      <div class="nc skeleton" style="height:160px"></div>
-      <div class="nc skeleton" style="height:160px"></div>
-    </div>
-    <div style="text-align:center;margin-top:1.8rem"><button class="btn bn" onclick="loadMoreNews()">Load More News</button></div>
-  </div>
-</section>
-
-<!-- EVENTS -->
-<section id="events" class="wbg">
-  <div class="con">
-    <div class="stag">School Calendar</div>
-    <h2 class="stitle">Upcoming <span>Events</span></h2>
-    <div class="dvd"></div>
-    <div style="display:grid;gap:1rem" id="events-list">
-      <div class="ec skeleton" style="height:90px"></div>
-      <div class="ec skeleton" style="height:90px"></div>
-      <div class="ec skeleton" style="height:90px"></div>
+    <div class="about-grid">
+      <div>
+        <div class="stag">Who We Are</div>
+        <h2 class="stitle">About <span>Our School</span></h2>
+        <div class="dvd"></div>
+        <p id="about-para1" style="font-size:.9rem;color:var(--gr);line-height:1.8;margin-bottom:1rem">St. Helen&#39;s High School &amp; College, committed to excellence in education. A beacon of quality education combining modern academics with strong values.</p>
+        <p id="about-para2" style="font-size:.9rem;color:var(--gr);line-height:1.8;margin-bottom:1.4rem">We offer a comprehensive curriculum from Nursery to FA/FSc, with a dedicated faculty of over 80 qualified teachers committed to nurturing the next generation of leaders.</p>
+        <div class="about-vals">
+          <div class="av"><h4>🎯 Our Mission</h4><p id="about-mission">Quality education blending modern knowledge with Islamic values.</p></div>
+          <div class="av"><h4>🔭 Our Vision</h4><p id="about-vision">To become the leading school in the region producing well-rounded graduates.</p></div>
+          <div class="av"><h4>📖 Academics</h4><p id="about-academics">Matric, FSc, FA programmes with science &amp; arts streams.</p></div>
+          <div class="av"><h4>🌟 Co-Curricular</h4><p id="about-cocurr">Sports, debate, science fair, cultural events &amp; more.</p></div>
+        </div>
+      </div>
+      <div class="about-img reveal"><img src="/images/campus8.png" alt="St. Helen's Campus"></div>
     </div>
   </div>
 </section>
 
 <!-- WHY CHOOSE US -->
-<section id="why">
+<section id="why" style="background:var(--of)">
   <div class="con">
     <div style="text-align:center;margin-bottom:2rem">
       <div class="stag">Our Strengths</div>
@@ -531,6 +496,122 @@ footer ul li a:hover{color:var(--or);padding-left:4px}
       <div class="why-card reveal"><span class="why-ic">🔬</span><h3>Modern Facilities</h3><p>Well-equipped labs, library, and sports facilities for holistic development.</p></div>
       <div class="why-card reveal"><span class="why-ic">🎯</span><h3>Career Guidance</h3><p>Professional counseling to help students choose the right career path.</p></div>
       <div class="why-card reveal"><span class="why-ic">🤝</span><h3>Parent Involvement</h3><p>Regular PTMs and open communication between school and families.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="sbar">
+  <div class="si"><div class="sn" id="stat-students">2000+</div><div class="sl">Students</div></div>
+  <div class="si"><div class="sn" id="stat-faculty">80+</div><div class="sl">Faculty</div></div>
+  <div class="si"><div class="sn" id="stat-years">40+</div><div class="sl">Years of Excellence</div></div>
+  <div class="si"><div class="sn" id="stat-passrate">95%</div><div class="sl">Pass Rate</div></div>
+  <div class="si"><div class="sn" id="stat-programs">15+</div><div class="sl">Programmes</div></div>
+</div>
+
+<!-- FACULTY -->
+<section id="faculty" style="background:linear-gradient(135deg,var(--dk) 0%,var(--nv) 100%);color:var(--wh)">
+  <div class="con">
+    <div class="stag">Our Educators</div>
+    <h2 class="stitle">Meet the <span>Faculty</span></h2>
+    <div class="dvd"></div>
+    <div class="g4" id="faculty-grid">
+      <div class="fc skeleton" style="height:170px"></div>
+      <div class="fc skeleton" style="height:170px"></div>
+      <div class="fc skeleton" style="height:170px"></div>
+      <div class="fc skeleton" style="height:170px"></div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem">
+      <a href="/faculty" style="display:inline-block;background:var(--or);color:var(--wh);font-weight:800;font-size:.88rem;padding:.75rem 2rem;border-radius:8px;text-decoration:none;letter-spacing:.04em;transition:.2s" onmouseover="this.style.background='var(--gd2)'" onmouseout="this.style.background='var(--gd)'">
+        👨‍🏫 View Full Faculty Directory &rarr;
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section id="news" class="wbg">
+  <div class="con">
+    <div class="stag">Latest Updates</div>
+    <h2 class="stitle">News &amp; <span>Announcements</span></h2>
+    <div class="dvd"></div>
+    <div class="g3" id="news-grid">
+      <div class="nc skeleton" style="height:160px"></div>
+      <div class="nc skeleton" style="height:160px"></div>
+      <div class="nc skeleton" style="height:160px"></div>
+    </div>
+    <div style="text-align:center;margin-top:1.8rem"><button class="btn bn" onclick="loadMoreNews()">Load More News</button></div>
+  </div>
+</section>
+
+<!-- TOPPERS -->
+<section id="toppers" style="background:var(--of)">
+  <div class="con">
+    <div style="text-align:center;margin-bottom:2rem">
+      <div class="stag">Hall of Fame</div>
+      <h2 class="stitle">Our Top <span>Achievers</span></h2>
+      <div class="dvd" style="margin:0 auto"></div>
+    </div>
+    <div class="topper-grid" id="topper-grid">
+      <div class="topper-card skeleton" style="height:220px"></div>
+      <div class="topper-card skeleton" style="height:220px"></div>
+      <div class="topper-card skeleton" style="height:220px"></div>
+      <div class="topper-card skeleton" style="height:220px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="wbg">
+  <div class="con">
+    <div class="stag">Photo Gallery</div>
+    <h2 class="stitle">School <span>Gallery</span></h2>
+    <div class="dvd"></div>
+    <div class="gfb-wrap">
+      <button class="gfb on" onclick="filterGallery('',this)">All</button>
+      <button class="gfb" onclick="filterGallery('Students',this)">Students</button>
+      <button class="gfb" onclick="filterGallery('Campus',this)">Campus</button>
+      <button class="gfb" onclick="filterGallery('Events',this)">Events</button>
+      <button class="gfb" onclick="filterGallery('Labs',this)">Labs</button>
+      <button class="gfb" onclick="filterGallery('Sports',this)">Sports</button>
+    </div>
+    <div class="gal-grid" id="gal-grid">
+      <div class="git skeleton"></div><div class="git skeleton"></div>
+      <div class="git skeleton"></div><div class="git skeleton"></div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section id="events" style="background:var(--of)">
+  <div class="con">
+    <div class="stag">School Calendar</div>
+    <h2 class="stitle">Upcoming <span>Events</span></h2>
+    <div class="dvd"></div>
+    <div style="display:grid;gap:1rem" id="events-list">
+      <div class="ec skeleton" style="height:90px"></div>
+      <div class="ec skeleton" style="height:90px"></div>
+      <div class="ec skeleton" style="height:90px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements" style="padding:52px 1.5rem;background:linear-gradient(135deg,var(--or2) 0%,var(--or) 100%)">
+  <div class="con">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center">
+      <div>
+        <div class="stag" style="background:rgba(200,149,42,.2);color:var(--gd2);border-left-color:var(--gd2)">Our Pride</div>
+        <h2 class="stitle" style="color:var(--wh)">School <span>Achievements</span></h2>
+        <div class="dvd" style="background:linear-gradient(90deg,var(--gd2),transparent)"></div>
+        <p style="color:rgba(255,255,255,.65);font-size:.88rem;line-height:1.8">We take pride in our students' accomplishments and the recognition our school has received at district, provincial, and national levels.</p>
+      </div>
+      <div class="ach-grid" id="ach-grid">
+        <div class="ach-item reveal"><span>🏆 Board Position – 2024 Annual Exams</span></div>
+        <div class="ach-item reveal"><span>🥇 District Science Fair Champions 2024</span></div>
+        <div class="ach-item reveal"><span>📚 100% Result in FA/FSc 2023</span></div>
+        <div class="ach-item reveal"><span>🎖 Best School Award – Pakistan 2023</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -594,115 +675,15 @@ footer ul li a:hover{color:var(--or);padding-left:4px}
   </div>
 </section>
 
-<!-- TOPPERS -->
-<section id="toppers" class="wbg">
-  <div class="con">
-    <div style="text-align:center;margin-bottom:2rem">
-      <div class="stag">Hall of Fame</div>
-      <h2 class="stitle">Our Top <span>Achievers</span></h2>
-      <div class="dvd" style="margin:0 auto"></div>
-    </div>
-    <div class="topper-grid" id="topper-grid">
-      <div class="topper-card skeleton" style="height:220px"></div>
-      <div class="topper-card skeleton" style="height:220px"></div>
-      <div class="topper-card skeleton" style="height:220px"></div>
-      <div class="topper-card skeleton" style="height:220px"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ACHIEVEMENTS -->
-<section id="achievements" style="padding:52px 1.5rem;background:linear-gradient(135deg,#0d1545 0%,var(--nv) 60%,var(--nv2) 100%)">
-  <div class="con">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center">
-      <div>
-        <div class="stag" style="background:rgba(200,149,42,.2);color:var(--gd2);border-left-color:var(--gd2)">Our Pride</div>
-        <h2 class="stitle" style="color:var(--wh)">School <span>Achievements</span></h2>
-        <div class="dvd" style="background:linear-gradient(90deg,var(--gd2),transparent)"></div>
-        <p style="color:rgba(255,255,255,.65);font-size:.88rem;line-height:1.8">We take pride in our students' accomplishments and the recognition our school has received at district, provincial, and national levels.</p>
-      </div>
-      <div class="ach-grid" id="ach-grid">
-        <div class="ach-item reveal"><span>🏆 Board Position – 2024 Annual Exams</span></div>
-        <div class="ach-item reveal"><span>🥇 District Science Fair Champions 2024</span></div>
-        <div class="ach-item reveal"><span>📚 100% Result in FA/FSc 2023</span></div>
-        <div class="ach-item reveal"><span>🎖 Best School Award – Pakistan 2023</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="con">
-    <div class="about-grid">
-      <div>
-        <div class="stag">Who We Are</div>
-        <h2 class="stitle">About <span>Our School</span></h2>
-        <div class="dvd"></div>
-        <p id="about-para1" style="font-size:.9rem;color:var(--gr);line-height:1.8;margin-bottom:1rem">St. Helen&#39;s High School &amp; College, committed to excellence in education. A beacon of quality education combining modern academics with strong values.</p>
-        <p id="about-para2" style="font-size:.9rem;color:var(--gr);line-height:1.8;margin-bottom:1.4rem">We offer a comprehensive curriculum from Nursery to FA/FSc, with a dedicated faculty of over 80 qualified teachers committed to nurturing the next generation of leaders.</p>
-        <div class="about-vals">
-          <div class="av"><h4>🎯 Our Mission</h4><p id="about-mission">Quality education blending modern knowledge with Islamic values.</p></div>
-          <div class="av"><h4>🔭 Our Vision</h4><p id="about-vision">To become the leading school in the region producing well-rounded graduates.</p></div>
-          <div class="av"><h4>📖 Academics</h4><p id="about-academics">Matric, FSc, FA programmes with science &amp; arts streams.</p></div>
-          <div class="av"><h4>🌟 Co-Curricular</h4><p id="about-cocurr">Sports, debate, science fair, cultural events &amp; more.</p></div>
-        </div>
-      </div>
-      <div class="about-img reveal"><img src="/images/campus8.png" alt="St. Helen's Campus"></div>
-    </div>
-  </div>
-</section>
-
-<!-- FACULTY -->
-<section id="faculty" class="wbg">
-  <div class="con">
-    <div class="stag">Our Educators</div>
-    <h2 class="stitle">Meet the <span>Faculty</span></h2>
-    <div class="dvd"></div>
-    <div class="g4" id="faculty-grid">
-      <div class="fc skeleton" style="height:170px"></div>
-      <div class="fc skeleton" style="height:170px"></div>
-      <div class="fc skeleton" style="height:170px"></div>
-      <div class="fc skeleton" style="height:170px"></div>
-    </div>
-    <div style="text-align:center;margin-top:2.5rem">
-      <a href="/faculty" style="display:inline-block;background:var(--or);color:var(--wh);font-weight:800;font-size:.88rem;padding:.75rem 2rem;border-radius:8px;text-decoration:none;letter-spacing:.04em;transition:.2s" onmouseover="this.style.background='var(--gd2)'" onmouseout="this.style.background='var(--gd)'">
-        👨‍🏫 View Full Faculty Directory &rarr;
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="con">
-    <div class="stag">Photo Gallery</div>
-    <h2 class="stitle">School <span>Gallery</span></h2>
-    <div class="dvd"></div>
-    <div class="gfb-wrap">
-      <button class="gfb on" onclick="filterGallery('',this)">All</button>
-      <button class="gfb" onclick="filterGallery('Students',this)">Students</button>
-      <button class="gfb" onclick="filterGallery('Campus',this)">Campus</button>
-      <button class="gfb" onclick="filterGallery('Events',this)">Events</button>
-      <button class="gfb" onclick="filterGallery('Labs',this)">Labs</button>
-      <button class="gfb" onclick="filterGallery('Sports',this)">Sports</button>
-    </div>
-    <div class="gal-grid" id="gal-grid">
-      <div class="git skeleton"></div><div class="git skeleton"></div>
-      <div class="git skeleton"></div><div class="git skeleton"></div>
-    </div>
-  </div>
-</section>
-
 <!-- CONTACT -->
-<section id="contact" class="wbg">
+<section id="contact" style="background:var(--dk)">
   <div class="con">
     <div class="stag">Get In Touch</div>
     <h2 class="stitle">Contact <span>Us</span></h2>
     <div class="dvd"></div>
     <div class="contact-grid">
       <div>
-        <div class="ci-block"><div class="ci-ic">📍</div><div class="ci-txt"><h4>Address</h4><p id="contact-address">Pakistan, KPK</p></div></div>
+        <div class="ci-block"><div class="ci-ic">📍</div><div class="ci-txt" style="color:rgba(255,255,255,.85)"><h4 style="color:var(--wh)">Address</h4><p id="contact-address">Pakistan, KPK</p></div></div>
         <div class="ci-block"><div class="ci-ic">📞</div><div class="ci-txt"><h4>Phone</h4><p id="contact-phones"><a href="tel:+92xxxxxxxxxx">+92-xxx-xxxxxxx</a></p></div></div>
         <div class="ci-block"><div class="ci-ic" id="wa-ci-ic" style="background:#25d366">💬</div><div class="ci-txt"><h4>WhatsApp</h4><p id="wa-contact-block">WhatsApp not configured yet.</p></div></div>
         <div class="ci-block"><div class="ci-ic">✉️</div><div class="ci-txt"><h4>Email</h4><p id="contact-emails"><a href="mailto:info@sthelens.edu.pk">info@sthelens.edu.pk</a></p></div></div>
@@ -726,7 +707,7 @@ footer ul li a:hover{color:var(--or);padding-left:4px}
 </section>
 
 <!-- Admissions CTA -->
-<section id="admission-form" style="padding:60px 1.5rem;background:var(--of)">
+<section id="admission-form" style="padding:60px 1.5rem;background:var(--nv)">
   <div class="con" style="max-width:780px;text-align:center">
     <div class="stag">Admissions Open 2026-27</div>
     <h2 class="stitle">Apply for <span>Admission</span></h2>
@@ -747,6 +728,26 @@ footer ul li a:hover{color:var(--or);padding-left:4px}
     </div>
   </div>
 </section>
+<!-- Quick Links -->
+<section style="padding:40px 1.5rem;background:var(--wh)">
+  <div class="con">
+    <p style="text-align:center;color:rgba(255,255,255,.6);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem">QUICK ACCESS</p>
+    <div class="ql">
+      <a class="qi" href="#news"><div class="qi-ic">📢</div><div class="qi-lb">News</div></a>
+      <a class="qi" href="#events"><div class="qi-ic">📅</div><div class="qi-lb">Events</div></a>
+      <a class="qi" href="#toppers"><div class="qi-ic">🏆</div><div class="qi-lb">Toppers</div></a>
+      <a class="qi" href="/faculty"><div class="qi-ic">👨‍🏫</div><div class="qi-lb">Faculty</div></a>
+      <a class="qi" href="/gallery"><div class="qi-ic">🖼</div><div class="qi-lb">Gallery</div></a>
+      <a class="qi" href="/admission"><div class="qi-ic">📝</div><div class="qi-lb">Admissions</div></a>
+      <a class="qi" href="/alumni"><div class="qi-ic">🎓</div><div class="qi-lb">Alumni</div></a>
+      <a class="qi" href="#contact"><div class="qi-ic">📞</div><div class="qi-lb">Contact</div></a>
+      <a class="qi" href="/portal"><div class="qi-ic">🎓</div><div class="qi-lb">Portal</div></a>
+      <a class="qi" href="/parent"><div class="qi-ic">👨‍👩‍👦</div><div class="qi-lb">Parents</div></a>
+      <a class="qi" href="/teacher" style="border-top-color:#2e7d32"><div class="qi-ic">👨‍🏫</div><div class="qi-lb">Teachers</div></a>
+    </div>
+  </div>
+</section>
+
 <!-- Print Modal -->
 <div id="print-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;overflow-y:auto;padding:20px">
   <div style="max-width:800px;margin:0 auto;background:#fff;border-radius:8px;padding:2rem;position:relative">

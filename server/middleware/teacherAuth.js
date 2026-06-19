@@ -9,7 +9,7 @@ const teacherProtect = (req, res, next) => {
       return res.status(401).json({ success: false, message: 'No token provided.' });
     }
     const token   = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, (process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production'));
 
     const teachers = readDB('teacher-accounts');
     const teacher  = teachers.find(t => t._id === decoded.id);

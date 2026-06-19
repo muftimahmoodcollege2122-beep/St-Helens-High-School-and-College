@@ -7,8 +7,9 @@ const { db, readDB, writeDB } = require('../db');
 const { protect }         = require('../middleware/auth');
 const { loginRateLimit }  = require('../middleware/rateLimit');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production';
 const makeToken = id =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '8h' });
+  jwt.sign({ id }, JWT_SECRET, { expiresIn: '8h' });
 
 // POST /api/auth/login
 router.post('/login', loginRateLimit, async (req, res) => {

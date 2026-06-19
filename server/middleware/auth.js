@@ -6,7 +6,8 @@ const protect = (req, res, next) => {
     const authHeader = req.headers.authorization || '';
     if (!authHeader.startsWith('Bearer '))
       return res.status(401).json({ success: false, message: 'Access denied. No token provided.' });
-    const decoded = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+    const JWT_SECRET = process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production';
+    const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET);
     const row = db.prepare('SELECT json_data FROM users WHERE _id=?').get(decoded.id);
     if (!row) return res.status(401).json({ success: false, message: 'Token invalid. User not found.' });
     const { password: _, ...safeUser } = JSON.parse(row.json_data);

@@ -4,7 +4,7 @@ const bcrypt    = require('bcryptjs');
 const { db, newId } = require('../db');
 const { loginRateLimit } = require('../middleware/rateLimit');
 
-const JWT_SECRET = () => process.env.JWT_SECRET;
+const JWT_SECRET = () => (process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production');
 const makeToken  = id => jwt.sign({ id, role: 'teacher' }, JWT_SECRET(), { expiresIn: '8h' });
 
 function adminOnly(req, res, next) {

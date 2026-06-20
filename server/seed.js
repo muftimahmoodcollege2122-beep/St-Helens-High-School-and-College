@@ -7,7 +7,7 @@ const path   = require('path');
 const fs     = require('fs');
 
 // ── DB path: single-tenant, hardcoded to St. Helens ────────────────────────────────
-const DB_DIR = path.join(__dirname, 'db', 'schools', 'sthelens');
+const DB_DIR = path.join(__dirname, 'db', 'schools', 'shhs');
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
 function dbFile(name) { return path.join(DB_DIR, `${name}.json`); }
@@ -28,14 +28,14 @@ async function seed() {
   // ── Admin user ──────────────────────────────────────────────────────────────
   const users = readDB('users');
   if (!users.find(u => u.username === 'admin')) {
-    const tmpPwd = require('crypto').randomBytes(8).toString('hex');
-    const hash = await bcrypt.hash(tmpPwd, 12);
+    const hash = await bcrypt.hash('admin123', 12);
     users.push({
       _id: newId(), username: 'admin', password: hash,
       name: 'Administrator', role: 'admin', createdAt: new Date().toISOString()
     });
     writeDB('users', users);
-    console.log('✅ Admin user created. Run: npm run setup  to set a strong password.');
+    console.log('✅ Admin user created — username: admin / password: admin123');
+    console.log('⚠️  Change the password after first login (or run: npm run setup)');
   } else {
     console.log('ℹ️  Admin already exists');
   }
@@ -43,15 +43,14 @@ async function seed() {
   // ── Teacher account ─────────────────────────────────────────────────────────
   const ta = readDB('teacher-accounts');
   if (!ta.find(t => t.username === 'teacher1')) {
-    const tmpPwd2 = require('crypto').randomBytes(8).toString('hex');
-    const hash = await bcrypt.hash(tmpPwd2, 10);
+    const hash = await bcrypt.hash('teacher123', 10);
     ta.push({
       _id: newId(), username: 'teacher1', password: hash,
       name: 'Mr. Muhammad Arif', assignedClass: '10 (Matric)', assignedSection: 'A',
       createdAt: new Date().toISOString()
     });
     writeDB('teacher-accounts', ta);
-    console.log('✅ Teacher account created. Run: npm run setup  to set a strong password.');
+    console.log('✅ Teacher account created — username: teacher1 / password: teacher123');
   } else {
     console.log('ℹ️  Teacher account already exists');
   }

@@ -1067,14 +1067,14 @@ async function loadFaculty(){
   }catch{document.getElementById('faculty-grid').innerHTML='<p style="color:var(--gr)">Failed.</p>';}
 }
 
-const STATIC_GALLERY=[{src:'/images/campus8.png',title:'Main Building',category:'Campus'},{src:'/images/campus2.webp',title:'College Entrance',category:'Campus'},{src:'/images/campus1.webp',title:'Boys Senior Block',category:'Campus'},{src:'/images/campus6.webp',title:'College Hall',category:'Events'},{src:'/images/campus3.webp',title:'Campus Garden',category:'Campus'},{src:'/images/campus4.webp',title:'Classrooms Block',category:'Campus'},{src:'/images/campus5.webp',title:'Activity Block',category:'Campus'},{src:'/images/campus7.webp',title:'Inauguration Stone',category:'Campus'}];
+
 async function loadGallery(category=''){
   try{
     const res=await fetch(`${API}/api/gallery?limit=12${category?'&category='+category:''}`);
     const json=await res.json();
     const grid=document.getElementById('gal-grid');grid.innerHTML='';
-    const items=json.data&&json.data.length>0?json.data.map(i=>({src:i.imageUrl,title:i.title})):STATIC_GALLERY.filter(i=>!category||i.category===category);
-    if(!items.length){grid.innerHTML='<p style="color:var(--gr);grid-column:1/-1;padding:1rem">No images.</p>';return;}
+    const items=(json.data||[]).map(i=>({src:i.imageUrl,title:i.title}));
+    if(!items.length){grid.innerHTML='<p style="color:var(--gr);grid-column:1/-1;padding:1rem">No images yet.</p>';return;}
     items.forEach(item=>{const el=document.createElement('div');el.className='git reveal';el.innerHTML=`<img src="${item.src}" alt="${item.title}" loading="lazy"><div class="git-overlay"><div class="git-title">${item.title}</div></div>`;grid.appendChild(el);revealObs.observe(el);});
   }catch{document.getElementById('gal-grid').innerHTML='<p>Failed.</p>';}
 }

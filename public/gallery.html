@@ -361,16 +361,7 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
 <div class="toast" id="toast"></div>
 
 <script>
-const STATIC = [
-  {_id:'s1',imageUrl:'/images/campus8.png',title:'Main Building',description:'Front view of the main school building',category:'Campus',featured:true},
-  {_id:'s2',imageUrl:'/images/campus2.webp',title:'College Entrance',description:'The grand entrance to St. Helen\'s',category:'Campus',featured:false},
-  {_id:'s3',imageUrl:'/images/campus1.webp',title:'Boys Senior Block',description:'Senior section academic block',category:'Campus',featured:false},
-  {_id:'s4',imageUrl:'/images/campus6.webp',title:'College Hall',description:'Main auditorium for events and assemblies',category:'Events',featured:true},
-  {_id:'s5',imageUrl:'/images/campus3.webp',title:'Campus Garden',description:'Green spaces for students',category:'Campus',featured:false},
-  {_id:'s6',imageUrl:'/images/campus4.webp',title:'Classrooms Block',description:'Modern classrooms for all sections',category:'Campus',featured:false},
-  {_id:'s7',imageUrl:'/images/campus5.webp',title:'Activity Block',description:'Co-curricular activities hub',category:'Events',featured:false},
-  {_id:'s8',imageUrl:'/images/campus7.webp',title:'Inauguration Stone',description:'Foundation stone — Excellence',category:'Campus',featured:false}
-];
+
 
 let allItems = [];
 let filteredItems = [];
@@ -394,9 +385,9 @@ async function fetchGallery() {
   try {
     const res = await fetch('/api/gallery?limit=200');
     const json = await res.json();
-    allItems = (json.data && json.data.length > 0) ? json.data : STATIC;
+    allItems = json.data || [];
   } catch {
-    allItems = STATIC;
+    allItems = [];
   }
   updateStats();
   applyFilter();

@@ -3,24 +3,7 @@
 // Run once: npm run seed
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
-const path   = require('path');
-const fs     = require('fs');
-
-// ── DB path: single-tenant, hardcoded to St. Helens ────────────────────────────────
-const DB_DIR = path.join(__dirname, 'db', 'schools', 'shhs');
-if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
-
-function dbFile(name) { return path.join(DB_DIR, `${name}.json`); }
-function readDB(name) {
-  const f = dbFile(name);
-  if (!fs.existsSync(f)) return [];
-  try { const raw = fs.readFileSync(f, 'utf8').trim(); return raw ? JSON.parse(raw) : []; }
-  catch { return []; }
-}
-function writeDB(name, data) {
-  fs.writeFileSync(dbFile(name), JSON.stringify(data, null, 2), 'utf8');
-}
-function newId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); }
+const { readDB, writeDB, writeSettings, readSettings, newId, attOps } = require('./db');
 
 async function seed() {
   console.log('\n🌱  Seeding St. Helen\'s database...\n');
@@ -136,19 +119,17 @@ async function seed() {
     console.log('✅ Sample toppers created');
   }
 
-  // ── Empty collections (ensure files exist) ───────────────────────────────────
-  const empties = ['fees', 'attendance', 'homework', 'contact'];
+  // ── Empty collections (ensure tables have rows initialized if needed) ───────
+  const empties = ['fees', 'homework', 'contact'];
   empties.forEach(name => {
-    if (!fs.existsSync(dbFile(name))) {
-      writeDB(name, []);
-      console.log(`✅ ${name}.json created`);
-    }
+    if (readDB(name).length === 0) writeDB(name, []);
   });
+  // attendance lives in its own indexed SQLite table — nothing to initialize,
+  // attOps handles it directly and an empty table is already the default state.
 
   // ── Default site settings ────────────────────────────────────────────────────
-  const settingsFile = dbFile('settings');
-  if (!fs.existsSync(settingsFile)) {
-    fs.writeFileSync(settingsFile, JSON.stringify({
+  if (!readSettings()) {
+    writeSettings({
       heroTagline:   '⭐ St. Helen&#39;s High School &amp; College',
       heroTitle:     'St. Helen&#39;s High School &amp; College',
       heroSubtitle:  'Pakistan',
@@ -167,7 +148,7 @@ async function seed() {
       noticeActive:  false, noticeText: '', noticeType: 'info',
       admissionsOpen:true, admissionsText: 'Admissions Open for 2025–26 Session',
       whatsappEnabled: false, whatsappNumber: '', whatsappMessage: 'Assalamu Alaikum! I would like to get information about St. Helen&#39;s High School &amp; College.'
-    }, null, 2), 'utf8');
+    });
     console.log('✅ Default site settings created');
   }
 

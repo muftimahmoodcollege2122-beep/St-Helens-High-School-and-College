@@ -8,10 +8,19 @@ const path = require('path');
 const fs   = require('fs');
 const Database = require('better-sqlite3');
 
-const DB_DIR  = path.join(__dirname, 'schools', 'shhs');
+const DB_DIR  = process.env.DB_DIR || path.join(__dirname, 'schools', 'shhs');
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
 const DB_FILE = path.join(DB_DIR, 'shhs.sqlite3');
+const isFreshDB = !fs.existsSync(DB_FILE);
+if (isFreshDB) {
+  console.log('⚠️  No existing database found at ' + DB_FILE + ' — starting with an EMPTY database.');
+  console.log('⚠️  If this is unexpected, your hosting platform is not persisting the filesystem');
+  console.log('⚠️  across deploys. Mount a persistent volume at ' + DB_DIR + ' (set DB_DIR env var');
+  console.log('⚠️  if using a different path) to stop data loss on every push.');
+} else {
+  console.log('✅  Existing database loaded from ' + DB_FILE);
+}
 const db = new Database(DB_FILE);
 db.pragma('journal_mode = WAL');     // safe concurrent reads while writing
 db.pragma('foreign_keys = ON');

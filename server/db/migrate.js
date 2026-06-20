@@ -9,7 +9,7 @@ const fs   = require('fs');
 const JSON_DIR = path.join(__dirname, 'schools', 'shhs');
 const { readDB, writeDB, readSettings, writeSettings, db } = require('./index');
 
-const COLLECTIONS = ['students','attendance','fees','results','admissions','teachers','teacher_accounts','users','news','events','gallery','toppers','contact','homework'];
+const COLLECTIONS = ['students','attendance','fees','results','admissions','teachers','teacher-accounts','users','news','events','gallery','toppers','contact','homework','alumni'];
 
 let totalMigrated = 0;
 

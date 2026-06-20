@@ -57,21 +57,14 @@ function updateEnv(newSecret) {
 
 // ── Update users.json ─────────────────────────────────────────────────────────
 async function updateAdminPassword(hash) {
-  // Try SQLite first, fall back to JSON
   try {
-    const { db } = require('./db/index');
-    const row = db.prepare("SELECT json_data FROM documents WHERE collection='users' LIMIT 1").get();
-    if (row) {
-      const users = JSON.parse(db.prepare("SELECT json_data FROM documents WHERE collection='users'").all().map(r=>r.json_data).join(',').replace(/^(.*)$/s, '[$1]') || '[]');
-      // Use writeDB
-      const { writeDB, readDB } = require('./db/index');
-      const all = readDB('users');
-      if (all.length) {
-        all[0].password = hash;
-        all[0].updatedAt = new Date().toISOString();
-        writeDB('users', all);
-        return;
-      }
+    const { readDB, writeDB } = require('./db/index');
+    const all = readDB('users');
+    if (all.length) {
+      all[0].password = hash;
+      all[0].updatedAt = new Date().toISOString();
+      writeDB('users', all);
+      return;
     }
   } catch (_) {}
 

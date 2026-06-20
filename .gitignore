@@ -2,3 +2,10 @@
 node_modules/
 dist/
 *logs/
+
+# Live data — must never be committed. Committing this overwrites the
+# production database/uploads on every push since deploys pull from git.
+server/db/schools/shhs/*.json
+server/db/schools/shhs/*.sqlite3
+server/db/schools/shhs/*.sqlite3-*
+uploads/

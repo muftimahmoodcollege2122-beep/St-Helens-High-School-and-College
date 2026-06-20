@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { readDB } = require('../db');
+const { readDB, attOps } = require('../db');
 
 router.get('/student/:rollNo', (req, res) => {
   try {
@@ -24,9 +24,7 @@ router.get('/fees/:rollNo', (req, res) => {
 router.get('/attendance/:rollNo', (req, res) => {
   try {
     const { month } = req.query;
-    let data = readDB('attendance').filter(a => a.rollNo === req.params.rollNo);
-    if (month) data = data.filter(a => a.date && a.date.startsWith(month));
-    data.sort((a,b) => (a.date > b.date ? 1 : -1));
+    const data = attOps.studentHistory(req.params.rollNo, month);
     res.json({ success: true, data, summary: { present: data.filter(a=>a.status==='Present').length, absent: data.filter(a=>a.status==='Absent').length, late: data.filter(a=>a.status==='Late').length, total: data.length } });
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
 });

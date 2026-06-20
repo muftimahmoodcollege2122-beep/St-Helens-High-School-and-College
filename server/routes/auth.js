@@ -2,9 +2,14 @@ const express = require('express');
 const router  = express.Router();
 const jwt     = require('jsonwebtoken');
 const bcrypt  = require('bcryptjs');
-const { readDB, writeDB, readSettings, writeSettings } = require('../db');
+const multer  = require('multer');
+const { readDB, writeDB, readSettings, writeSettings, attOps, DB_FILE } = require('../db');
 const { protect } = require('../middleware/auth');
 const { loginRateLimit } = require('../middleware/rateLimit');
+
+// JSON backup file upload — kept in memory (small file, parsed immediately,
+// never written to disk), separate from the image-upload middleware.
+const backupUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 
 const JWT_SECRET = process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production';
 const makeToken = id => jwt.sign({ id }, JWT_SECRET, { expiresIn: '8h' });
@@ -49,25 +54,45 @@ router.put('/password', protect, async (req, res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
-router.get('/backup', protect, (req, res) => {
+router.get('/backup-json', protect, (req, res) => {
   try {
-    const collections = ['students','teachers','fees','results','attendance','news','events','gallery','toppers','contact','admissions','alumni','homework','users'];
+    const collections = ['students','teachers','fees','results','news','events','gallery','toppers','contact','admissions','alumni','homework','users'];
     const backup = {};
     collections.forEach(c => { backup[c] = readDB(c); });
+    backup.attendance = attOps.query({}); // attendance lives in its own indexed table
     backup.settings = readSettings() || {};
     backup.exportedAt = new Date().toISOString();
     res.json({ success:true, data:backup });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
-router.post('/restore', protect, (req, res) => {
+// Raw SQLite file download — full database, fastest to restore.
+router.get('/backup-db', protect, (req, res) => {
+  res.download(DB_FILE, 'sthelens_backup.db', (err) => {
+    if (err && !res.headersSent) res.status(500).json({ success:false, message:err.message });
+  });
+});
+
+router.post('/restore-json', protect, backupUpload.single('backup'), (req, res) => {
   try {
-    const { data } = req.body;
-    if (!data) return res.status(400).json({ success:false, message:'No data provided.' });
-    const collections = ['students','teachers','fees','results','attendance','news','events','gallery','toppers','contact','admissions','alumni','homework'];
-    collections.forEach(c => { if (Array.isArray(data[c])) writeDB(c, data[c]); });
+    if (!req.file) return res.status(400).json({ success:false, message:'No backup file uploaded.' });
+
+    let data;
+    try { data = JSON.parse(req.file.buffer.toString('utf8')); }
+    catch { return res.status(400).json({ success:false, message:'Invalid JSON file.' }); }
+
+    const collections = ['students','teachers','fees','results','news','events','gallery','toppers','contact','admissions','alumni','homework','users'];
+    const stats = {};
+    collections.forEach(c => {
+      if (Array.isArray(data[c])) { writeDB(c, data[c]); stats[c] = data[c].length; }
+    });
+    if (Array.isArray(data.attendance)) {
+      data.attendance.forEach(r => attOps.upsert(r));
+      stats.attendance = data.attendance.length;
+    }
     if (data.settings && typeof data.settings === 'object') writeSettings(data.settings);
-    res.json({ success:true, message:'Restore complete.' });
+
+    res.json({ success:true, message:'Restore complete.', stats });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 

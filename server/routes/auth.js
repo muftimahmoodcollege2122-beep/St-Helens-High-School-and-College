@@ -2,7 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const jwt     = require('jsonwebtoken');
 const bcrypt  = require('bcryptjs');
-const { readDB, writeDB, readSettings, writeSettings } = require('../db');
+const { readDB, writeDB, readSettings, writeSettings, attOps, DB_FILE } = require('../db');
 const { protect } = require('../middleware/auth');
 const { loginRateLimit } = require('../middleware/rateLimit');
 
@@ -49,23 +49,34 @@ router.put('/password', protect, async (req, res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
-router.get('/backup', protect, (req, res) => {
+router.get('/backup-json', protect, (req, res) => {
   try {
-    const collections = ['students','teachers','fees','results','attendance','news','events','gallery','toppers','contact','admissions','alumni','homework','users'];
+    const collections = ['students','teachers','fees','results','news','events','gallery','toppers','contact','admissions','alumni','homework','users'];
     const backup = {};
     collections.forEach(c => { backup[c] = readDB(c); });
+    backup.attendance = attOps.query({}); // attendance lives in its own indexed table
     backup.settings = readSettings() || {};
     backup.exportedAt = new Date().toISOString();
     res.json({ success:true, data:backup });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+// Raw SQLite file download — full database, fastest to restore.
+router.get('/backup-db', protect, (req, res) => {
+  res.download(DB_FILE, 'sthelens_backup.db', (err) => {
+    if (err && !res.headersSent) res.status(500).json({ success:false, message:err.message });
+  });
+});
+
 router.post('/restore', protect, (req, res) => {
   try {
     const { data } = req.body;
     if (!data) return res.status(400).json({ success:false, message:'No data provided.' });
-    const collections = ['students','teachers','fees','results','attendance','news','events','gallery','toppers','contact','admissions','alumni','homework'];
+    const collections = ['students','teachers','fees','results','news','events','gallery','toppers','contact','admissions','alumni','homework'];
     collections.forEach(c => { if (Array.isArray(data[c])) writeDB(c, data[c]); });
+    if (Array.isArray(data.attendance)) {
+      data.attendance.forEach(r => attOps.upsert(r));
+    }
     if (data.settings && typeof data.settings === 'object') writeSettings(data.settings);
     res.json({ success:true, message:'Restore complete.' });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }

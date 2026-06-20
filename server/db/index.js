@@ -220,6 +220,10 @@ const attOps = {
   countByYear() {
     return attStmts.countByYear.all();
   },
+  upsert(rec) {
+    attStmts.insert.run(attendanceRecordToRow(rec));
+    return rec;
+  },
   updateRecord(_id, fields) {
     const row = attStmts.getOne.get(_id);
     if (!row) return null;

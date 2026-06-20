@@ -3,7 +3,7 @@ const router  = express.Router();
 const jwt     = require('jsonwebtoken');
 const bcrypt  = require('bcryptjs');
 const multer  = require('multer');
-const { readDB, writeDB, readSettings, writeSettings, attOps, DB_FILE } = require('../db');
+const { readDB, writeDB, readSettings, writeSettings, attOps, clearAttendance, DB_FILE } = require('../db');
 const { protect } = require('../middleware/auth');
 const { loginRateLimit } = require('../middleware/rateLimit');
 
@@ -87,6 +87,7 @@ router.post('/restore-json', protect, backupUpload.single('backup'), (req, res) 
       if (Array.isArray(data[c])) { writeDB(c, data[c]); stats[c] = data[c].length; }
     });
     if (Array.isArray(data.attendance)) {
+      clearAttendance();
       data.attendance.forEach(r => attOps.upsert(r));
       stats.attendance = data.attendance.length;
     }

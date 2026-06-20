@@ -290,7 +290,11 @@ if (!users.find(u => u.username === 'admin')) {
   console.log('⚠️   Change the password immediately after first login!');
 }
 
+function clearAttendance() {
+  db.prepare('DELETE FROM attendance').run();
+}
+
 module.exports = {
-  readDB, writeDB, newId, readSettings, writeSettings, attOps, DB_FILE,
+  readDB, writeDB, newId, readSettings, writeSettings, attOps, DB_FILE, clearAttendance,
   getRecord, putRecord, deleteRecord,
 };

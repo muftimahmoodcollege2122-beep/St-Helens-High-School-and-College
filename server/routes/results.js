@@ -81,4 +81,17 @@ router.post('/bulk', protect, (req,res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+router.delete('/bulk/delete', protect, (req,res) => {
+  try {
+    const { deleteAll, exam, year } = req.body;
+    let data = readDB('results');
+    const before = data.length;
+    if (deleteAll) data = [];
+    else if (exam) data = data.filter(r => !(r.exam === exam && (!year || r.year === year)));
+    else return res.status(400).json({ success:false, message:'deleteAll or exam required.' });
+    writeDB('results', data);
+    res.json({ success:true, deleted: before - data.length });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 module.exports = router;

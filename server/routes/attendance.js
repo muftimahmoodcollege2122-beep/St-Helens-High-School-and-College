@@ -49,6 +49,16 @@ router.delete('/year/:year', protect, (req,res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+router.get('/students', protect, (req,res) => {
+  try {
+    const { class:cls, section } = req.query;
+    let data = readDB('students').filter(s => s.status === 'Active' || !s.status);
+    if (cls)     data = data.filter(s => s.class === cls);
+    if (section) data = data.filter(s => s.section === section);
+    res.json({ success:true, data });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 router.get('/years', protect, (req,res) => {
   try { res.json({ success:true, data: attOps.years() }); }
   catch(e) { res.status(500).json({ success:false, message:e.message }); }

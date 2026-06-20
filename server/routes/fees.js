@@ -33,6 +33,67 @@ router.put('/:id', protect, (req,res) => {
     res.json({ success:true, data:data[idx] });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
+router.patch('/:id', protect, (req,res) => {
+  try {
+    const data = readDB('fees');
+    const idx = data.findIndex(r => r._id === req.params.id);
+    if (idx===-1) return res.status(404).json({ success:false, message:'Not found.' });
+    data[idx] = { ...data[idx], ...req.body, _id:req.params.id };
+    writeDB('fees', data);
+    res.json({ success:true, data:data[idx] });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.post('/whatsapp/send', protect, (req,res) => {
+  try {
+    const { feeId, phone, message } = req.body;
+    if (!phone || !message) return res.status(400).json({ success:false, message:'phone and message required.' });
+    if (feeId) {
+      const data = readDB('fees');
+      const idx = data.findIndex(r => r._id === feeId);
+      if (idx !== -1) { data[idx].lastReminderAt = new Date().toISOString(); writeDB('fees', data); }
+    }
+    const waLink = `https://wa.me/${phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(message)}`;
+    res.json({ success:true, message:'Reminder logged.', waLink });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.post('/whatsapp/remind-all', protect, (req,res) => {
+  try {
+    const { month, messageTemplate } = req.body;
+    if (!month || !messageTemplate) return res.status(400).json({ success:false, message:'month and messageTemplate required.' });
+    const data = readDB('fees');
+    const defaulters = data.filter(r => r.month === month && r.status !== 'Paid');
+    const now = new Date().toISOString();
+    defaulters.forEach(r => { r.lastReminderAt = now; });
+    writeDB('fees', data);
+    res.json({ success:true, message:`${defaulters.length} reminder(s) logged for ${month}.`, count: defaulters.length });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.delete('/bulk/delete', protect, (req,res) => {
+  try {
+    const { deleteAll, month } = req.body;
+    const data = readDB('fees');
+    let kept, deleted;
+    if (deleteAll) { deleted = data.length; kept = []; }
+    else if (month) { kept = data.filter(r => r.month !== month); deleted = data.length - kept.length; }
+    else return res.status(400).json({ success:false, message:'deleteAll or month required.' });
+    writeDB('fees', kept);
+    res.json({ success:true, deleted });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.post('/bulk/import', protect, (req,res) => {
+  try {
+    const incoming = req.body.rows || req.body.fees;
+    if (!Array.isArray(incoming)) return res.status(400).json({ success:false, message:'rows array required.' });
+    const data = readDB('fees');
+    const added = incoming.map(f => { const item={_id:newId(),status:'Unpaid',...f,createdAt:new Date().toISOString()}; data.push(item); return item; });
+    writeDB('fees', data);
+    res.json({ success:true, added:added.length, skipped:0, errors:[] });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
 
 router.delete('/:id', protect, (req,res) => {
   try {

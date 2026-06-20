@@ -23,6 +23,19 @@ router.post('/', protect, (req,res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+router.delete('/bulk/delete', protect, (req,res) => {
+  try {
+    const { deleteAll, exam, year } = req.body;
+    const data = readDB('results');
+    let kept, deleted;
+    if (deleteAll) { deleted = data.length; kept = []; }
+    else if (exam) { kept = data.filter(r => !(r.exam === exam && (!year || r.year === year))); deleted = data.length - kept.length; }
+    else return res.status(400).json({ success:false, message:'deleteAll or exam required.' });
+    writeDB('results', kept);
+    res.json({ success:true, deleted });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 router.put('/:id', protect, (req,res) => {
   try {
     const data = readDB('results');
@@ -45,12 +58,26 @@ router.delete('/:id', protect, (req,res) => {
 
 router.post('/bulk', protect, (req,res) => {
   try {
-    const incoming = Array.isArray(req.body) ? req.body : req.body.results;
+    const incoming = req.body.rows || (Array.isArray(req.body) ? req.body : req.body.results);
     if (!Array.isArray(incoming)) return res.status(400).json({ success:false, message:'Array required.' });
+    const { exam, year, overwrite } = req.body;
     const data = readDB('results');
-    const added = incoming.map(r => { const item={_id:newId(),...r,createdAt:new Date().toISOString()}; data.push(item); return item; });
+    let added = 0, skipped = 0;
+    const errors = [];
+    incoming.forEach(r => {
+      const record = { ...r, exam: r.exam || exam, year: r.year || year };
+      if (!record.rollNo) { errors.push(`Missing rollNo: ${JSON.stringify(r)}`); return; }
+      const existingIdx = data.findIndex(d => d.rollNo === record.rollNo && d.exam === record.exam && d.year === record.year);
+      if (existingIdx !== -1) {
+        if (overwrite) { data[existingIdx] = { ...data[existingIdx], ...record, _id: data[existingIdx]._id }; added++; }
+        else skipped++;
+        return;
+      }
+      data.push({ _id:newId(), ...record, createdAt:new Date().toISOString() });
+      added++;
+    });
     writeDB('results', data);
-    res.json({ success:true, added:added.length });
+    res.json({ success:true, added, skipped, errors });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 

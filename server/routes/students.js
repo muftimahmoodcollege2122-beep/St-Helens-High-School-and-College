@@ -32,6 +32,55 @@ router.post('/', protect, (req,res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+
+
+
+
+// Bulk import
+
+
+
+
+router.post('/bulk/import', protect, (req,res) => {
+  try {
+    const incoming = req.body.rows || req.body.students;
+    const overwrite = !!req.body.overwrite;
+    if (!Array.isArray(incoming)) return res.status(400).json({ success:false, message:'rows array required.' });
+    const existing = readDB('students');
+    const byRoll = new Map(existing.map((r,i) => [r.rollNo, i]));
+    let added = 0, skipped = 0;
+    const errors = [];
+    incoming.forEach(s => {
+      if (!s.rollNo || !s.name) { errors.push(`Missing rollNo/name: ${JSON.stringify(s)}`); return; }
+      if (byRoll.has(s.rollNo)) {
+        if (overwrite) {
+          const idx = byRoll.get(s.rollNo);
+          existing[idx] = { ...existing[idx], ...s, _id: existing[idx]._id };
+          added++;
+        } else skipped++;
+        return;
+      }
+      const item = { _id:newId(), section:'A', status:'Active', ...s, createdAt:new Date().toISOString() };
+      existing.push(item); byRoll.set(s.rollNo, existing.length-1); added++;
+    });
+    writeDB('students', existing);
+    res.json({ success:true, added, skipped, errors });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.delete('/bulk/delete', protect, (req,res) => {
+  try {
+    const { deleteAll, class: cls } = req.body;
+    const data = readDB('students');
+    let kept, deleted;
+    if (deleteAll) { deleted = data.length; kept = []; }
+    else if (cls)  { kept = data.filter(r => r.class !== cls); deleted = data.length - kept.length; }
+    else return res.status(400).json({ success:false, message:'deleteAll or class required.' });
+    writeDB('students', kept);
+    res.json({ success:true, deleted });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 router.put('/:id', protect, (req,res) => {
   try {
     const data = readDB('students');
@@ -52,7 +101,7 @@ router.delete('/:id', protect, (req,res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
-// Bulk import
+// Legacy alias kept for backward compatibility
 router.post('/bulk', protect, (req,res) => {
   try {
     const incoming = req.body.students;

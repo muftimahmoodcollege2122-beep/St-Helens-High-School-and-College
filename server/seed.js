@@ -69,19 +69,9 @@ async function seed() {
   }
 
   // ── Gallery ─────────────────────────────────────────────────────────────────
-  if (readDB('gallery').length === 0) {
-    writeDB('gallery', [
-      { _id: newId(), title: 'St. Helen&#39;s High School &amp; College – Main Building', imageUrl: '/images/campus8.png',  category: 'Campus', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'College Entrance & Administration',      imageUrl: '/images/campus2.webp', category: 'Campus', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'Boys Senior Block',                      imageUrl: '/images/campus1.webp', category: 'Campus', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'College Hall',                           imageUrl: '/images/campus6.webp', category: 'Events', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'Campus Garden Area',                     imageUrl: '/images/campus3.webp', category: 'Campus', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'Arch Classrooms Block',                  imageUrl: '/images/campus4.webp', category: 'Campus', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'Art & Activity Block',                   imageUrl: '/images/campus5.webp', category: 'Campus', createdAt: new Date().toISOString() },
-      { _id: newId(), title: 'Inauguration Stone – ',              imageUrl: '/images/campus7.webp', category: 'Campus', createdAt: new Date().toISOString() },
-    ]);
-    console.log('✅ Campus gallery seeded');
-  }
+  // NOTE: not auto-seeding placeholder campus photos — the old defaults here
+  // were actual MMPC campus photos carried over from the template this repo
+  // was cloned from. Upload real St. Helen's photos via the admin panel.
 
   // ── Students ────────────────────────────────────────────────────────────────
   if (readDB('students').length === 0) {

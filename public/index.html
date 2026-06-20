@@ -1152,7 +1152,7 @@ async function loadSiteSettings(){
     if(s.principalEnabled!==false){
       set('principal-name',s.principalName);set('principal-desg',s.principalDesignation);
       set('principal-msg',s.principalMessage);
-      set('principal-sig-name',(s.principalName||'')+(s.principalDesignation?' — '+s.principalDesignation+', St. Helen's':''));
+      set('principal-sig-name',(s.principalName||'')+(s.principalDesignation?' — '+s.principalDesignation+', St. Helen\'s':''));
       if(s.principalPhoto){const wrap=document.getElementById('principal-img-wrap');if(wrap)wrap.innerHTML=`<img src="${s.principalPhoto}" alt="${s.principalName||'Principal'}" style="width:100%;height:100%;object-fit:cover">`;}
       // Secretary
       set('secretary-name', s.secretaryName);

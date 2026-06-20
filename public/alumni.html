@@ -73,7 +73,6 @@ nav{position:sticky;top:0;z-index:999;background:var(--nv2);border-bottom:3px so
 .ac-tags{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center}
 .tag{font-size:.62rem;background:var(--of);color:var(--gr);padding:2px 8px;border-radius:12px;font-weight:700;border:1px solid var(--bd)}
 /* Stories */
-.stories-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem}
 .story-card{background:var(--wh);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.07);overflow:hidden;transition:.3s}
 .story-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.13)}
 .story-img{height:190px;background:linear-gradient(135deg,var(--nv2),var(--nv3));overflow:hidden;position:relative}
@@ -155,7 +154,7 @@ footer ul li a:hover{color:var(--gd2)}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
 .reveal.visible{opacity:1;transform:none}
 @media(max-width:960px){.reg-layout{grid-template-columns:1fr}.quotes-row{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}.footer-grid>div:first-child{grid-column:1/-1}}
-@media(max-width:720px){.nav-ul{display:none}.burger{display:flex}.alumni-grid{grid-template-columns:repeat(2,1fr)}.stories-grid{grid-template-columns:1fr}}
+@media(max-width:720px){.nav-ul{display:none}.burger{display:flex}.alumni-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.alumni-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr}}
 
 
@@ -258,8 +257,7 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
     <h1>St. Helen&#39;s <em>Alumni</em> Network</h1>
     <p>Celebrating the achievements of our graduates — doctors, engineers, scholars and leaders shaping Pakistan</p>
     <div class="hero-tabs">
-      <button class="hero-tab on" onclick="showSection('profiles',this)">👤 Alumni Profiles</button>
-      <button class="hero-tab" onclick="showSection('stories',this)">📖 Success Stories</button>
+      <button class="hero-tab on" onclick="showSection('profiles',this)">👤 Alumni Directory</button>
       <button class="hero-tab" onclick="showSection('register',this)">✍️ Register as Alumni</button>
     </div>
   </div>
@@ -274,10 +272,10 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
 <!-- Stats Banner -->
 <div class="stats-banner">
   <div class="stats-row">
-    <div class="stat-item"><div class="n">2,400+</div><div class="l">Total Alumni</div></div>
-    <div class="stat-item"><div class="n">18</div><div class="l">Batches</div></div>
-    <div class="stat-item"><div class="n">120+</div><div class="l">Doctors & Engineers</div></div>
-    <div class="stat-item"><div class="n">8</div><div class="l">Countries Represented</div></div>
+    <div class="stat-item"><div class="n" id="stat-total">0</div><div class="l">Total Alumni</div></div>
+    <div class="stat-item"><div class="n" id="stat-batches">0</div><div class="l">Batches</div></div>
+    <div class="stat-item"><div class="n" id="stat-professions">0</div><div class="l">Professions</div></div>
+    <div class="stat-item"><div class="n" id="stat-countries">0</div><div class="l">Countries</div></div>
   </div>
 </div>
 
@@ -288,18 +286,12 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
       <div class="sec-head">
         <div>
           <div class="sec-title">Notable <em>Alumni</em></div>
-          <div class="sec-sub">Graduates making St. Helen's proud across Pakistan and beyond</div>
+          <div class="sec-sub">Real graduates from our alumni directory</div>
         </div>
         <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center">
           <div class="search-box"><input id="search-input" placeholder="Search alumni..." oninput="filterAlumni()"></div>
           <div class="filter-row" id="batch-filters">
             <button class="ftab on" onclick="setBatch('',this)">All</button>
-            <button class="ftab" onclick="setBatch('2010',this)">Batch '10</button>
-            <button class="ftab" onclick="setBatch('2012',this)">Batch '12</button>
-            <button class="ftab" onclick="setBatch('2015',this)">Batch '15</button>
-            <button class="ftab" onclick="setBatch('2018',this)">Batch '18</button>
-            <button class="ftab" onclick="setBatch('2020',this)">Batch '20</button>
-            <button class="ftab" onclick="setBatch('2022',this)">Batch '22</button>
           </div>
         </div>
       </div>
@@ -314,57 +306,6 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
     </div>
   </div>
 
-  <!-- Quotes -->
-  <div class="sec-alt">
-    <div class="sec" style="padding:40px 1.5rem">
-      <div class="con">
-        <div style="text-align:center;margin-bottom:1.6rem">
-          <div class="sec-title">What They <em>Say</em></div>
-          <div class="sec-sub">Words from our proud graduates</div>
-        </div>
-        <div class="quotes-row">
-          <div class="quote-card reveal">
-            <div class="quote-text">St. Helen's gave me the discipline and Islamic values that guide every decision I make today as a doctor. The teachers here were more than educators — they were mentors.</div>
-            <div class="quote-author">Dr. Asad Ullah Khan</div>
-            <div class="quote-meta">MBBS — Batch 2012 | KMU Peshawar</div>
-          </div>
-          <div class="quote-card reveal">
-            <div class="quote-text">From a small school in Pakistan to an engineering job in Islamabad — St. Helen's science program laid every brick of my foundation. I owe it all to my teachers here.</div>
-            <div class="quote-author">Engr. Saira Naseem</div>
-            <div class="quote-meta">Civil Engineer — Batch 2015 | UET Lahore</div>
-          </div>
-          <div class="quote-card reveal">
-            <div class="quote-text">The culture of hard work and brotherhood at St. Helen's is unmatched. My batchmates are now spread across the world but we remain a family because of what this school built in us.</div>
-            <div class="quote-author">Hassan Farooq</div>
-            <div class="quote-meta">Software Engineer, Dubai — Batch 2018</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== STORIES SECTION ===== -->
-<div class="pg-section" id="sec-stories">
-  <div class="sec">
-    <div class="con">
-      <div class="sec-head">
-        <div>
-          <div class="sec-title"><em>Success</em> Stories</div>
-          <div class="sec-sub">Inspiring journeys from our St. Helen's alumni community</div>
-        </div>
-        <div class="filter-row">
-          <button class="ftab on" onclick="filterStories('',this)">All</button>
-          <button class="ftab" onclick="filterStories('Medical',this)">🏥 Medical</button>
-          <button class="ftab" onclick="filterStories('Engineering',this)">⚙️ Engineering</button>
-          <button class="ftab" onclick="filterStories('Business',this)">💼 Business</button>
-          <button class="ftab" onclick="filterStories('Education',this)">📚 Education</button>
-          <button class="ftab" onclick="filterStories('Technology',this)">💻 Technology</button>
-        </div>
-      </div>
-      <div class="stories-grid" id="stories-grid"></div>
-    </div>
-  </div>
 </div>
 
 <!-- ===== REGISTER SECTION ===== -->
@@ -493,33 +434,41 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
 </footer>
 
 <script>
-// ── Data ──────────────────────────────────────────────────────────────────────
-const ALUMNI = [
-  {name:'Dr. Asad Ullah Khan',role:'Medical Officer, DHQ Hospital',batch:'2012',field:'MBBS — KMU Peshawar',emoji:'👨‍⚕️',tags:['Medicine','KPK']},
-  {name:'Engr. Saira Naseem',role:'Civil Engineer, NHA Pakistan',batch:'2015',field:'B.E Civil — UET Lahore',emoji:'👩‍🔬',tags:['Engineering','Lahore']},
-  {name:'Hassan Farooq',role:'Software Engineer, Dubai',batch:'2018',field:'BS CS — COMSATS',emoji:'👨‍💻',tags:['Technology','UAE']},
-  {name:'Dr. Fatima Siddiqui',role:'Gynaecologist, Pakistan',batch:'2010',field:'MBBS — Bolan Medical College',emoji:'👩‍⚕️',tags:['Medicine','DIKhan']},
-  {name:'Adnan Mahmood',role:'CSS Officer (BPS-17)',batch:'2012',field:'MA Political Science — QAU',emoji:'🏛️',tags:['Civil Service','Islamabad']},
-  {name:'Engr. Bilal Zafar',role:'Electrical Engineer, WAPDA',batch:'2015',field:'B.E Electrical — NUST',emoji:'⚡',tags:['Engineering','Islamabad']},
-  {name:'Prof. Raheela Khan',role:'Lecturer, GDC Pakistan',batch:'2010',field:'MA English — BZU Multan',emoji:'👩‍🏫',tags:['Education','DIKhan']},
-  {name:'Usman Tariq',role:'Business Owner, Pakistan',batch:'2018',field:'BBA — IMS Peshawar',emoji:'💼',tags:['Business','DIKhan']},
-  {name:'Dr. Imran Sheikh',role:'Dentist, Peshawar',batch:'2020',field:'BDS — Khyber College',emoji:'🦷',tags:['Medicine','Peshawar']},
-  {name:'Nadia Bibi',role:'Government Teacher',batch:'2022',field:'B.Ed — IUB',emoji:'📚',tags:['Education','KPK']},
-  {name:'Zubair Ahmed',role:'Army Officer (Captain)',batch:'2018',field:'PMA Kakul',emoji:'🎖️',tags:['Armed Forces','Pakistan']},
-  {name:'Sana Gul',role:'Pharmacist, Shifa Hospital',batch:'2020',field:'Pharm-D — UOP',emoji:'💊',tags:['Medicine','Peshawar']}
-];
-
-const STORIES = [
-  {category:'Medical',batch:'Batch 2012',title:'From Pakistan to DHQ: Dr. Asad\'s Journey in Rural Healthcare',excerpt:'Growing up in Pakistan, Dr. Asad Ullah Khan dreamed of serving the communities that raised him. Today, as a Medical Officer at DHQ Hospital, he has treated over 10,000 patients and runs a free clinic every Friday.',emoji:'👨‍⚕️',name:'Dr. Asad Ullah Khan',role:'MBBS — KMU Peshawar'},
-  {category:'Engineering',batch:'Batch 2015',title:'Building Bridges: How Saira Became the First Female Engineer from Her Mohallah',excerpt:'Saira Naseem faced resistance when she chose Engineering over the traditional path. With St. Helen\'s science program as her foundation, she secured admission to UET Lahore and today designs road infrastructure across the region.',emoji:'👩‍🔬',name:'Engr. Saira Naseem',role:'Civil Engineer — NHA Pakistan'},
-  {category:'Technology',batch:'Batch 2018',title:'Code, Culture, and Community: Hassan\'s Tech Career in Dubai',excerpt:'Hassan Farooq started coding in his school library in Pakistan. Six years later, he is a Software Engineer at a multinational company in Dubai, and still mentors students back at St. Helen\'s every summer.',emoji:'👨‍💻',name:'Hassan Farooq',role:'Software Engineer — Dubai'},
-  {category:'Business',batch:'Batch 2018',title:'From Student to Employer: Usman Tariq\'s Story of Local Entrepreneurship',excerpt:'Rather than migrating for work, Usman Tariq chose to build a business in Pakistan itself. His agricultural supplies company now employs 18 local people and serves farmers across South KPK.',emoji:'💼',name:'Usman Tariq',role:'CEO — Tariq Agricultural Supplies'},
-  {category:'Education',batch:'Batch 2010',title:'Prof. Raheela: Giving Back to the City That Educated Her',excerpt:'Prof. Raheela Khan turned down higher-paying opportunities in Karachi and Lahore to teach at Government Degree College Pakistan. She believes in building the city from within, one student at a time.',emoji:'👩‍🏫',name:'Prof. Raheela Khan',role:'Lecturer — GDC Pakistan'},
-  {category:'Medical',batch:'Batch 2020',title:'Young Dentist Dr. Imran: Bringing Modern Dentistry to Pakistan',excerpt:'At just 26, Dr. Imran Sheikh returned from Peshawar with his BDS degree and set up the first fully equipped dental clinic in the Cantt area of Pakistan, serving hundreds of patients monthly.',emoji:'🦷',name:'Dr. Imran Sheikh',role:'BDS — Khyber College of Dentistry'}
-];
-
-let alumniPage = 1, batchFilter = '', searchFilter = '', storyCat = '';
+// ── Data — loaded live from /api/alumni, no hardcoded records ──────────────────
+let ALL_ALUMNI = [];
+let alumniPage = 1, batchFilter = '', searchFilter = '';
 const PER = 8;
+
+async function loadAlumni() {
+  try {
+    const res = await fetch('/api/alumni');
+    const json = await res.json();
+    ALL_ALUMNI = json.data || [];
+  } catch {
+    ALL_ALUMNI = [];
+  }
+  buildBatchFilters();
+  updateStats();
+  renderAlumni();
+}
+
+function buildBatchFilters() {
+  const batches = [...new Set(ALL_ALUMNI.map(a => a.graduationYear || a.batch).filter(Boolean))].sort().reverse();
+  const wrap = document.getElementById('batch-filters');
+  wrap.innerHTML = '<button class="ftab on" onclick="setBatch(\'\',this)">All</button>' +
+    batches.map(b => `<button class="ftab" onclick="setBatch('${b}',this)">Batch '${String(b).slice(-2)}</button>`).join('');
+}
+
+function updateStats() {
+  const total = ALL_ALUMNI.length;
+  const batches = new Set(ALL_ALUMNI.map(a => a.graduationYear || a.batch).filter(Boolean)).size;
+  const professions = new Set(ALL_ALUMNI.map(a => a.profession).filter(Boolean)).size;
+  const countries = new Set(ALL_ALUMNI.map(a => a.currentCountry).filter(Boolean)).size;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-batches').textContent = batches;
+  document.getElementById('stat-professions').textContent = professions;
+  document.getElementById('stat-countries').textContent = countries;
+}
 
 // ── Sections ──────────────────────────────────────────────────────────────────
 function showSection(id, btn) {
@@ -531,90 +480,68 @@ function showSection(id, btn) {
 
 // ── Alumni profiles ───────────────────────────────────────────────────────────
 function getFiltered() {
-  return ALUMNI.filter(a => {
-    const matchBatch = !batchFilter || a.batch === batchFilter;
-    const matchSearch = !searchFilter || a.name.toLowerCase().includes(searchFilter) || a.field.toLowerCase().includes(searchFilter) || a.role.toLowerCase().includes(searchFilter);
+  return ALL_ALUMNI.filter(a => {
+    const batchVal = a.graduationYear || a.batch || '';
+    const matchBatch = !batchFilter || String(batchVal) === String(batchFilter);
+    const q = searchFilter;
+    const matchSearch = !q ||
+      (a.name||'').toLowerCase().includes(q) ||
+      (a.profession||'').toLowerCase().includes(q) ||
+      (a.employer||'').toLowerCase().includes(q) ||
+      (a.program||'').toLowerCase().includes(q);
     return matchBatch && matchSearch;
   });
 }
 
 function setBatch(b, btn) {
   document.querySelectorAll('#batch-filters .ftab').forEach(x => x.classList.remove('on'));
-  btn.classList.add('on'); batchFilter = b; alumniPage = 1; renderAlumni(false);
+  btn.classList.add('on'); batchFilter = b; alumniPage = 1; renderAlumni();
 }
 
 function filterAlumni() {
   searchFilter = document.getElementById('search-input').value.trim().toLowerCase();
-  alumniPage = 1; renderAlumni(false);
+  alumniPage = 1; renderAlumni();
 }
 
-function loadMoreAlumni() { alumniPage++; renderAlumni(true); }
+function loadMoreAlumni() { alumniPage++; renderAlumni(); }
 
-function renderAlumni(append) {
+function initials(name) {
+  return (name||'?').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+
+function renderAlumni() {
   const filtered = getFiltered();
   const grid = document.getElementById('alumni-grid');
   const slice = filtered.slice(0, alumniPage * PER);
-  if (!append) grid.innerHTML = '';
-  else grid.innerHTML = '';
+  grid.innerHTML = '';
   if (!slice.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gr)"><span style="font-size:2.5rem;display:block;margin-bottom:.8rem">🔍</span><strong>No alumni found</strong><p style="font-size:.82rem;margin-top:.4rem">Try adjusting your search or batch filter</p></div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gr)"><span style="font-size:2.5rem;display:block;margin-bottom:.8rem">🔍</span><strong>No alumni found</strong><p style="font-size:.82rem;margin-top:.4rem">Be the first to register, or try a different search.</p></div>';
     document.getElementById('load-more-wrap').style.display = 'none'; return;
   }
   slice.forEach(a => {
+    const batchVal = a.graduationYear || a.batch || '—';
+    const field = a.program || a.boardRollNo || '';
+    const tags = [a.profession, a.currentCity || a.currentCountry].filter(Boolean);
     const el = document.createElement('div');
     el.className = 'ac reveal';
     el.innerHTML = `
       <div class="ac-banner">
-        <div class="ac-avatar" style="display:flex;align-items:center;justify-content:center;font-size:1.8rem">${a.emoji}</div>
+        <div class="ac-avatar" style="display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800">${initials(a.name)}</div>
       </div>
       <div class="ac-body">
-        <div class="ac-name">${a.name}</div>
-        <div class="ac-role">${a.role}</div>
-        <div class="ac-batch">Batch '${a.batch}</div>
-        <div class="ac-field">${a.field}</div>
-        <div class="ac-tags">${a.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="ac-name">${a.name||'Alumni'}</div>
+        <div class="ac-role">${a.profession || a.employer || ''}</div>
+        <div class="ac-batch">Batch '${batchVal}</div>
+        <div class="ac-field">${field}</div>
+        <div class="ac-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
       </div>`;
     grid.appendChild(el); revealObs.observe(el);
   });
   document.getElementById('load-more-wrap').style.display = slice.length < filtered.length ? 'block' : 'none';
 }
 
-// ── Stories ───────────────────────────────────────────────────────────────────
-function filterStories(cat, btn) {
-  document.querySelectorAll('#sec-stories .ftab').forEach(x => x.classList.remove('on'));
-  btn.classList.add('on'); storyCat = cat; renderStories();
-}
-
-function renderStories() {
-  const grid = document.getElementById('stories-grid');
-  const filtered = storyCat ? STORIES.filter(s => s.category === storyCat) : STORIES;
-  grid.innerHTML = '';
-  if (!filtered.length) { grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gr);grid-column:1/-1">No stories in this category yet.</div>'; return; }
-  filtered.forEach(s => {
-    const el = document.createElement('div');
-    el.className = 'story-card reveal';
-    el.innerHTML = `
-      <div class="story-img" style="display:flex;align-items:center;justify-content:center;font-size:4rem">
-        ${s.emoji}
-        <div class="story-badge">${s.category}</div>
-      </div>
-      <div class="story-body">
-        <div class="story-batch">${s.batch}</div>
-        <div class="story-title">${s.title}</div>
-        <div class="story-excerpt">${s.excerpt}</div>
-        <div class="story-author">
-          <div class="story-ava">${s.emoji}</div>
-          <div class="story-author-info">
-            <div class="name">${s.name}</div>
-            <div class="meta">${s.role}</div>
-          </div>
-        </div>
-      </div>`;
-    grid.appendChild(el); revealObs.observe(el);
-  });
-}
-
 // ── Register ───────────────────────────────────────────────────────────────────
+
 const RREQUIRED = ['r-name','r-gender','r-year','r-prof','r-phone'];
 function rValidate() {
   const filled = RREQUIRED.filter(id => { const el = document.getElementById(id); return el && el.value.trim(); }).length;
@@ -685,8 +612,7 @@ for (let y = 2026; y >= 2008; y--) {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-renderAlumni(false);
-renderStories();
+loadAlumni();
 </script>
 </body>
 </html>

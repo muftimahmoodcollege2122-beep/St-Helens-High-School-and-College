@@ -70,4 +70,34 @@ router.post('/bulk', protect, (req,res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+router.post('/bulk/import', protect, (req,res) => {
+  try {
+    const incoming = req.body.students;
+    if (!Array.isArray(incoming)) return res.status(400).json({ success:false, message:'students array required.' });
+    const existing = readDB('students');
+    const existingRolls = new Set(existing.map(r => r.rollNo));
+    const added = [], skipped = [];
+    incoming.forEach(s => {
+      if (existingRolls.has(s.rollNo)) { skipped.push(s.rollNo); return; }
+      const item = { _id:newId(), section:'A', status:'Active', ...s, createdAt:new Date().toISOString() };
+      existing.push(item); added.push(item);
+    });
+    writeDB('students', existing);
+    res.json({ success:true, added:added.length, skipped:skipped.length });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.delete('/bulk/delete', protect, (req,res) => {
+  try {
+    const { deleteAll, class: cls } = req.body;
+    let data = readDB('students');
+    const before = data.length;
+    if (deleteAll) data = [];
+    else if (cls) data = data.filter(r => r.class !== cls);
+    else return res.status(400).json({ success:false, message:'deleteAll or class required.' });
+    writeDB('students', data);
+    res.json({ success:true, deleted: before - data.length });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 module.exports = router;

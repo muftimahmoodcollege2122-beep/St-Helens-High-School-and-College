@@ -80,6 +80,9 @@ router.post('/restore-json', protect, backupUpload.single('backup'), (req, res) 
     let data;
     try { data = JSON.parse(req.file.buffer.toString('utf8')); }
     catch { return res.status(400).json({ success:false, message:'Invalid JSON file.' }); }
+    // The downloaded backup file is the raw API response { success, data:{...} } —
+    // unwrap it if present, so restoring a file you just downloaded works.
+    if (data && typeof data.data === 'object' && !Array.isArray(data.data)) data = data.data;
 
     const collections = ['students','teachers','fees','results','news','events','gallery','toppers','contact','admissions','alumni','homework','users'];
     const stats = {};

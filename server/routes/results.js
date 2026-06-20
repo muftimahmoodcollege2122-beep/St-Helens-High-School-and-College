@@ -3,6 +3,18 @@ const router  = express.Router();
 const { readDB, writeDB, newId } = require('../db');
 const { protect } = require('../middleware/auth');
 
+router.get('/lookup', (req,res) => {
+  try {
+    const { rollNo, exam, year } = req.query;
+    if (!rollNo) return res.status(400).json({ success:false, message:'rollNo required.' });
+    let data = readDB('results').filter(r => r.rollNo === rollNo);
+    if (exam) data = data.filter(r => r.exam === exam);
+    if (year) data = data.filter(r => r.year === year);
+    if (!data.length) return res.status(404).json({ success:false, message:'No result found.' });
+    res.json({ success:true, data });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 router.get('/', (req,res) => {
   try {
     const { rollNo, exam, year, class:cls } = req.query;

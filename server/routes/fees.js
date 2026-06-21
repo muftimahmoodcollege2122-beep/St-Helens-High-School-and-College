@@ -10,7 +10,12 @@ router.get('/', protect, (req,res) => {
     if (student) data = data.filter(r => r.student === student || r.rollNo === student);
     if (month)   data = data.filter(r => r.month === month);
     if (status)  data = data.filter(r => r.status === status);
-    if (cls)     data = data.filter(r => r.class === cls);
+    const students = readDB('students');
+    data = data.map(f => {
+      const s = students.find(x => x._id === f.student || x.rollNo === f.student);
+      return { ...f, student: s ? { rollNo:s.rollNo, name:s.name, fatherName:s.fatherName, class:s.class, section:s.section, fatherPhone:s.fatherPhone } : null };
+    });
+    if (cls) data = data.filter(r => r.student && r.student.class === cls);
     res.json({ success:true, data });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
@@ -104,6 +109,27 @@ router.post('/bulk/import', protect, (req,res) => {
     const added = incoming.map(f => { const item={_id:newId(),status:'Unpaid',...f,createdAt:new Date().toISOString()}; data.push(item); return item; });
     writeDB('fees', data);
     res.json({ success:true, added:added.length, skipped:0, errors:[] });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.patch('/:id/verify-payment', protect, (req,res) => {
+  try {
+    const { approve } = req.body;
+    const data = readDB('fees');
+    const idx = data.findIndex(r => r._id === req.params.id);
+    if (idx===-1) return res.status(404).json({ success:false, message:'Not found.' });
+    if (!data[idx].paymentSubmission) return res.status(400).json({ success:false, message:'No payment submission to verify.' });
+    if (approve) {
+      data[idx].status = 'Paid';
+      data[idx].paymentSubmission.verified = true;
+      data[idx].paidAt = new Date().toISOString();
+    } else {
+      data[idx].status = 'Unpaid';
+      data[idx].paymentSubmission.verified = false;
+      data[idx].paymentSubmission.rejected = true;
+    }
+    writeDB('fees', data);
+    res.json({ success:true, data:data[idx] });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 

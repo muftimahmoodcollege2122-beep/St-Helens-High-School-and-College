@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { readDB, attOps } = require('../db');
+const { readDB, writeDB, newId, readSettings, attOps } = require('../db');
 
 router.get('/student/:rollNo', (req, res) => {
   try {
@@ -56,6 +56,37 @@ router.get('/notices', (req, res) => {
     const data = readDB('news').sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 10);
     res.json({ success: true, data });
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+router.post('/fees/:feeId/submit-payment', (req, res) => {
+  try {
+    const { method, transactionId, payerName, payerPhone, amount } = req.body;
+    if (!method || !transactionId) return res.status(400).json({ success:false, message:'method and transactionId required.' });
+    const fees = readDB('fees');
+    const idx = fees.findIndex(f => f._id === req.params.feeId);
+    if (idx === -1) return res.status(404).json({ success:false, message:'Fee record not found.' });
+    fees[idx].paymentSubmission = {
+      _id: newId(), method, transactionId, payerName: payerName||'', payerPhone: payerPhone||'',
+      amount: amount||fees[idx].amount, submittedAt: new Date().toISOString(), verified: false
+    };
+    fees[idx].status = 'Pending Verification';
+    writeDB('fees', fees);
+    res.json({ success:true, message:'Payment submitted. School will verify and confirm.' });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.get('/payment-info', (req, res) => {
+  try {
+    const s = readSettings() || {};
+    res.json({ success:true, data: {
+      easypaisa: s.easypaisaNumber || '',
+      jazzcash: s.jazzcashNumber || '',
+      bankAccountTitle: s.bankAccountTitle || "St. Helen's High School & College",
+      bankName: s.bankName || '',
+      bankAccountNumber: s.bankAccountNumber || '',
+      bankIban: s.bankIban || ''
+    }});
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
 module.exports = router;

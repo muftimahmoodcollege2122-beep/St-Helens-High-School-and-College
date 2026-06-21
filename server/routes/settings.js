@@ -42,6 +42,8 @@ const DEFAULTS = {
   achievementsEnabled: true,
   ach1: '🏆 Board Position – 2024 Annual Exams',   ach2: '🥇 District Science Fair Champions 2024',
   ach3: '📚 100% Result in FA/FSc 2023',            ach4: '🎖 Best School Award – Pakistan 2023',
+  easypaisaNumber: '', jazzcashNumber: '',
+  bankAccountTitle: "St. Helen's High School & College", bankName: '', bankAccountNumber: '', bankIban: '',
 };
 
 // GET /api/settings  (public — needed by index.html)

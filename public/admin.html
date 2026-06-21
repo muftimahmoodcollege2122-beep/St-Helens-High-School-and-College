@@ -961,6 +961,23 @@ textarea{resize:vertical;min-height:90px}
           </div>
         </div>
 
+        <!-- Payment Accounts Card -->
+        <div class="card">
+          <div class="card-hdr"><h3>💳 Fee Payment Accounts</h3></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group"><label>EasyPaisa Number</label><input id="s-easypaisaNumber"></div>
+              <div class="form-group"><label>JazzCash Number</label><input id="s-jazzcashNumber"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Bank Name</label><input id="s-bankName"></div>
+              <div class="form-group"><label>Bank Account Number</label><input id="s-bankAccountNumber"></div>
+              <div class="form-group"><label>IBAN</label><input id="s-bankIban"></div>
+            </div>
+            <button class="btn btn-pr" onclick="saveSettings('payment')">Save Payment Info</button>
+          </div>
+        </div>
+
         <!-- Auto Backups Card -->
         <div class="card">
           <div class="card-hdr">
@@ -2364,6 +2381,11 @@ async function loadSiteSettings() {
     setVal('s-heroSubtitle', s.heroSubtitle);
     setVal('s-heroMotto', s.heroMotto);
     setVal('s-statStudents', s.statStudents);
+    setVal('s-easypaisaNumber', s.easypaisaNumber);
+    setVal('s-jazzcashNumber', s.jazzcashNumber);
+    setVal('s-bankName', s.bankName);
+    setVal('s-bankAccountNumber', s.bankAccountNumber);
+    setVal('s-bankIban', s.bankIban);
     setVal('s-statFaculty', s.statFaculty);
     setVal('s-statYears', s.statYears);
     setVal('s-statPassRate', s.statPassRate);
@@ -2476,6 +2498,12 @@ async function saveSettings(section) {
     payload.contactEmail2 = document.getElementById('s-contactEmail2').value.trim();
     payload.contactAddress= document.getElementById('s-contactAddress').value.trim();
     payload.contactHours  = document.getElementById('s-contactHours').value.trim();
+  } else if (section === 'payment') {
+    payload.easypaisaNumber    = document.getElementById('s-easypaisaNumber').value.trim();
+    payload.jazzcashNumber     = document.getElementById('s-jazzcashNumber').value.trim();
+    payload.bankName           = document.getElementById('s-bankName').value.trim();
+    payload.bankAccountNumber  = document.getElementById('s-bankAccountNumber').value.trim();
+    payload.bankIban           = document.getElementById('s-bankIban').value.trim();
   }
 
   try {
@@ -3142,13 +3170,20 @@ async function loadFees() {
         <td>Rs. ${f.amount.toLocaleString()}</td>
         <td><span style="padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700;${badge}">${f.status}</span></td>
         <td style="display:flex;gap:.3rem;flex-wrap:wrap">
-          ${f.status !== 'Paid' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:var(--gd);color:#fff" onclick="openPayModal('${f._id}',${f.amount})">💵 Pay</button>` : ''}
+          ${f.status === 'Pending Verification' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#2e7d32;color:#fff" onclick="verifyFeePayment('${f._id}',true)">✅ Verify</button><button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#e53e3e;color:#fff" onclick="verifyFeePayment('${f._id}',false)">❌ Reject</button>` : ''}
+          ${f.status !== 'Paid' && f.status !== 'Pending Verification' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:var(--gd);color:#fff" onclick="openPayModal('${f._id}',${f.amount})">💵 Pay</button>` : ''}
           ${s.fatherPhone ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#25d366;color:#fff" onclick="openWAModal('${f._id}','${s.fatherPhone}','${s.name}','${f.month}',${f.amount})">📲</button>` : ''}
           <button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#e53e3e;color:#fff" onclick="deleteFee('${f._id}')">🗑</button>
         </td>
       </tr>`;
     }).join('');
   } catch(e) { tbody.innerHTML = '<tr><td colspan="8">Error loading fees</td></tr>'; }
+}
+
+async function verifyFeePayment(id, approve) {
+  const d = await apiFetch('/api/fees/' + id + '/verify-payment', 'PATCH', { approve });
+  if (d.success) { showToast(approve ? 'Payment verified.' : 'Payment rejected.', 'ok'); loadFees(); }
+  else showToast(d.message || 'Failed.', 'err');
 }
 
 async function submitFee() {

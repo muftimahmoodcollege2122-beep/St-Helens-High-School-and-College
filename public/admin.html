@@ -441,6 +441,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn btn-gd" onclick="openModal('modal-student')">+ Add Student</button>
             <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import-students')">📥 Bulk Import CSV</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllStudents()">🗑 Delete All</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('students')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -678,6 +679,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn btn-gn" onclick="attTab('mark')">✏️ Mark Attendance</button>
             <button class="btn btn-nv" onclick="attTab('report')">📊 Reports</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="attTab('archive')">🗑 Delete by Year</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('attendance')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -770,6 +772,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import-fees')">📥 Bulk Import CSV</button>
             <button class="btn" style="background:#25d366;color:#fff" onclick="openModal('modal-fee-remind')">📲 Remind Defaulters</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllFees()">🗑 Delete All</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('fees')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -869,6 +872,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import')">📥 Bulk Import CSV</button>
             <button class="btn" style="background:#2b6cb0;color:#fff" onclick="downloadTemplate()">⬇ Download Template</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllResults()">🗑 Delete All</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('results')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -2378,6 +2382,12 @@ function setVal(id, val) {
   if (!el) return;
   if (el.tagName === 'SELECT') el.value = val;
   else el.value = val || '';
+}
+
+function printReport(type) {
+  const token = localStorage.getItem('sthelens_token');
+  if (!token) return showToast('Not logged in', 'err');
+  window.open(`/api/reports/${type}?token=${encodeURIComponent(token)}`, '_blank');
 }
 
 async function changeAdminPassword() {

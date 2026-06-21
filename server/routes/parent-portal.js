@@ -89,4 +89,14 @@ router.get('/payment-info', (req, res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+router.get('/receipt/:feeId', (req, res) => {
+  try {
+    const fees = readDB('fees');
+    const f = fees.find(x => x._id === req.params.feeId);
+    if (!f) return res.status(404).send('Fee record not found.');
+    if (f.status !== 'Paid') return res.status(400).send('Not paid yet — no receipt available.');
+    res.redirect(`/api/reports/receipt-public/${req.params.feeId}`);
+  } catch(e) { res.status(500).send(e.message); }
+});
+
 module.exports = router;

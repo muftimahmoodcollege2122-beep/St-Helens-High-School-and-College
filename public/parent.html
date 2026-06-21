@@ -496,6 +496,7 @@ async function loadFees() {
         <div class="fee-amount">Amount: PKR ${f.amount?.toLocaleString()}</div>
         ${f.paidAmount>0 && f.status!=='Paid' ? `<div style="font-size:.75rem;color:var(--gn)">Paid: PKR ${f.paidAmount?.toLocaleString()}</div>` : ''}
         ${f.status==='Pending Verification' ? '<div style="font-size:.75rem;color:#d69e2e">⏳ Awaiting school verification</div>' : ''}
+        ${f.status==='Paid' ? `<a href="/api/parent/receipt/${f._id}" target="_blank" class="btn btn-sm btn-nv" style="margin-top:.4rem;display:inline-block;text-decoration:none">🧾 Download Receipt</a>` : ''}
         ${payBtn}
       </div>
       <span class="fee-status ${sc}">${f.status}</span>

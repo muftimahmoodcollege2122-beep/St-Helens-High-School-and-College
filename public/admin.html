@@ -773,6 +773,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn" style="background:#25d366;color:#fff" onclick="openModal('modal-fee-remind')">📲 Remind Defaulters</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllFees()">🗑 Delete All</button>
             <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('fees')">🖨 Print / Export PDF</button>
+            <button class="btn" style="background:#6b46c1;color:#fff" onclick="printReport('payments')">🧾 Payments Report</button>
           </div>
         </div>
         <div class="card-body">
@@ -3182,6 +3183,7 @@ async function loadFees() {
         <td><span style="padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700;${badge}">${f.status}</span></td>
         <td style="display:flex;gap:.3rem;flex-wrap:wrap">
           ${f.status === 'Pending Verification' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#2e7d32;color:#fff" onclick="verifyFeePayment('${f._id}',true)">✅ Verify</button><button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#e53e3e;color:#fff" onclick="verifyFeePayment('${f._id}',false)">❌ Reject</button>` : ''}
+          ${f.status === 'Paid' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#6b46c1;color:#fff" onclick="downloadReceipt('${f._id}')">🧾 Receipt</button>` : ''}
           ${f.status !== 'Paid' && f.status !== 'Pending Verification' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:var(--gd);color:#fff" onclick="openPayModal('${f._id}',${f.amount})">💵 Pay</button>` : ''}
           ${s.fatherPhone ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#25d366;color:#fff" onclick="openWAModal('${f._id}','${s.fatherPhone}','${s.name}','${f.month}',${f.amount})">📲</button>` : ''}
           <button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#e53e3e;color:#fff" onclick="deleteFee('${f._id}')">🗑</button>
@@ -3189,6 +3191,11 @@ async function loadFees() {
       </tr>`;
     }).join('');
   } catch(e) { tbody.innerHTML = '<tr><td colspan="8">Error loading fees</td></tr>'; }
+}
+
+function downloadReceipt(feeId) {
+  const token = localStorage.getItem('sthelens_token');
+  window.open(`/api/reports/receipt/${feeId}?token=${encodeURIComponent(token)}`, '_blank');
 }
 
 async function verifyFeePayment(id, approve) {

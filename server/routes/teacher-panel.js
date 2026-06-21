@@ -1,6 +1,7 @@
 const router  = require('express').Router();
 const { readDB, writeDB, newId, attOps } = require('../db');
 const { teacherProtect } = require('../middleware/teacherAuth');
+const { normalizeResultRow } = require('../utils/resultNormalize');
 
 router.get('/students', teacherProtect, (req, res) => {
   try {
@@ -86,6 +87,39 @@ router.delete('/homework/:id', teacherProtect, (req, res) => {
     writeDB('homework', data.filter(h => h._id !== req.params.id));
     res.json({ success: true, message: 'Deleted.' });
   } catch(e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
+router.post('/results/bulk', teacherProtect, (req, res) => {
+  try {
+    const cls = req.teacher.assignedClass;
+    const section = req.teacher.assignedSection || 'A';
+    if (!cls) return res.status(400).json({ success:false, message:'No class assigned.' });
+
+    const incoming = req.body.rows;
+    const { exam, year } = req.body;
+    if (!Array.isArray(incoming) || !incoming.length) return res.status(400).json({ success:false, message:'rows array required.' });
+    if (!exam || !year) return res.status(400).json({ success:false, message:'exam and year required.' });
+
+    const classStudents = readDB('students').filter(s => s.class === cls && (!s.section || s.section === section));
+    const validRolls = new Set(classStudents.map(s => s.rollNo));
+
+    const data = readDB('results');
+    let added = 0, skipped = 0;
+    const errors = [];
+    incoming.forEach(raw => {
+      const r = normalizeResultRow(raw);
+      if (!r.rollNo) { errors.push(`Missing rollNo: ${JSON.stringify(r)}`); return; }
+      if (!validRolls.has(r.rollNo)) { errors.push(`Roll ${r.rollNo} is not in your class.`); skipped++; return; }
+      const student = classStudents.find(s => s.rollNo === r.rollNo);
+      const existingIdx = data.findIndex(d => d.rollNo === r.rollNo && d.exam === exam && d.year === year);
+      const record = { ...r, class: cls, section, exam, year, studentName: r.studentName || student.name };
+      if (existingIdx !== -1) { data[existingIdx] = { ...data[existingIdx], ...record, _id: data[existingIdx]._id }; }
+      else { data.push({ _id:newId(), ...record, createdAt:new Date().toISOString() }); }
+      added++;
+    });
+    writeDB('results', data);
+    res.json({ success:true, added, skipped, errors });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
 router.get('/results', teacherProtect, (req, res) => {

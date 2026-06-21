@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const { readDB, writeDB, newId } = require('../db');
 const { protect } = require('../middleware/auth');
+const { normalizeResultRow } = require('../utils/resultNormalize');
 
 router.get('/lookup', (req,res) => {
   try {
@@ -76,7 +77,8 @@ router.post('/bulk', protect, (req,res) => {
     const data = readDB('results');
     let added = 0, skipped = 0;
     const errors = [];
-    incoming.forEach(r => {
+    incoming.forEach(raw => {
+      const r = normalizeResultRow(raw);
       const record = { ...r, exam: r.exam || exam, year: r.year || year };
       if (!record.rollNo) { errors.push(`Missing rollNo: ${JSON.stringify(r)}`); return; }
       const existingIdx = data.findIndex(d => d.rollNo === record.rollNo && d.exam === record.exam && d.year === record.year);

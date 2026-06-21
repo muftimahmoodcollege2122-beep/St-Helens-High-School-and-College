@@ -304,6 +304,6 @@ function clearAttendance() {
 }
 
 module.exports = {
-  readDB, writeDB, newId, readSettings, writeSettings, attOps, DB_FILE, clearAttendance,
+  readDB, writeDB, newId, readSettings, writeSettings, attOps, DB_FILE, DB_DIR, clearAttendance,
   getRecord, putRecord, deleteRecord,
 };

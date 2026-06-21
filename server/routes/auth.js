@@ -66,7 +66,22 @@ router.get('/backup-json', protect, (req, res) => {
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
-// Raw SQLite file download — full database, fastest to restore.
+router.get('/auto-backups', protect, (req, res) => {
+  try {
+    const { listBackups } = require('../db/autoBackup');
+    res.json({ success:true, data: listBackups() });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.get('/auto-backups/:filename', protect, (req, res) => {
+  try {
+    const { getBackupPath } = require('../db/autoBackup');
+    const p = getBackupPath(req.params.filename);
+    if (!p) return res.status(404).json({ success:false, message:'Backup not found.' });
+    res.download(p, req.params.filename);
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 router.get('/backup-db', protect, (req, res) => {
   res.download(DB_FILE, 'sthelens_backup.db', (err) => {
     if (err && !res.headersSent) res.status(500).json({ success:false, message:err.message });

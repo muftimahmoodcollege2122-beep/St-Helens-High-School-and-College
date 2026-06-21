@@ -961,6 +961,17 @@ textarea{resize:vertical;min-height:90px}
           </div>
         </div>
 
+        <!-- Auto Backups Card -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>🗄 Automatic Backups (every 7 days)</h3>
+            <button class="btn btn-nv" onclick="loadAutoBackups()">🔄 Refresh</button>
+          </div>
+          <div class="card-body">
+            <div id="auto-backups-list">Loading...</div>
+          </div>
+        </div>
+
         <!-- Notice Banner Card -->
         <div class="card">
           <div class="card-hdr">
@@ -2336,6 +2347,7 @@ async function deleteRecord(type, id, reloadTarget) {
 let siteSettingsCache = null;
 
 async function loadSiteSettings() {
+  loadAutoBackups();
   try {
     const res = await fetch(`${API}/api/settings`, { headers: apiHeaders() });
     const json = await res.json();
@@ -2382,6 +2394,20 @@ function setVal(id, val) {
   if (!el) return;
   if (el.tagName === 'SELECT') el.value = val;
   else el.value = val || '';
+}
+
+async function loadAutoBackups() {
+  const el = document.getElementById('auto-backups-list');
+  if (!el) return;
+  const token = localStorage.getItem('sthelens_token');
+  try {
+    const res = await fetch('/api/auth/auto-backups', { headers:{ Authorization:'Bearer '+token } });
+    const d = await res.json();
+    if (!d.success || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No automatic backups yet — first one is created on next server start/weekly cycle.</p>'; return; }
+    el.innerHTML = '<table style="width:100%;font-size:.8rem"><tr><th style="text-align:left">File</th><th style="text-align:left">Date</th><th style="text-align:left">Size</th><th></th></tr>' +
+      d.data.map(b => `<tr><td>${b.filename}</td><td>${new Date(b.createdAt).toLocaleString()}</td><td>${(b.size/1024).toFixed(1)} KB</td><td><a href="/api/auth/auto-backups/${b.filename}?token=${encodeURIComponent(token)}" class="btn btn-sm btn-nv">⬇ Download</a></td></tr>`).join('') +
+      '</table>';
+  } catch(e) { el.innerHTML = '<p style="color:#e53e3e">Failed to load backups.</p>'; }
 }
 
 function printReport(type) {

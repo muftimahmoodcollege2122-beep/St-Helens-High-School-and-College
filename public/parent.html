@@ -369,6 +369,10 @@ async function openPayModal(fee) {
   const info = (await res.json())?.data || {};
   body.innerHTML = `
     <p style="font-size:.85rem;margin-bottom:.6rem"><b>${fee.month}</b> — Amount Due: PKR ${fee.amount?.toLocaleString()}</p>
+    <button id="jc-pay-btn" class="btn" style="width:100%;background:#d2042d;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.8rem" onclick="payViaJazzCash()">📱 Pay Instantly via JazzCash</button>
+    <p id="jc-msg" style="font-size:.75rem;text-align:center;color:#888;margin:-.5rem 0 .8rem"></p>
+    <hr style="border:none;border-top:1px solid #eee;margin:.8rem 0">
+    <p style="font-size:.78rem;color:#888;margin-bottom:.4rem">Or transfer manually and submit your reference:</p>
     <div class="pm-acct"><b>EasyPaisa:</b> ${info.easypaisa || 'Not set'}</div>
     <div class="pm-acct"><b>JazzCash:</b> ${info.jazzcash || 'Not set'}</div>
     <div class="pm-acct"><b>Bank Transfer</b><br>${info.bankAccountTitle}<br>${info.bankName || ''} — ${info.bankAccountNumber || 'Not set'}${info.bankIban ? '<br>IBAN: '+info.bankIban : ''}</div>
@@ -387,6 +391,29 @@ async function openPayModal(fee) {
     <button class="btn" style="width:100%;margin-top:1rem;background:var(--mn);color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer" onclick="submitPayment()">Submit Payment for Verification</button>
     <p id="pm-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
   `;
+}
+
+async function payViaJazzCash() {
+  const msg = document.getElementById('jc-msg');
+  if (!payFee) return;
+  msg.textContent = 'Connecting...'; msg.style.color = '#888';
+  try {
+    const res = await fetch('/api/payments/jazzcash/initiate', {
+      method: 'POST', headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ feeId: payFee._id, amount: payFee.amount })
+    });
+    const d = await res.json();
+    if (!d.success) { msg.textContent = '⚠️ ' + d.message; msg.style.color = '#d69e2e'; return; }
+    const form = document.createElement('form');
+    form.method = 'POST'; form.action = d.actionUrl;
+    Object.entries(d.fields).forEach(([k,v]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden'; input.name = k; input.value = v;
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+    form.submit();
+  } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color = '#e53935'; }
 }
 
 function closePayModal() {

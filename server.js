@@ -41,6 +41,7 @@ app.use('/api/settings',      require('./server/routes/settings'));
 app.use('/api/teacher-auth',  require('./server/routes/teacher-auth'));
 app.use('/api/teacher-panel', require('./server/routes/teacher-panel'));
 app.use('/api/parent',        require('./server/routes/parent-portal'));
+app.use('/api/payments',      require('./server/routes/payments'));
 app.use('/api/alumni',       require('./server/routes/alumni'));
 app.use('/api/admissions',   require('./server/routes/admissions'));
 app.use('/api/reports',      require('./server/routes/reports'));

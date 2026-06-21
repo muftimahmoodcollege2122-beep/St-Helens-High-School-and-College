@@ -35,7 +35,7 @@ router.put('/:id', protect, (req,res,next)=>{req.uploadDir='teachers';next();}, 
     const data = readDB('teachers');
     const idx = data.findIndex(r => r._id === req.params.id);
     if (idx===-1) return res.status(404).json({ success:false, message:'Not found.' });
-    if (req.file && data[idx].photo) { const p=path.join(__dirname,'../../',data[idx].photo); if(fs.existsSync(p)) fs.unlinkSync(p); }
+    if (req.file && data[idx].photo) { require('../utils/safeFile').safeUnlink(data[idx].photo); }
     data[idx] = { ...data[idx], ...req.body, _id:req.params.id,
       photo: req.file ? `/uploads/teachers/${req.file.filename}` : data[idx].photo };
     writeDB('teachers', data);
@@ -48,7 +48,7 @@ router.delete('/:id', protect, (req,res) => {
     const data = readDB('teachers');
     const item = data.find(r => r._id === req.params.id);
     if (!item) return res.status(404).json({ success:false, message:'Not found.' });
-    if (item.photo) { const p=path.join(__dirname,'../../',item.photo); if(fs.existsSync(p)) fs.unlinkSync(p); }
+    if (item.photo) { require('../utils/safeFile').safeUnlink(item.photo); }
     writeDB('teachers', data.filter(r => r._id !== req.params.id));
     res.json({ success:true, message:'Deleted.' });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }

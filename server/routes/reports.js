@@ -3,7 +3,7 @@ const router  = express.Router();
 const jwt     = require('jsonwebtoken');
 const { readDB } = require('../db');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production';
+const { JWT_SECRET } = require('../config/jwtSecret');
 
 // Reports open in a new browser tab (window.open) for printing, so we can't
 // attach an Authorization header — accept the token via ?token= query param too.

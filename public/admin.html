@@ -1755,6 +1755,10 @@ textarea{resize:vertical;min-height:90px}
 
 <script>
 const API = '';
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 let authToken = localStorage.getItem('sthelens_token');
 let currentUser = null;
 
@@ -2330,13 +2334,13 @@ async function loadMessages(silent = false) {
       <div class="msg-card ${m.status === 'unread' ? 'unread' : ''}">
         <div style="display:flex;align-items:start;justify-content:space-between;gap:.5rem">
           <div>
-            <div class="msg-name">${m.name} <span style="font-size:.68rem;color:var(--gr);font-weight:600">&lt;${m.email}&gt;</span></div>
-            <div class="msg-sub">${m.subject}</div>
-            <div class="msg-body">${m.message}</div>
+            <div class="msg-name">${esc(m.name)} <span style="font-size:.68rem;color:var(--gr);font-weight:600">&lt;${esc(m.email)}&gt;</span></div>
+            <div class="msg-sub">${esc(m.subject)}</div>
+            <div class="msg-body">${esc(m.message)}</div>
             <div class="msg-meta">
               <span>📅 ${fmtDate(m.createdAt)}</span>
-              ${m.phone ? `<span>📞 ${m.phone}</span>` : ''}
-              <span class="badge ${m.status === 'unread' ? 'badge-rd' : m.status === 'replied' ? 'badge-gn' : 'badge-or'}">${m.status}</span>
+              ${m.phone ? `<span>📞 ${esc(m.phone)}</span>` : ''}
+              <span class="badge ${m.status === 'unread' ? 'badge-rd' : m.status === 'replied' ? 'badge-gn' : 'badge-or'}">${esc(m.status)}</span>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0">
@@ -3733,7 +3737,8 @@ async function loadAdmissions() {
   try {
     const token = localStorage.getItem('sthelens_token');
     const res = await fetch('/api/admissions', { headers: { 'Authorization': 'Bearer ' + token } });
-    const data = await res.json();
+    const json = await res.json();
+    const data = json.data || [];
     if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="es-ic">📝</div><p>No applications yet</p></td></tr>'; return; }
     // Store globally for modal access
     window._admissions = data;
@@ -3742,11 +3747,11 @@ async function loadAdmissions() {
     tbody.innerHTML = data.map((a,i) => `
       <tr>
         <td>${new Date(a.createdAt).toLocaleDateString()}</td>
-        <td><strong>${a.studentName||''}</strong></td>
-        <td>${a.applyingClass||''} ${a.section||''}</td>
-        <td>${a.fatherName||''}</td>
-        <td>${a.phone1||''}</td>
-        <td><span style="padding:2px 8px;border-radius:10px;font-size:.78rem;background:${statusBg(a.status)};color:${statusClr(a.status)}">${a.status||'Pending'}</span></td>
+        <td><strong>${esc(a.studentName)}</strong></td>
+        <td>${esc(a.applyingClass)} ${esc(a.section)}</td>
+        <td>${esc(a.fatherName)}</td>
+        <td>${esc(a.phone1)}</td>
+        <td><span style="padding:2px 8px;border-radius:10px;font-size:.78rem;background:${statusBg(a.status)};color:${statusClr(a.status)}">${esc(a.status||'Pending')}</span></td>
         <td style="display:flex;gap:4px;flex-wrap:wrap">
           <button class="btn btn-gn" style="font-size:.75rem;padding:3px 8px" onclick="showAdmissionDetail(${i})">👁 View</button>
           <select onchange="updateAdmissionStatus('${a._id}',this.value)" style="font-size:.78rem;padding:3px 6px;border-radius:4px;border:1px solid #ddd">
@@ -3763,17 +3768,17 @@ async function loadAdmissions() {
 function showAdmissionDetail(idx) {
   const a = window._admissions[idx];
   if (!a) return;
-  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f8f9ff;width:40%;border-bottom:1px solid #e2e8f0;color:#1a237e">${label}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${val}</td></tr>` : '';
-  const sec = (title) => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:7px 10px;font-weight:700;font-size:.82rem">${title}</td></tr>`;
+  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f8f9ff;width:40%;border-bottom:1px solid #e2e8f0;color:#1a237e">${esc(label)}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${esc(val)}</td></tr>` : '';
+  const sec = (title) => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:7px 10px;font-weight:700;font-size:.82rem">${esc(title)}</td></tr>`;
   const statusBg = a.status==='Approved'?'#c6f6d5':a.status==='Rejected'?'#fed7d7':'#fefcbf';
   const statusClr = a.status==='Approved'?'#276749':a.status==='Rejected'?'#9b2c2c':'#744210';
   document.getElementById('admission-detail-body').innerHTML = `
     <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
       <div>
-        <div style="font-size:1.1rem;font-weight:700;color:#1a4a2e">${a.studentName||''}</div>
-        <div style="font-size:.82rem;color:#6b7280">Applied: ${new Date(a.createdAt).toLocaleDateString('en-PK')} &nbsp;|&nbsp; ID: ${a._id}</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#1a4a2e">${esc(a.studentName)}</div>
+        <div style="font-size:.82rem;color:#6b7280">Applied: ${new Date(a.createdAt).toLocaleDateString('en-PK')} &nbsp;|&nbsp; ID: ${esc(a._id)}</div>
       </div>
-      <span style="padding:4px 14px;border-radius:12px;font-size:.82rem;font-weight:700;background:${statusBg};color:${statusClr}">${a.status||'Pending'}</span>
+      <span style="padding:4px 14px;border-radius:12px;font-size:.82rem;font-weight:700;background:${statusBg};color:${statusClr}">${esc(a.status||'Pending')}</span>
     </div>
     <table style="width:100%;border-collapse:collapse;border:1px solid #e2e8f0;margin-bottom:1rem">
       ${sec('A — Student Information')}
@@ -4286,15 +4291,15 @@ function renderAlumniTable(data) {
   const statusBg    = { Pending:'#fff8e1', Approved:'#c6f6d5', Rejected:'#fed7d7' };
   tbody.innerHTML = data.map((a, idx) => `
     <tr>
-      <td><strong>${a.name}</strong></td>
-      <td>${a.graduationYear || a.batch || '—'}</td>
-      <td>${a.profession || '—'}</td>
-      <td style="font-size:.78rem">${[a.currentCity, a.currentCountry].filter(Boolean).join(', ') || '—'}</td>
-      <td style="font-size:.78rem">${a.phone || '—'}</td>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td>${esc(a.graduationYear || a.batch) || '—'}</td>
+      <td>${esc(a.profession) || '—'}</td>
+      <td style="font-size:.78rem">${esc([a.currentCity, a.currentCountry].filter(Boolean).join(', ')) || '—'}</td>
+      <td style="font-size:.78rem">${esc(a.phone) || '—'}</td>
       <td><span style="font-size:.72rem;font-weight:700;color:${a.public==='No'?'#e53e3e':'#38a169'}">${a.public==='No'?'🔒 Private':'✅ Public'}</span></td>
       <td>
         <span style="background:${statusBg[a.status]||'#f8f9ff'};color:${statusColor[a.status]||'#6b7280'};padding:3px 10px;border-radius:4px;font-size:.73rem;font-weight:800">
-          ${a.status}
+          ${esc(a.status)}
         </span>
       </td>
       <td style="font-size:.75rem;color:#6b7280">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-PK') : '—'}</td>
@@ -4303,7 +4308,7 @@ function renderAlumniTable(data) {
           <button class="btn btn-sm" style="background:var(--nv);color:#fff;padding:3px 9px;font-size:.72rem" onclick="viewAlumni(${idx})">👁 View</button>
           ${a.status !== 'Approved' ? `<button class="btn btn-sm btn-gn" style="padding:3px 9px;font-size:.72rem" onclick="updateAlumniStatus('${a._id}','Approved')">✅</button>` : ''}
           ${a.status !== 'Rejected' ? `<button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="updateAlumniStatus('${a._id}','Rejected')">❌</button>` : ''}
-          <button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="confirmDeleteAlumni('${a._id}','${a.name.replace(/'/g,"\\'")}')">🗑️</button>
+          <button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="confirmDeleteAlumni('${a._id}','${esc(a.name).replace(/'/g,"\\'")}')">🗑️</button>
         </div>
       </td>
     </tr>`).join('');
@@ -4311,8 +4316,8 @@ function renderAlumniTable(data) {
 
 function viewAlumni(idx) {
   const a = _alumniData[idx];
-  const row = (l, v) => v ? `<tr><td style="padding:6px 10px;font-weight:700;font-size:.78rem;background:#f8f9ff;width:38%;border:1px solid #e2e8f0;color:#1a237e">${l}</td><td style="padding:6px 10px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
-  const sec = t => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:6px 10px;font-weight:800;font-size:.8rem">${t}</td></tr>`;
+  const row = (l, v) => v ? `<tr><td style="padding:6px 10px;font-weight:700;font-size:.78rem;background:#f8f9ff;width:38%;border:1px solid #e2e8f0;color:#1a237e">${esc(l)}</td><td style="padding:6px 10px;font-size:.82rem;border:1px solid #e2e8f0">${esc(v)}</td></tr>` : '';
+  const sec = t => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:6px 10px;font-weight:800;font-size:.8rem">${esc(t)}</td></tr>`;
   document.getElementById('alumni-detail-body').innerHTML = `
     <table style="width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif">
       ${sec('Personal Information')}

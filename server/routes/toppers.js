@@ -42,7 +42,7 @@ router.delete('/:id', protect, (req,res) => {
     const data = readDB('toppers');
     const item = data.find(r => r._id === req.params.id);
     if (!item) return res.status(404).json({ success:false, message:'Not found.' });
-    if (item.photo) { const p=path.join(__dirname,'../../',item.photo); if(fs.existsSync(p)) fs.unlinkSync(p); }
+    if (item.photo) { require('../utils/safeFile').safeUnlink(item.photo); }
     writeDB('toppers', data.filter(r => r._id !== req.params.id));
     res.json({ success:true, message:'Deleted.' });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }

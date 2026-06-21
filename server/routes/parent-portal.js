@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const { readDB, writeDB, newId, readSettings, attOps } = require('../db');
+const { lookupRateLimit } = require('../middleware/rateLimit');
+router.use(lookupRateLimit);
 
 router.get('/student/:rollNo', (req, res) => {
   try {

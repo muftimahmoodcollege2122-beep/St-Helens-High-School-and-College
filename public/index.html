@@ -46,7 +46,7 @@ nav{position:sticky;top:0;z-index:999;background:var(--wh);border-bottom:3px sol
 .brand-logo img{width:100%;height:100%;object-fit:cover}
 .brand-txt{font-family:'Oswald',sans-serif;font-size:.8rem;color:var(--nv);line-height:1.2;font-weight:600;letter-spacing:.01em;white-space:nowrap}
 .brand-txt small{display:block;font-family:'Montserrat',sans-serif;font-size:.5rem;color:var(--or);letter-spacing:.05em;font-weight:600;text-transform:uppercase;white-space:nowrap}
-.nav-ul{display:flex;list-style:none;position:relative;flex-shrink:0}
+.nav-ul{display:flex;list-style:none;position:relative;flex-shrink:1;overflow:hidden}
 .nav-ul li{position:relative}
 .nav-ul a,.nav-ul>li>button{color:var(--nv);text-decoration:none;font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:8px 9px;border:none;background:none;cursor:pointer;white-space:nowrap;font-family:'Montserrat',sans-serif;display:block;position:relative;transition:color .2s}
 .nav-ul a::after{content:'';position:absolute;bottom:-3px;left:9px;right:9px;height:2px;background:var(--or);transform:scaleX(0);transition:transform .2s}
@@ -309,7 +309,7 @@ footer ul li a:hover{color:var(--or);padding-left:4px}
   .hbtns{justify-content:center}
   .htag{display:inline-flex}
 }
-@media(max-width:720px){
+@media(max-width:960px){
   .nav-ul{display:none}
   .burger{display:flex}
   .topbar{font-size:.64rem;padding:4px 1rem}

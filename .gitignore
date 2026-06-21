@@ -8,4 +8,5 @@ dist/
 server/db/schools/shhs/*.json
 server/db/schools/shhs/*.sqlite3
 server/db/schools/shhs/*.sqlite3-*
+server/db/schools/shhs/backups/
 uploads/

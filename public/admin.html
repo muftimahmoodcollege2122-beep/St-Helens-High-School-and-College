@@ -294,7 +294,7 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('ticker-settings',this)"><span class="ic">📢</span> Ticker &amp; Notice</button>
       <button class="sb-link" onclick="showPage('why-settings',this)"><span class="ic">⭐</span> Why Choose Us</button>
       <button class="sb-link" onclick="showPage('achievements-settings',this)"><span class="ic">🏅</span> Achievements</button>
-      <button class="sb-link" onclick="showPage('settings',this)"><span class="ic">🎨</span> Hero &amp; Stats</button>
+      <button class="sb-link" onclick="showPage('settings',this)"><span class="ic">🎨</span> Hero, Stats &amp; Password</button>
       <button class="sb-link" onclick="showPage('about-settings',this)"><span class="ic">🏫</span> About Section</button>
       <button class="sb-link" onclick="showPage('contact-settings',this)"><span class="ic">📞</span> Contact Info</button>
 
@@ -441,6 +441,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn btn-gd" onclick="openModal('modal-student')">+ Add Student</button>
             <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import-students')">📥 Bulk Import CSV</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllStudents()">🗑 Delete All</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('students')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -678,6 +679,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn btn-gn" onclick="attTab('mark')">✏️ Mark Attendance</button>
             <button class="btn btn-nv" onclick="attTab('report')">📊 Reports</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="attTab('archive')">🗑 Delete by Year</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('attendance')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -770,6 +772,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import-fees')">📥 Bulk Import CSV</button>
             <button class="btn" style="background:#25d366;color:#fff" onclick="openModal('modal-fee-remind')">📲 Remind Defaulters</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllFees()">🗑 Delete All</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('fees')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -869,6 +872,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn" style="background:#805ad5;color:#fff" onclick="openModal('modal-bulk-import')">📥 Bulk Import CSV</button>
             <button class="btn" style="background:#2b6cb0;color:#fff" onclick="downloadTemplate()">⬇ Download Template</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllResults()">🗑 Delete All</button>
+            <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('results')">🖨 Print / Export PDF</button>
           </div>
         </div>
         <div class="card-body">
@@ -932,6 +936,41 @@ textarea{resize:vertical;min-height:90px}
     <!-- ── SETTINGS: Hero & Banner ── -->
     <div class="adm-page" id="page-settings">
       <div style="display:grid;gap:1.2rem">
+
+        <!-- Change Admin Password Card -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>🔒 Change Admin Password</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="pw-current" autocomplete="current-password">
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="pw-new" autocomplete="new-password" minlength="8">
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="pw-confirm" autocomplete="new-password" minlength="8">
+              </div>
+            </div>
+            <button class="btn btn-pr" onclick="changeAdminPassword()">Update Password</button>
+          </div>
+        </div>
+
+        <!-- Auto Backups Card -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>🗄 Automatic Backups (every 7 days)</h3>
+            <button class="btn btn-nv" onclick="loadAutoBackups()">🔄 Refresh</button>
+          </div>
+          <div class="card-body">
+            <div id="auto-backups-list">Loading...</div>
+          </div>
+        </div>
 
         <!-- Notice Banner Card -->
         <div class="card">
@@ -2308,6 +2347,7 @@ async function deleteRecord(type, id, reloadTarget) {
 let siteSettingsCache = null;
 
 async function loadSiteSettings() {
+  loadAutoBackups();
   try {
     const res = await fetch(`${API}/api/settings`, { headers: apiHeaders() });
     const json = await res.json();
@@ -2354,6 +2394,50 @@ function setVal(id, val) {
   if (!el) return;
   if (el.tagName === 'SELECT') el.value = val;
   else el.value = val || '';
+}
+
+async function loadAutoBackups() {
+  const el = document.getElementById('auto-backups-list');
+  if (!el) return;
+  const token = localStorage.getItem('sthelens_token');
+  try {
+    const res = await fetch('/api/auth/auto-backups', { headers:{ Authorization:'Bearer '+token } });
+    const d = await res.json();
+    if (!d.success || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No automatic backups yet — first one is created on next server start/weekly cycle.</p>'; return; }
+    el.innerHTML = '<table style="width:100%;font-size:.8rem"><tr><th style="text-align:left">File</th><th style="text-align:left">Date</th><th style="text-align:left">Size</th><th></th></tr>' +
+      d.data.map(b => `<tr><td>${b.filename}</td><td>${new Date(b.createdAt).toLocaleString()}</td><td>${(b.size/1024).toFixed(1)} KB</td><td><a href="/api/auth/auto-backups/${b.filename}?token=${encodeURIComponent(token)}" class="btn btn-sm btn-nv">⬇ Download</a></td></tr>`).join('') +
+      '</table>';
+  } catch(e) { el.innerHTML = '<p style="color:#e53e3e">Failed to load backups.</p>'; }
+}
+
+function printReport(type) {
+  const token = localStorage.getItem('sthelens_token');
+  if (!token) return showToast('Not logged in', 'err');
+  window.open(`/api/reports/${type}?token=${encodeURIComponent(token)}`, '_blank');
+}
+
+async function changeAdminPassword() {
+  const token = localStorage.getItem('sthelens_token');
+  const currentPassword = document.getElementById('pw-current').value;
+  const newPassword     = document.getElementById('pw-new').value;
+  const confirm_        = document.getElementById('pw-confirm').value;
+  if (!currentPassword || !newPassword || !confirm_) return showToast('All fields required.', 'error');
+  if (newPassword.length < 8) return showToast('New password must be at least 8 characters.', 'error');
+  if (newPassword !== confirm_) return showToast('New passwords do not match.', 'error');
+  try {
+    const res = await fetch('/api/auth/password', {
+      method: 'PUT',
+      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+    const d = await res.json();
+    if (d.success) {
+      showToast('Password updated.', 'success');
+      document.getElementById('pw-current').value = '';
+      document.getElementById('pw-new').value = '';
+      document.getElementById('pw-confirm').value = '';
+    } else showToast(d.message || 'Failed to update password.', 'error');
+  } catch(e) { showToast('Connection error.', 'error'); }
 }
 
 async function saveSettings(section) {

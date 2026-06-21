@@ -43,6 +43,7 @@ app.use('/api/teacher-panel', require('./server/routes/teacher-panel'));
 app.use('/api/parent',        require('./server/routes/parent-portal'));
 app.use('/api/alumni',       require('./server/routes/alumni'));
 app.use('/api/admissions',   require('./server/routes/admissions'));
+app.use('/api/reports',      require('./server/routes/reports'));
 
 // ── Fallback → index.html ─────────────────────────────────────────────────────
 app.get('*', (req, res) => {
@@ -68,4 +69,5 @@ app.listen(PORT, () => {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('  Run: node server/setup-passwords.js  (first time only)');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+  require('./server/db/autoBackup').startAutoBackup();
 });

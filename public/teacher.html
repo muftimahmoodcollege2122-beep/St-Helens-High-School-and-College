@@ -279,12 +279,13 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
       <div class="card">
         <div class="card-hdr">
           <h3>📊 Class Results</h3>
-          <div class="form-row" style="margin:0">
+          <div class="form-row" style="margin:0;gap:.5rem">
             <select id="res-t-exam" onchange="loadTeacherResults()">
               <option value="">All Exams</option>
               <option>Monthly Test</option><option>Mid-Term</option>
               <option>Final</option><option>Annual</option>
             </select>
+            <button class="btn btn-gn" onclick="openTeacherBulkResultModal()">📥 Bulk Upload Results</button>
           </div>
         </div>
         <div class="card-body">
@@ -339,6 +340,30 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
       <input type="date" id="hw-due">
       <button class="btn btn-nv" onclick="postHomework()" style="width:100%;margin-top:1rem">Post Homework</button>
       <p id="hw-msg" style="font-size:.82rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ BULK RESULT UPLOAD MODAL ══════════════════ -->
+<div class="modal-bg" id="modal-bulk-result">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>📥 Bulk Upload Results</h3>
+      <button class="modal-cls" onclick="closeModal('modal-bulk-result')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.8rem;color:#888;margin-bottom:.6rem">
+        CSV columns: <code>rollNo,studentName,Subject_Total,Subject_Obtained,...,remarks</code>.
+        Only roll numbers in your assigned class will be accepted.
+      </p>
+      <label>Exam Name</label>
+      <input type="text" id="bres-exam" placeholder="e.g. Annual 2026">
+      <label>Year</label>
+      <input type="text" id="bres-year" placeholder="e.g. 2026">
+      <label>CSV File</label>
+      <input type="file" id="bres-file" accept=".csv">
+      <button class="btn btn-nv" onclick="uploadTeacherBulkResults()" style="width:100%;margin-top:1rem">Upload</button>
+      <p id="bres-msg" style="font-size:.82rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
     </div>
   </div>
 </div>
@@ -550,6 +575,52 @@ async function loadHomework() {
       ${h.dueDate ? `<div class="hw-due">📅 Due: ${h.dueDate}</div>` : ''}
       <div class="hw-date" style="margin-top:.3rem">Posted: ${new Date(h.createdAt).toLocaleDateString()}</div>
     </div>`).join('');
+}
+
+function openTeacherBulkResultModal() {
+  document.getElementById('bres-exam').value = '';
+  document.getElementById('bres-year').value = '';
+  document.getElementById('bres-file').value = '';
+  document.getElementById('bres-msg').textContent = '';
+  openModal('modal-bulk-result');
+}
+
+function parseTeacherCSV(text) {
+  const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim().split('\n');
+  if (!lines.length) return [];
+  const headers = lines[0].split(',').map(h => h.trim());
+  return lines.slice(1).filter(l => l.trim()).map(line => {
+    const vals = line.split(',').map(v => v.trim());
+    const row = {};
+    headers.forEach((h,i) => { if (vals[i] !== undefined && vals[i] !== '') row[h] = vals[i]; });
+    return row;
+  });
+}
+
+async function uploadTeacherBulkResults() {
+  const msg = document.getElementById('bres-msg');
+  const exam = document.getElementById('bres-exam').value.trim();
+  const year = document.getElementById('bres-year').value.trim();
+  const file = document.getElementById('bres-file').files[0];
+  if (!exam || !year) { msg.textContent = '❌ Exam and year required.'; msg.style.color = '#e53935'; return; }
+  if (!file) { msg.textContent = '❌ Select a CSV file.'; msg.style.color = '#e53935'; return; }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const rows = parseTeacherCSV(e.target.result);
+      if (!rows.length) { msg.textContent = '❌ File is empty or invalid.'; msg.style.color = '#e53935'; return; }
+      msg.textContent = `⏳ Uploading ${rows.length} row(s)...`; msg.style.color = '#888';
+      const res = await tFetch('/api/teacher-panel/results/bulk', 'POST', { rows, exam, year });
+      if (res?.success) {
+        msg.textContent = `✅ Added/updated ${res.added}, skipped ${res.skipped}.` + (res.errors?.length ? ` (${res.errors.length} error(s))` : '');
+        msg.style.color = '#2e7d32';
+        loadTeacherResults();
+        setTimeout(() => closeModal('modal-bulk-result'), 1500);
+      } else { msg.textContent = '❌ ' + (res?.message || 'Upload failed.'); msg.style.color = '#e53935'; }
+    } catch(err) { msg.textContent = '❌ ' + err.message; msg.style.color = '#e53935'; }
+  };
+  reader.readAsText(file);
 }
 
 async function postHomework() {

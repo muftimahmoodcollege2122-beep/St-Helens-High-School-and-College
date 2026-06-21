@@ -2,6 +2,19 @@ const express = require('express');
 const router  = express.Router();
 const { readDB, writeDB, newId } = require('../db');
 const { protect } = require('../middleware/auth');
+const { normalizeResultRow } = require('../utils/resultNormalize');
+
+router.get('/lookup', (req,res) => {
+  try {
+    const { rollNo, exam, year } = req.query;
+    if (!rollNo) return res.status(400).json({ success:false, message:'rollNo required.' });
+    let data = readDB('results').filter(r => r.rollNo === rollNo);
+    if (exam) data = data.filter(r => r.exam === exam);
+    if (year) data = data.filter(r => r.year === year);
+    if (!data.length) return res.status(404).json({ success:false, message:'No result found.' });
+    res.json({ success:true, data });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
 
 router.get('/', (req,res) => {
   try {
@@ -20,6 +33,19 @@ router.post('/', protect, (req,res) => {
     const item = { _id:newId(), ...req.body, createdAt:new Date().toISOString() };
     const data = readDB('results'); data.push(item); writeDB('results', data);
     res.status(201).json({ success:true, data:item });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.delete('/bulk/delete', protect, (req,res) => {
+  try {
+    const { deleteAll, exam, year } = req.body;
+    const data = readDB('results');
+    let kept, deleted;
+    if (deleteAll) { deleted = data.length; kept = []; }
+    else if (exam) { kept = data.filter(r => !(r.exam === exam && (!year || r.year === year))); deleted = data.length - kept.length; }
+    else return res.status(400).json({ success:false, message:'deleteAll or exam required.' });
+    writeDB('results', kept);
+    res.json({ success:true, deleted });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
@@ -45,25 +71,27 @@ router.delete('/:id', protect, (req,res) => {
 
 router.post('/bulk', protect, (req,res) => {
   try {
-    const incoming = Array.isArray(req.body) ? req.body : req.body.results;
+    const incoming = req.body.rows || (Array.isArray(req.body) ? req.body : req.body.results);
     if (!Array.isArray(incoming)) return res.status(400).json({ success:false, message:'Array required.' });
+    const { exam, year, overwrite } = req.body;
     const data = readDB('results');
-    const added = incoming.map(r => { const item={_id:newId(),...r,createdAt:new Date().toISOString()}; data.push(item); return item; });
+    let added = 0, skipped = 0;
+    const errors = [];
+    incoming.forEach(raw => {
+      const r = normalizeResultRow(raw);
+      const record = { ...r, exam: r.exam || exam, year: r.year || year };
+      if (!record.rollNo) { errors.push(`Missing rollNo: ${JSON.stringify(r)}`); return; }
+      const existingIdx = data.findIndex(d => d.rollNo === record.rollNo && d.exam === record.exam && d.year === record.year);
+      if (existingIdx !== -1) {
+        if (overwrite) { data[existingIdx] = { ...data[existingIdx], ...record, _id: data[existingIdx]._id }; added++; }
+        else skipped++;
+        return;
+      }
+      data.push({ _id:newId(), ...record, createdAt:new Date().toISOString() });
+      added++;
+    });
     writeDB('results', data);
-    res.json({ success:true, added:added.length });
-  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
-});
-
-router.delete('/bulk/delete', protect, (req,res) => {
-  try {
-    const { deleteAll, exam, year } = req.body;
-    let data = readDB('results');
-    const before = data.length;
-    if (deleteAll) data = [];
-    else if (exam) data = data.filter(r => !(r.exam === exam && (!year || r.year === year)));
-    else return res.status(400).json({ success:false, message:'deleteAll or exam required.' });
-    writeDB('results', data);
-    res.json({ success:true, deleted: before - data.length });
+    res.json({ success:true, added, skipped, errors });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 

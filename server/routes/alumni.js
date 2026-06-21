@@ -19,6 +19,30 @@ router.get('/all', protect, (req,res) => {
   catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 
+router.get('/admin', protect, (req,res) => {
+  try {
+    const { status, batch, search } = req.query;
+    let data = readDB('alumni');
+    if (status) data = data.filter(r => r.status === status);
+    if (batch)  data = data.filter(r => r.batch === batch);
+    if (search) { const q=search.toLowerCase(); data=data.filter(r=>(r.name||'').toLowerCase().includes(q)); }
+    res.json({ success:true, data });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.patch('/:id/status', protect, (req,res) => {
+  try {
+    const { status } = req.body;
+    if (!['Approved','Rejected','Pending'].includes(status)) return res.status(400).json({ success:false, message:'Invalid status.' });
+    const data = readDB('alumni');
+    const idx = data.findIndex(r => r._id === req.params.id);
+    if (idx===-1) return res.status(404).json({ success:false, message:'Not found.' });
+    data[idx] = { ...data[idx], status };
+    writeDB('alumni', data);
+    res.json({ success:true, data:data[idx] });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
 router.post('/', (req,res) => {
   try {
     const { name, batch } = req.body;

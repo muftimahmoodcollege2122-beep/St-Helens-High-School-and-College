@@ -369,8 +369,10 @@ async function openPayModal(fee) {
   const info = (await res.json())?.data || {};
   body.innerHTML = `
     <p style="font-size:.85rem;margin-bottom:.6rem"><b>${fee.month}</b> — Amount Due: PKR ${fee.amount?.toLocaleString()}</p>
-    <button id="jc-pay-btn" class="btn" style="width:100%;background:#d2042d;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.8rem" onclick="payViaJazzCash()">📱 Pay Instantly via JazzCash</button>
-    <p id="jc-msg" style="font-size:.75rem;text-align:center;color:#888;margin:-.5rem 0 .8rem"></p>
+    <button id="jc-pay-btn" class="btn" style="width:100%;background:#d2042d;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.5rem" onclick="payViaJazzCash()">📱 Pay Instantly via JazzCash</button>
+    <button id="ep-pay-btn" class="btn" style="width:100%;background:#0a8a3e;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.5rem" onclick="payViaEasyPaisa()">📱 Pay Instantly via EasyPaisa</button>
+    <button id="bk-pay-btn" class="btn" style="width:100%;background:#2b6cb0;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.8rem" onclick="prefillManual('Bank Transfer')">🏦 I've Paid via Bank Transfer</button>
+    <p id="jc-msg" style="font-size:.75rem;text-align:center;color:#888;margin:-.3rem 0 .8rem"></p>
     <hr style="border:none;border-top:1px solid #eee;margin:.8rem 0">
     <p style="font-size:.78rem;color:#888;margin-bottom:.4rem">Or transfer manually and submit your reference:</p>
     <div class="pm-acct"><b>EasyPaisa:</b> ${info.easypaisa || 'Not set'}</div>
@@ -414,6 +416,37 @@ async function payViaJazzCash() {
     document.body.appendChild(form);
     form.submit();
   } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color = '#e53935'; }
+}
+
+async function payViaEasyPaisa() {
+  const msg = document.getElementById('jc-msg');
+  if (!payFee) return;
+  msg.textContent = 'Connecting...'; msg.style.color = '#888';
+  try {
+    const res = await fetch('/api/payments/easypaisa/initiate', {
+      method: 'POST', headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ feeId: payFee._id, amount: payFee.amount })
+    });
+    const d = await res.json();
+    if (!d.success) { msg.textContent = '⚠️ ' + d.message; msg.style.color = '#d69e2e'; return; }
+    if (d.actionUrl) {
+      const form = document.createElement('form');
+      form.method = 'POST'; form.action = d.actionUrl;
+      Object.entries(d.fields||{}).forEach(([k,v]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden'; input.name = k; input.value = v;
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+      form.submit();
+    }
+  } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color = '#e53935'; }
+}
+
+function prefillManual(method) {
+  const sel = document.getElementById('pm-method');
+  if (sel) sel.value = method;
+  document.getElementById('pm-txn')?.focus();
 }
 
 function closePayModal() {

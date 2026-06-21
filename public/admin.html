@@ -273,7 +273,7 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('admissions',this)"><span class="ic">📝</span> Admissions</button>
       <button class="sb-link" onclick="showPage('alumni',this)"><span class="ic">🎓</span> Alumni</button>
       <button class="sb-link" onclick="showPage('attendance',this)"><span class="ic">📋</span> Attendance</button>
-      <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management</button>
+      <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management <span id="fee-pending-badge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:.1rem .5rem;font-size:.7rem;margin-left:.3rem"></span></button>
       <button class="sb-link" onclick="showPage('results',this)"><span class="ic">📊</span> Results</button>
             <button class="sb-link" onclick="showPage('toppers',this)"><span class="ic">🏆</span> Toppers</button>
       <button class="sb-link" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span> Teachers</button>
@@ -1947,7 +1947,18 @@ function showAlert(id, msg, type = 'err') {
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
+async function checkPendingPayments() {
+  try {
+    const d = await apiFetch('/api/fees?status=' + encodeURIComponent('Pending Verification'));
+    const count = d?.data?.length || 0;
+    const badge = document.getElementById('fee-pending-badge');
+    if (badge) { badge.style.display = count ? 'inline-block' : 'none'; badge.textContent = count; }
+  } catch(e) {}
+}
+setInterval(checkPendingPayments, 60000);
+
 async function loadDashboard() {
+  checkPendingPayments();
   try {
     const [news, events, students, teachers, msgs, gallery] = await Promise.all([
       fetch(`${API}/api/news?limit=1`, { headers: apiHeaders() }).then(r => r.json()),

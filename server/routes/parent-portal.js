@@ -14,7 +14,7 @@ router.get('/fees/:rollNo', (req, res) => {
     const { month } = req.query;
     const sr = readDB('students').find(s => s.rollNo === req.params.rollNo);
     if (!sr) return res.status(404).json({ success: false, message: 'Student not found.' });
-    let fees = readDB('fees').filter(f => f.student_id === sr._id || f.student === sr._id);
+    let fees = readDB('fees').filter(f => f.student_id === sr._id || f.student === sr._id || f.student === sr.rollNo || f.rollNo === sr.rollNo);
     if (month) fees = fees.filter(f => f.month === month);
     fees.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.json({ success: true, data: fees });

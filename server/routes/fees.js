@@ -105,10 +105,21 @@ router.post('/bulk/import', protect, (req,res) => {
   try {
     const incoming = req.body.rows || (Array.isArray(req.body) ? req.body : req.body.fees);
     if (!Array.isArray(incoming)) return res.status(400).json({ success:false, message:'rows array required.' });
+    const students = readDB('students');
     const data = readDB('fees');
-    const added = incoming.map(f => { const item={_id:newId(),status:'Unpaid',...f,createdAt:new Date().toISOString()}; data.push(item); return item; });
+    const errors = [];
+    const added = incoming.map(f => {
+      let studentId = f.student;
+      const sr = students.find(s => s._id === f.student || s.rollNo === f.student || s.rollNo === f.rollNo);
+      if (sr) studentId = sr._id;
+      else errors.push(`No student found for: ${f.student || f.rollNo}`);
+      const item = { _id:newId(), status:'Unpaid', ...f, student: studentId, createdAt:new Date().toISOString() };
+      delete item.rollNo;
+      data.push(item);
+      return item;
+    });
     writeDB('fees', data);
-    res.json({ success:true, added:added.length, skipped:0, errors:[] });
+    res.json({ success:true, added:added.length, skipped:0, errors });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 

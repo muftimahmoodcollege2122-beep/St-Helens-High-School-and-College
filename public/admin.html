@@ -933,6 +933,30 @@ textarea{resize:vertical;min-height:90px}
     <div class="adm-page" id="page-settings">
       <div style="display:grid;gap:1.2rem">
 
+        <!-- Change Admin Password Card -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>🔒 Change Admin Password</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="pw-current" autocomplete="current-password">
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="pw-new" autocomplete="new-password" minlength="8">
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="pw-confirm" autocomplete="new-password" minlength="8">
+              </div>
+            </div>
+            <button class="btn btn-pr" onclick="changeAdminPassword()">Update Password</button>
+          </div>
+        </div>
+
         <!-- Notice Banner Card -->
         <div class="card">
           <div class="card-hdr">
@@ -2354,6 +2378,30 @@ function setVal(id, val) {
   if (!el) return;
   if (el.tagName === 'SELECT') el.value = val;
   else el.value = val || '';
+}
+
+async function changeAdminPassword() {
+  const token = localStorage.getItem('sthelens_token');
+  const currentPassword = document.getElementById('pw-current').value;
+  const newPassword     = document.getElementById('pw-new').value;
+  const confirm_        = document.getElementById('pw-confirm').value;
+  if (!currentPassword || !newPassword || !confirm_) return showToast('All fields required.', 'error');
+  if (newPassword.length < 8) return showToast('New password must be at least 8 characters.', 'error');
+  if (newPassword !== confirm_) return showToast('New passwords do not match.', 'error');
+  try {
+    const res = await fetch('/api/auth/password', {
+      method: 'PUT',
+      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+    const d = await res.json();
+    if (d.success) {
+      showToast('Password updated.', 'success');
+      document.getElementById('pw-current').value = '';
+      document.getElementById('pw-new').value = '';
+      document.getElementById('pw-confirm').value = '';
+    } else showToast(d.message || 'Failed to update password.', 'error');
+  } catch(e) { showToast('Connection error.', 'error'); }
 }
 
 async function saveSettings(section) {

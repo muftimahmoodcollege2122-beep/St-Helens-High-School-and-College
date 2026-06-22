@@ -3,6 +3,7 @@ const router  = express.Router();
 const { readDB, writeDB, newId } = require('../db');
 const { protect } = require('../middleware/auth');
 const { normalizeResultRow } = require('../utils/resultNormalize');
+const { sendWhatsApp } = require('../utils/whatsapp');
 
 router.get('/lookup', (req,res) => {
   try {
@@ -32,6 +33,15 @@ router.post('/', protect, (req,res) => {
   try {
     const item = { _id:newId(), ...req.body, createdAt:new Date().toISOString() };
     const data = readDB('results'); data.push(item); writeDB('results', data);
+    // Notify parent
+    const students = readDB('students');
+    const sr = students.find(s => s.rollNo === item.rollNo);
+    if (sr && sr.fatherPhone) {
+      const total = (item.subjects||[]).reduce((s,x)=>s+(+x.totalMarks||0),0);
+      const obtained = (item.subjects||[]).reduce((s,x)=>s+(+x.obtainedMarks||0),0);
+      const pct = total ? ((obtained/total)*100).toFixed(1)+'%' : '';
+      sendWhatsApp(sr.fatherPhone, `📊 *${sr.name}* (Roll: ${sr.rollNo}) result for *${item.exam} ${item.year}* is now available.\nMarks: ${obtained}/${total} (${pct})\nView at: your school portal\n— St. Helen's`);
+    }
     res.status(201).json({ success:true, data:item });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });

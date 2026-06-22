@@ -238,6 +238,7 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
       <button class="tab" onclick="showTab('results',this)">📊 Results</button>
       <button class="tab" onclick="showTab('homework',this)">📚 Homework</button>
       <button class="tab" onclick="showTab('notices',this)">📢 Notices</button>
+      <button class="tab" onclick="showTab('leave',this);loadLeaveStatus()">🏖 Leave</button>
     </div>
 
     <!-- ══ FEES PANEL ══ -->
@@ -304,6 +305,31 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
         <div class="card-hdr">📢 School Notices</div>
         <div class="card-body">
           <div id="notice-list"><div class="empty"><div class="ei">📢</div><p>Loading notices...</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-leave">
+      <div class="card">
+        <div class="card-hdr">🏖 Submit Leave Request</div>
+        <div class="card-body">
+          <div style="display:grid;gap:.6rem;margin-bottom:1rem">
+            <label style="font-size:.8rem;font-weight:600">From Date</label>
+            <input type="date" id="leave-from">
+            <label style="font-size:.8rem;font-weight:600">To Date (optional)</label>
+            <input type="date" id="leave-to">
+            <label style="font-size:.8rem;font-weight:600">Reason</label>
+            <textarea id="leave-reason" rows="3" placeholder="Reason for leave..." style="border:1px solid #ddd;border-radius:8px;padding:.5rem;font-size:.85rem"></textarea>
+            <label style="font-size:.8rem;font-weight:600">Your Name</label>
+            <input id="leave-parent-name" placeholder="Parent / Guardian name">
+            <label style="font-size:.8rem;font-weight:600">Contact Number</label>
+            <input id="leave-parent-phone" placeholder="03xxxxxxxxx">
+          </div>
+          <button class="btn" style="width:100%;background:var(--mn);color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer" onclick="submitLeaveRequest()">Submit Leave Request</button>
+          <p id="leave-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+          <hr style="margin:1rem 0;border:none;border-top:1px solid #eee">
+          <div class="card-hdr" style="font-size:.9rem;font-weight:700;margin-bottom:.5rem">📋 Previous Requests</div>
+          <div id="leave-history"><p style="font-size:.8rem;color:#888">No previous requests.</p></div>
         </div>
       </div>
     </div>
@@ -475,6 +501,45 @@ async function submitPayment() {
       setTimeout(() => { closePayModal(); loadFees(); }, 1800);
     } else { msg.textContent = '❌ ' + (d.message || 'Failed.'); msg.style.color = '#e53935'; }
   } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color = '#e53935'; }
+}
+
+async function submitLeaveRequest() {
+  const msg = document.getElementById('leave-msg');
+  const fromDate = document.getElementById('leave-from').value;
+  const toDate = document.getElementById('leave-to').value;
+  const reason = document.getElementById('leave-reason').value.trim();
+  const parentName = document.getElementById('leave-parent-name').value.trim();
+  const parentPhone = document.getElementById('leave-parent-phone').value.trim();
+  if (!fromDate || !reason) { msg.textContent = '❌ Date and reason required.'; msg.style.color='#e53935'; return; }
+  msg.textContent = '⏳ Submitting...'; msg.style.color='#888';
+  try {
+    const res = await fetch('/api/leave/submit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ rollNo: pStudent.rollNo, fromDate, toDate:toDate||fromDate, reason, parentName, parentPhone })
+    });
+    const d = await res.json();
+    if (d.success) { msg.textContent = '✅ Submitted! School will review and notify you.'; msg.style.color='#2e7d32'; loadLeaveStatus(); }
+    else { msg.textContent = '❌ ' + (d.message||'Failed.'); msg.style.color='#e53935'; }
+  } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color='#e53935'; }
+}
+
+async function loadLeaveStatus() {
+  if (!pStudent) return;
+  const el = document.getElementById('leave-history');
+  try {
+    const res = await fetch('/api/leave/status/' + encodeURIComponent(pStudent.rollNo));
+    const d = await res.json();
+    if (!d.data || !d.data.length) { el.innerHTML = '<p style="font-size:.8rem;color:#888">No previous requests.</p>'; return; }
+    el.innerHTML = d.data.map(r => {
+      const bg = r.status==='Approved'?'#c6f6d5':r.status==='Rejected'?'#fed7d7':'#fefcbf';
+      const cl = r.status==='Approved'?'#276749':r.status==='Rejected'?'#9b2c2c':'#744210';
+      return `<div style="border:1px solid #eee;border-radius:8px;padding:.7rem;margin-bottom:.5rem;font-size:.82rem">
+        <div style="display:flex;justify-content:space-between"><b>${r.fromDate}${r.toDate!==r.fromDate?' to '+r.toDate:''}</b><span style="background:${bg};color:${cl};padding:2px 8px;border-radius:8px;font-size:.72rem">${r.status}</span></div>
+        <div style="color:#666;margin-top:.3rem">${r.reason}</div>
+        ${r.note?`<div style="color:#888;font-size:.75rem;margin-top:.2rem">Note: ${r.note}</div>`:''}
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<p style="color:#e53935;font-size:.8rem">Failed to load.</p>'; }
 }
 
 async function loadFees() {

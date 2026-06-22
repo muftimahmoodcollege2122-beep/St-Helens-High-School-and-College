@@ -274,6 +274,10 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('alumni',this)"><span class="ic">🎓</span> Alumni</button>
       <button class="sb-link" onclick="showPage('attendance',this)"><span class="ic">📋</span> Attendance</button>
       <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management <span id="fee-pending-badge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:.1rem .5rem;font-size:.7rem;margin-left:.3rem"></span></button>
+      <button class="sb-link" onclick="showPage('timetable',this)"><span class="ic">🗓</span> Timetable</button>
+      <button class="sb-link" onclick="showPage('exams',this)"><span class="ic">📝</span> Exam Schedule</button>
+      <button class="sb-link" onclick="showPage('leave',this)"><span class="ic">🏖</span> Leave Requests <span id="leave-pending-badge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:.1rem .5rem;font-size:.7rem;margin-left:.3rem"></span></button>
+      <button class="sb-link" onclick="showPage('promotion',this)"><span class="ic">🎓</span> Student Promotion</button>
       <button class="sb-link" onclick="showPage('results',this)"><span class="ic">📊</span> Results</button>
             <button class="sb-link" onclick="showPage('toppers',this)"><span class="ic">🏆</span> Toppers</button>
       <button class="sb-link" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span> Teachers</button>
@@ -1893,6 +1897,10 @@ const pageTitles = {
   'why-settings': ['Why Choose Us', 'Edit Strengths & Highlights Section'],
   'achievements-settings': ['Achievements', 'Edit School Achievements Section'],
   'teacher-accounts': ['Teacher Logins', 'Manage Teacher Panel Access'],
+  timetable:  ['Timetable', 'Class Weekly Schedule'],
+  exams:      ['Exam Schedule', 'Plan & Notify Exam Dates'],
+  leave:      ['Leave Requests', 'Student Absence & Leave Management'],
+  promotion:  ['Student Promotion', 'Year-End Class Promotion'],
   fees: ['Fee Management', 'Track & Collect Student Fees'],
   admissions: ['Admissions', 'Student Admission Applications'],
 };
@@ -1926,7 +1934,11 @@ function showPage(name, btn) {
     'teacher-accounts': loadTeacherAccounts,
     fees: loadFees,
     admissions: loadAdmissions,
-    alumni: loadAlumni
+    alumni: loadAlumni,
+    timetable: loadTimetable,
+    exams: loadExams,
+    leave: loadLeaveRequests,
+    promotion: () => {}
   };
   if (loaders[name]) loaders[name]();
 }
@@ -1954,10 +1966,16 @@ function showAlert(id, msg, type = 'err') {
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 async function checkPendingPayments() {
   try {
-    const d = await apiFetch('/api/fees?status=' + encodeURIComponent('Pending Verification'));
-    const count = d?.data?.length || 0;
-    const badge = document.getElementById('fee-pending-badge');
-    if (badge) { badge.style.display = count ? 'inline-block' : 'none'; badge.textContent = count; }
+    const [fees, leave] = await Promise.all([
+      apiFetch('/api/fees?status=' + encodeURIComponent('Pending Verification')),
+      apiFetch('/api/leave?status=Pending')
+    ]);
+    const fc = fees?.data?.length || 0;
+    const lc = leave?.data?.length || 0;
+    const fb = document.getElementById('fee-pending-badge');
+    const lb = document.getElementById('leave-pending-badge');
+    if (fb) { fb.style.display = fc ? 'inline-block' : 'none'; fb.textContent = fc; }
+    if (lb) { lb.style.display = lc ? 'inline-block' : 'none'; lb.textContent = lc; }
   } catch(e) {}
 }
 setInterval(checkPendingPayments, 60000);
@@ -2432,6 +2450,165 @@ function setVal(id, val) {
   if (!el) return;
   if (el.tagName === 'SELECT') el.value = val;
   else el.value = val || '';
+}
+
+// ── TIMETABLE ──────────────────────────────────────────────────────────────
+async function loadTimetable() {
+  const cls = document.getElementById('tt-class').value;
+  const section = document.getElementById('tt-section').value;
+  const el = document.getElementById('timetable-body');
+  if (!cls) { el.innerHTML = '<p style="color:var(--gr)">Select a class to view timetable.</p>'; return; }
+  const d = await apiFetch(`/api/timetable?class=${encodeURIComponent(cls)}&section=${encodeURIComponent(section)}`);
+  if (!d.data || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No timetable entries yet.</p>'; return; }
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const periods = [...new Set(d.data.map(r => r.period))].sort();
+  let html = `<table style="width:100%;border-collapse:collapse;font-size:.8rem"><tr><th style="background:#8b1a1a;color:#fff;padding:6px">Day</th>${periods.map(p=>`<th style="background:#8b1a1a;color:#fff;padding:6px">P${p}</th>`).join('')}</tr>`;
+  days.forEach(day => {
+    html += `<tr><td style="font-weight:700;padding:5px 8px;background:#f7f7f7">${day}</td>`;
+    periods.forEach(p => {
+      const slot = d.data.find(r => r.day === day && r.period === p);
+      html += `<td style="padding:5px 8px;border:1px solid #eee;text-align:center">${slot ? `<b>${esc(slot.subject)}</b><br><small style="color:#666">${esc(slot.teacher)}</small><br><button onclick="deleteTimetable('${slot._id}')" style="border:none;background:none;color:#e53e3e;cursor:pointer;font-size:.7rem">🗑</button>` : '<span style="color:#ccc">—</span>'}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</table>';
+  el.innerHTML = html;
+}
+async function saveTimetablePeriod() {
+  const msg = document.getElementById('tt-m-msg');
+  const d = await apiFetch('/api/timetable', 'POST', {
+    class: document.getElementById('tt-m-class').value,
+    section: document.getElementById('tt-m-section').value,
+    day: document.getElementById('tt-m-day').value,
+    period: document.getElementById('tt-m-period').value,
+    subject: document.getElementById('tt-m-subject').value,
+    teacher: document.getElementById('tt-m-teacher').value,
+    startTime: document.getElementById('tt-m-start').value,
+    endTime: document.getElementById('tt-m-end').value
+  });
+  if (d.success) { msg.textContent = '✅ Saved.'; msg.style.color = '#2e7d32'; loadTimetable(); setTimeout(()=>closeModal('modal-timetable'),1200); }
+  else { msg.textContent = '❌ ' + d.message; msg.style.color = '#e53935'; }
+}
+async function deleteTimetable(id) {
+  if (!confirm('Delete this period?')) return;
+  await apiFetch('/api/timetable/' + id, 'DELETE');
+  loadTimetable();
+}
+
+// ── EXAM SCHEDULE ───────────────────────────────────────────────────────────
+async function loadExams() {
+  const exam = document.getElementById('exam-filter-name').value;
+  const year = document.getElementById('exam-filter-year').value;
+  const d = await apiFetch(`/api/exams?exam=${encodeURIComponent(exam)}&year=${encodeURIComponent(year)}`);
+  const el = document.getElementById('exams-list');
+  if (!d.data || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No exam schedule yet.</p>'; return; }
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+    <tr style="background:#8b1a1a;color:#fff"><th style="padding:6px 8px">Exam</th><th>Class</th><th>Subject</th><th>Date</th><th>Time</th><th>Venue</th><th></th></tr>
+    ${d.data.map(e=>`<tr style="border-bottom:1px solid #eee">
+      <td style="padding:5px 8px">${esc(e.exam)} ${esc(e.year)}</td><td>${esc(e.class)||'All'}</td>
+      <td><b>${esc(e.subject)}</b></td><td>${e.date}</td>
+      <td>${esc(e.startTime)} ${esc(e.endTime)}</td><td>${esc(e.venue)}</td>
+      <td><button onclick="deleteExam('${e._id}')" class="btn btn-sm btn-rd" style="font-size:.7rem;padding:2px 6px">🗑</button></td>
+    </tr>`).join('')}
+  </table>`;
+}
+async function saveExam() {
+  const msg = document.getElementById('ex-m-msg');
+  const d = await apiFetch('/api/exams', 'POST', {
+    exam: document.getElementById('ex-m-exam').value,
+    year: document.getElementById('ex-m-year').value,
+    class: document.getElementById('ex-m-class').value,
+    subject: document.getElementById('ex-m-subject').value,
+    date: document.getElementById('ex-m-date').value,
+    startTime: document.getElementById('ex-m-start').value,
+    endTime: document.getElementById('ex-m-end').value,
+    venue: document.getElementById('ex-m-venue').value,
+    notes: document.getElementById('ex-m-notes').value
+  });
+  if (d.success) { msg.textContent = '✅ Saved.'; msg.style.color = '#2e7d32'; loadExams(); setTimeout(()=>closeModal('modal-exam'),1200); }
+  else { msg.textContent = '❌ ' + d.message; msg.style.color = '#e53935'; }
+}
+async function deleteExam(id) {
+  if (!confirm('Delete?')) return;
+  await apiFetch('/api/exams/' + id, 'DELETE');
+  loadExams();
+}
+async function notifyExamSchedule() {
+  const exam = document.getElementById('exam-filter-name').value;
+  if (!exam) { showToast('Filter by exam name first.', 'err'); return; }
+  const d = await apiFetch('/api/exams/notify', 'POST', { exam });
+  if (d.success) showToast(d.message, 'ok');
+  else showToast(d.message || 'Failed.', 'err');
+}
+
+// ── LEAVE REQUESTS ──────────────────────────────────────────────────────────
+async function loadLeaveRequests() {
+  const status = document.getElementById('leave-filter').value;
+  const d = await apiFetch('/api/leave' + (status ? '?status='+encodeURIComponent(status) : ''));
+  const el = document.getElementById('leave-list');
+  const badge = document.getElementById('leave-pending-badge');
+  if (!d.data || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No leave requests.</p>'; if(badge){badge.style.display='none';} return; }
+  const pending = d.data.filter(r => r.status === 'Pending').length;
+  if (badge) { badge.textContent = pending; badge.style.display = pending ? 'inline-block' : 'none'; }
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+    <tr style="background:#8b1a1a;color:#fff"><th style="padding:6px 8px">Student</th><th>Class</th><th>Dates</th><th>Reason</th><th>Parent</th><th>Status</th><th>Actions</th></tr>
+    ${d.data.map(r=>`<tr style="border-bottom:1px solid #eee">
+      <td style="padding:5px 8px"><b>${esc(r.studentName)}</b><br><small>${esc(r.rollNo)}</small></td>
+      <td>${esc(r.class)} ${esc(r.section)}</td>
+      <td>${r.fromDate}${r.toDate!==r.fromDate?'<br>to '+r.toDate:''}</td>
+      <td style="max-width:180px">${esc(r.reason)}</td>
+      <td>${esc(r.parentName)}<br><small>${esc(r.parentPhone)}</small></td>
+      <td><span style="padding:2px 8px;border-radius:8px;font-size:.72rem;background:${r.status==='Approved'?'#c6f6d5':r.status==='Rejected'?'#fed7d7':'#fefcbf'};color:${r.status==='Approved'?'#276749':r.status==='Rejected'?'#9b2c2c':'#744210'}">${esc(r.status)}</span></td>
+      <td style="display:flex;gap:.3rem;flex-wrap:wrap">
+        ${r.status==='Pending'?`<button class="btn btn-sm btn-gn" style="font-size:.7rem;padding:2px 7px" onclick="reviewLeave('${r._id}','Approved')">✅</button><button class="btn btn-sm btn-rd" style="font-size:.7rem;padding:2px 7px" onclick="reviewLeave('${r._id}','Rejected')">❌</button>`:''}
+        <button class="btn btn-sm btn-rd" style="font-size:.7rem;padding:2px 7px" onclick="deleteLeave('${r._id}')">🗑</button>
+      </td>
+    </tr>`).join('')}
+  </table>`;
+}
+async function reviewLeave(id, status) {
+  const note = status === 'Rejected' ? prompt('Rejection reason (optional):') : '';
+  const d = await apiFetch('/api/leave/' + id, 'PATCH', { status, note: note||'' });
+  if (d.success) { showToast(status + ' and parent notified.', 'ok'); loadLeaveRequests(); }
+  else showToast(d.message || 'Failed.', 'err');
+}
+async function deleteLeave(id) {
+  if (!confirm('Delete?')) return;
+  await apiFetch('/api/leave/' + id, 'DELETE');
+  loadLeaveRequests();
+}
+
+// ── STUDENT PROMOTION ───────────────────────────────────────────────────────
+let _promoData = [];
+async function previewPromotion() {
+  const cls = document.getElementById('promo-class').value;
+  if (!cls) { showToast('Select a class.', 'err'); return; }
+  const d = await apiFetch('/api/promotion/preview?fromClass=' + encodeURIComponent(cls));
+  _promoData = d.data || [];
+  const el = document.getElementById('promo-preview');
+  const btn = document.getElementById('btn-promote');
+  if (!_promoData.length) { el.innerHTML = '<p style="color:var(--gr)">No active students found in Class ' + cls + '.</p>'; btn.disabled=true; return; }
+  const promote = _promoData.filter(s => s.action==='promote');
+  const passedOut = _promoData.filter(s => s.action==='passed-out');
+  el.innerHTML = `<div style="background:#f7f7f7;border-radius:8px;padding:1rem;font-size:.82rem">
+    <b>Preview for Class ${esc(cls)}:</b><br><br>
+    ${promote.length ? `✅ <b>${promote.length}</b> students will be promoted to Class <b>${promote[0].nextClass}</b>.<br>` : ''}
+    ${passedOut.length ? `🎓 <b>${passedOut.length}</b> students will be marked <b>Passed Out</b> and added to alumni.` : ''}
+    <br><br><small style="color:#888">This action cannot be undone. Take a backup first.</small>
+  </div>`;
+  btn.disabled = false;
+}
+async function confirmPromotion() {
+  const cls = document.getElementById('promo-class').value;
+  if (!cls || !_promoData.length) return;
+  if (!confirm(`Promote all active students in Class ${cls}? This cannot be undone.`)) return;
+  const d = await apiFetch('/api/promotion/promote', 'POST', { fromClass: cls });
+  if (d.success) {
+    showToast(d.message, 'ok');
+    document.getElementById('promo-preview').innerHTML = `<p style="color:#2e7d32;font-weight:600">✅ ${d.message}</p>`;
+    document.getElementById('btn-promote').disabled = true;
+    _promoData = [];
+  } else showToast(d.message || 'Failed.', 'err');
 }
 
 async function loadAutoBackups() {
@@ -4497,6 +4674,134 @@ async function deleteAlumni(id) {
       <button class="btn" style="background:#2b6cb0;color:#fff" onclick="downloadFeeTemplate()">⬇ Template</button>
       <button class="btn" style="background:#2b6cb0;color:#fff" onclick="previewFeeCSV()">👁 Preview</button>
       <button class="btn btn-gd" onclick="runBulkImportFees()" id="btn-import-fees" disabled>📥 Import Fees</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ TIMETABLE PAGE ══════════════════ -->
+<div class="adm-page" id="page-timetable">
+  <div class="card">
+    <div class="card-hdr">
+      <h3>🗓 Timetable</h3>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <select id="tt-class" onchange="loadTimetable()"><option value="">All Classes</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option>
+          <option>10</option><option>11</option><option>12</option>
+        </select>
+        <select id="tt-section" onchange="loadTimetable()"><option value="">All Sections</option><option>A</option><option>B</option><option>C</option></select>
+        <button class="btn btn-gd" onclick="openModal('modal-timetable')">+ Add Period</button>
+      </div>
+    </div>
+    <div class="card-body" id="timetable-body"><p style="color:var(--gr)">Select a class to view timetable.</p></div>
+  </div>
+</div>
+
+<!-- ══════════════════ EXAM SCHEDULE PAGE ══════════════════ -->
+<div class="adm-page" id="page-exams">
+  <div class="card">
+    <div class="card-hdr">
+      <h3>📝 Exam Schedule</h3>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-gd" onclick="openModal('modal-exam')">+ Add Exam</button>
+        <button class="btn" style="background:#805ad5;color:#fff" onclick="notifyExamSchedule()">📲 Notify Parents via WA</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+        <input id="exam-filter-name" placeholder="Filter by exam..." oninput="loadExams()" style="max-width:180px">
+        <input id="exam-filter-year" placeholder="Year..." oninput="loadExams()" style="max-width:100px">
+      </div>
+      <div id="exams-list"><p style="color:var(--gr)">Loading...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ LEAVE REQUESTS PAGE ══════════════════ -->
+<div class="adm-page" id="page-leave">
+  <div class="card">
+    <div class="card-hdr">
+      <h3>🏖 Leave Requests</h3>
+      <div style="display:flex;gap:.5rem">
+        <select id="leave-filter" onchange="loadLeaveRequests()">
+          <option value="">All</option><option value="Pending">Pending</option>
+          <option value="Approved">Approved</option><option value="Rejected">Rejected</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="leave-list"><p style="color:var(--gr)">Loading...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ STUDENT PROMOTION PAGE ══════════════════ -->
+<div class="adm-page" id="page-promotion">
+  <div class="card">
+    <div class="card-hdr"><h3>🎓 Student Promotion (Year End)</h3></div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:#888;margin-bottom:1rem">Select a class to promote all active students to the next class. Class 12 students will be marked "Passed Out" and added to alumni.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+        <label><b>From Class:</b></label>
+        <select id="promo-class">
+          <option value="">Select class...</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option>
+          <option>10</option><option>11</option><option>12</option>
+        </select>
+        <button class="btn btn-nv" onclick="previewPromotion()">👁 Preview</button>
+        <button class="btn btn-gd" onclick="confirmPromotion()" id="btn-promote" disabled>🎓 Promote Now</button>
+      </div>
+      <div id="promo-preview" style="margin-top:1rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMETABLE MODAL -->
+<div class="modal-overlay" id="modal-timetable">
+  <div class="modal-box">
+    <div class="modal-hdr2"><h3>Add / Update Period</h3><button class="modal-close" onclick="closeModal('modal-timetable')">✕</button></div>
+    <div class="modal-body2">
+      <div class="form-row">
+        <div class="form-group"><label>Class</label><select id="tt-m-class">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+        </select></div>
+        <div class="form-group"><label>Section</label><select id="tt-m-section"><option>A</option><option>B</option><option>C</option></select></div>
+        <div class="form-group"><label>Day</label><select id="tt-m-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
+        <div class="form-group"><label>Period #</label><select id="tt-m-period"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+        <div class="form-group"><label>Subject</label><input id="tt-m-subject" placeholder="e.g. Mathematics"></div>
+        <div class="form-group"><label>Teacher</label><input id="tt-m-teacher" placeholder="Teacher name"></div>
+        <div class="form-group"><label>Start Time</label><input type="time" id="tt-m-start"></div>
+        <div class="form-group"><label>End Time</label><input type="time" id="tt-m-end"></div>
+      </div>
+      <button class="btn btn-gd" onclick="saveTimetablePeriod()" style="width:100%;margin-top:.5rem">Save Period</button>
+      <p id="tt-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM MODAL -->
+<div class="modal-overlay" id="modal-exam">
+  <div class="modal-box">
+    <div class="modal-hdr2"><h3>Add Exam</h3><button class="modal-close" onclick="closeModal('modal-exam')">✕</button></div>
+    <div class="modal-body2">
+      <div class="form-row">
+        <div class="form-group"><label>Exam Name</label><input id="ex-m-exam" placeholder="e.g. Annual 2026"></div>
+        <div class="form-group"><label>Year</label><input id="ex-m-year" value="2026"></div>
+        <div class="form-group"><label>Class (optional)</label><select id="ex-m-class"><option value="">All Classes</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+        </select></div>
+        <div class="form-group"><label>Subject</label><input id="ex-m-subject" placeholder="e.g. Urdu"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="ex-m-date"></div>
+        <div class="form-group"><label>Start Time</label><input type="time" id="ex-m-start"></div>
+        <div class="form-group"><label>End Time</label><input type="time" id="ex-m-end"></div>
+        <div class="form-group"><label>Venue / Room</label><input id="ex-m-venue" placeholder="e.g. Hall A"></div>
+        <div class="form-group"><label>Notes</label><input id="ex-m-notes" placeholder="Optional"></div>
+      </div>
+      <button class="btn btn-gd" onclick="saveExam()" style="width:100%;margin-top:.5rem">Save</button>
+      <p id="ex-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
     </div>
   </div>
 </div>

@@ -52,6 +52,10 @@ app.use('/api/payments',      require('./server/routes/payments'));
 app.use('/api/alumni',       require('./server/routes/alumni'));
 app.use('/api/admissions',   require('./server/routes/admissions'));
 app.use('/api/reports',      require('./server/routes/reports'));
+app.use('/api/promotion',    require('./server/routes/promotion'));
+app.use('/api/timetable',    require('./server/routes/timetable'));
+app.use('/api/exams',        require('./server/routes/exams'));
+app.use('/api/leave',        require('./server/routes/leaveRequests'));
 
 // ── Fallback → index.html ─────────────────────────────────────────────────────
 app.get('*', (req, res) => {

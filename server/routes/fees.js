@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const { readDB, writeDB, newId } = require('../db');
 const { protect } = require('../middleware/auth');
+const { sendWhatsApp } = require('../utils/whatsapp');
 
 router.get('/', protect, (req,res) => {
   try {
@@ -140,6 +141,14 @@ router.patch('/:id/verify-payment', protect, (req,res) => {
       data[idx].paymentSubmission.rejected = true;
     }
     writeDB('fees', data);
+    const students = readDB('students');
+    const sr = students.find(s => s._id === data[idx].student || s.rollNo === data[idx].student);
+    if (sr && sr.fatherPhone) {
+      const msg = approve
+        ? `✅ Fee payment for *${sr.name}* (Roll: ${sr.rollNo}) for *${data[idx].month}* has been *verified*. Amount: PKR ${data[idx].amount}. — St. Helen's`
+        : `❌ Fee payment for *${sr.name}* (Roll: ${sr.rollNo}) for *${data[idx].month}* was *rejected*. Please contact the school. — St. Helen's`;
+      sendWhatsApp(sr.fatherPhone, msg);
+    }
     res.json({ success:true, data:data[idx] });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });

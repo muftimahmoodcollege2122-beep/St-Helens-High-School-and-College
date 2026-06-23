@@ -1383,6 +1383,81 @@ textarea{resize:vertical;min-height:90px}
     </div>
 
 
+    <!-- ── TIMETABLE ── -->
+    <div class="adm-page" id="page-timetable">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🗓 Timetable</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <select id="tt-class" onchange="loadTimetable()"><option value="">All Classes</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option>
+              <option>10</option><option>11</option><option>12</option>
+            </select>
+            <select id="tt-section" onchange="loadTimetable()"><option value="">All Sections</option><option>A</option><option>B</option><option>C</option></select>
+            <button class="btn btn-gd" onclick="openModal('modal-timetable')">+ Add Period</button>
+          </div>
+        </div>
+        <div class="card-body" id="timetable-body"><p style="color:var(--gr)">Select a class to view timetable.</p></div>
+      </div>
+    </div>
+
+    <!-- ── EXAM SCHEDULE ── -->
+    <div class="adm-page" id="page-exams">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📝 Exam Schedule</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-gd" onclick="openModal('modal-exam')">+ Add Exam</button>
+            <button class="btn" style="background:#805ad5;color:#fff" onclick="notifyExamSchedule()">📲 Notify Parents via WA</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+            <input id="exam-filter-name" placeholder="Filter by exam..." oninput="loadExams()" style="max-width:180px">
+            <input id="exam-filter-year" placeholder="Year..." oninput="loadExams()" style="max-width:100px">
+          </div>
+          <div id="exams-list"><p style="color:var(--gr)">Loading...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LEAVE REQUESTS ── -->
+    <div class="adm-page" id="page-leave">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🏖 Leave Requests</h3>
+          <select id="leave-filter" onchange="loadLeaveRequests()">
+            <option value="">All</option><option value="Pending">Pending</option>
+            <option value="Approved">Approved</option><option value="Rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="card-body"><div id="leave-list"><p style="color:var(--gr)">Loading...</p></div></div>
+      </div>
+    </div>
+
+    <!-- ── STUDENT PROMOTION ── -->
+    <div class="adm-page" id="page-promotion">
+      <div class="card">
+        <div class="card-hdr"><h3>🎓 Student Promotion (Year End)</h3></div>
+        <div class="card-body">
+          <p style="font-size:.85rem;color:#888;margin-bottom:1rem">Select a class to promote all active students to the next class. Class 12 students will be marked "Passed Out" and added to alumni.</p>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+            <label><b>From Class:</b></label>
+            <select id="promo-class">
+              <option value="">Select class...</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option>
+              <option>10</option><option>11</option><option>12</option>
+            </select>
+            <button class="btn btn-nv" onclick="previewPromotion()">👁 Preview</button>
+            <button class="btn btn-gd" onclick="confirmPromotion()" id="btn-promote" disabled>🎓 Promote Now</button>
+          </div>
+          <div id="promo-preview" style="margin-top:1rem"></div>
+        </div>
+      </div>
+    </div>
+
   </main><!-- /adm-main -->
 </div><!-- /admin-app -->
 
@@ -4678,95 +4753,13 @@ async function deleteAlumni(id) {
   </div>
 </div>
 
-<!-- ══════════════════ TIMETABLE PAGE ══════════════════ -->
-<div class="adm-page" id="page-timetable">
-  <div class="card">
-    <div class="card-hdr">
-      <h3>🗓 Timetable</h3>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        <select id="tt-class" onchange="loadTimetable()"><option value="">All Classes</option>
-          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-          <option>6</option><option>7</option><option>8</option><option>9</option>
-          <option>10</option><option>11</option><option>12</option>
-        </select>
-        <select id="tt-section" onchange="loadTimetable()"><option value="">All Sections</option><option>A</option><option>B</option><option>C</option></select>
-        <button class="btn btn-gd" onclick="openModal('modal-timetable')">+ Add Period</button>
-      </div>
-    </div>
-    <div class="card-body" id="timetable-body"><p style="color:var(--gr)">Select a class to view timetable.</p></div>
-  </div>
-</div>
-
-<!-- ══════════════════ EXAM SCHEDULE PAGE ══════════════════ -->
-<div class="adm-page" id="page-exams">
-  <div class="card">
-    <div class="card-hdr">
-      <h3>📝 Exam Schedule</h3>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        <button class="btn btn-gd" onclick="openModal('modal-exam')">+ Add Exam</button>
-        <button class="btn" style="background:#805ad5;color:#fff" onclick="notifyExamSchedule()">📲 Notify Parents via WA</button>
-      </div>
-    </div>
-    <div class="card-body">
-      <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
-        <input id="exam-filter-name" placeholder="Filter by exam..." oninput="loadExams()" style="max-width:180px">
-        <input id="exam-filter-year" placeholder="Year..." oninput="loadExams()" style="max-width:100px">
-      </div>
-      <div id="exams-list"><p style="color:var(--gr)">Loading...</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════ LEAVE REQUESTS PAGE ══════════════════ -->
-<div class="adm-page" id="page-leave">
-  <div class="card">
-    <div class="card-hdr">
-      <h3>🏖 Leave Requests</h3>
-      <div style="display:flex;gap:.5rem">
-        <select id="leave-filter" onchange="loadLeaveRequests()">
-          <option value="">All</option><option value="Pending">Pending</option>
-          <option value="Approved">Approved</option><option value="Rejected">Rejected</option>
-        </select>
-      </div>
-    </div>
-    <div class="card-body">
-      <div id="leave-list"><p style="color:var(--gr)">Loading...</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════ STUDENT PROMOTION PAGE ══════════════════ -->
-<div class="adm-page" id="page-promotion">
-  <div class="card">
-    <div class="card-hdr"><h3>🎓 Student Promotion (Year End)</h3></div>
-    <div class="card-body">
-      <p style="font-size:.85rem;color:#888;margin-bottom:1rem">Select a class to promote all active students to the next class. Class 12 students will be marked "Passed Out" and added to alumni.</p>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
-        <label><b>From Class:</b></label>
-        <select id="promo-class">
-          <option value="">Select class...</option>
-          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-          <option>6</option><option>7</option><option>8</option><option>9</option>
-          <option>10</option><option>11</option><option>12</option>
-        </select>
-        <button class="btn btn-nv" onclick="previewPromotion()">👁 Preview</button>
-        <button class="btn btn-gd" onclick="confirmPromotion()" id="btn-promote" disabled>🎓 Promote Now</button>
-      </div>
-      <div id="promo-preview" style="margin-top:1rem"></div>
-    </div>
-  </div>
-</div>
-
 <!-- TIMETABLE MODAL -->
-<div class="modal-overlay" id="modal-timetable">
-  <div class="modal-box">
-    <div class="modal-hdr2"><h3>Add / Update Period</h3><button class="modal-close" onclick="closeModal('modal-timetable')">✕</button></div>
-    <div class="modal-body2">
+<div class="modal-bg" id="modal-timetable">
+  <div class="modal" style="max-width:580px;width:100%">
+    <div class="modal-hdr"><h3>🗓 Add / Update Period</h3><button class="modal-close" onclick="closeModal('modal-timetable')">✕</button></div>
+    <div class="modal-body">
       <div class="form-row">
-        <div class="form-group"><label>Class</label><select id="tt-m-class">
-          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-        </select></div>
+        <div class="form-group"><label>Class</label><select id="tt-m-class"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
         <div class="form-group"><label>Section</label><select id="tt-m-section"><option>A</option><option>B</option><option>C</option></select></div>
         <div class="form-group"><label>Day</label><select id="tt-m-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
         <div class="form-group"><label>Period #</label><select id="tt-m-period"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
@@ -4775,24 +4768,24 @@ async function deleteAlumni(id) {
         <div class="form-group"><label>Start Time</label><input type="time" id="tt-m-start"></div>
         <div class="form-group"><label>End Time</label><input type="time" id="tt-m-end"></div>
       </div>
-      <button class="btn btn-gd" onclick="saveTimetablePeriod()" style="width:100%;margin-top:.5rem">Save Period</button>
       <p id="tt-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-timetable')">Cancel</button>
+      <button class="btn btn-gd" onclick="saveTimetablePeriod()">Save Period</button>
     </div>
   </div>
 </div>
 
 <!-- EXAM MODAL -->
-<div class="modal-overlay" id="modal-exam">
-  <div class="modal-box">
-    <div class="modal-hdr2"><h3>Add Exam</h3><button class="modal-close" onclick="closeModal('modal-exam')">✕</button></div>
-    <div class="modal-body2">
+<div class="modal-bg" id="modal-exam">
+  <div class="modal" style="max-width:580px;width:100%">
+    <div class="modal-hdr"><h3>📝 Add Exam</h3><button class="modal-close" onclick="closeModal('modal-exam')">✕</button></div>
+    <div class="modal-body">
       <div class="form-row">
         <div class="form-group"><label>Exam Name</label><input id="ex-m-exam" placeholder="e.g. Annual 2026"></div>
         <div class="form-group"><label>Year</label><input id="ex-m-year" value="2026"></div>
-        <div class="form-group"><label>Class (optional)</label><select id="ex-m-class"><option value="">All Classes</option>
-          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-        </select></div>
+        <div class="form-group"><label>Class (optional)</label><select id="ex-m-class"><option value="">All Classes</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
         <div class="form-group"><label>Subject</label><input id="ex-m-subject" placeholder="e.g. Urdu"></div>
         <div class="form-group"><label>Date</label><input type="date" id="ex-m-date"></div>
         <div class="form-group"><label>Start Time</label><input type="time" id="ex-m-start"></div>
@@ -4800,8 +4793,11 @@ async function deleteAlumni(id) {
         <div class="form-group"><label>Venue / Room</label><input id="ex-m-venue" placeholder="e.g. Hall A"></div>
         <div class="form-group"><label>Notes</label><input id="ex-m-notes" placeholder="Optional"></div>
       </div>
-      <button class="btn btn-gd" onclick="saveExam()" style="width:100%;margin-top:.5rem">Save</button>
       <p id="ex-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-exam')">Cancel</button>
+      <button class="btn btn-gd" onclick="saveExam()">Save</button>
     </div>
   </div>
 </div>

@@ -56,3 +56,22 @@ function loginRateLimit(req, res, next) {
 }
 
 module.exports = { loginRateLimit };
+
+// ── Generic lookup rate limiter ──────────────────────────────────────────────
+// Parent portal routes are unauthenticated by design (roll number is the only
+// "credential"), which makes them scrapable since roll numbers are sequential.
+// This won't fully fix that (needs a real second factor like DOB/CNIC), but it
+// throttles bulk scraping from a single IP.
+const lookupAttempts = new Map();
+function lookupRateLimit(req, res, next) {
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  const WINDOW = 60 * 1000, MAX = 30; // 30 lookups/minute/IP
+  const entry = lookupAttempts.get(ip) || { count: 0, windowStart: now };
+  if (now - entry.windowStart > WINDOW) { entry.count = 0; entry.windowStart = now; }
+  entry.count++;
+  lookupAttempts.set(ip, entry);
+  if (entry.count > MAX) return res.status(429).json({ success:false, message:'Too many requests. Please slow down.' });
+  next();
+}
+module.exports.lookupRateLimit = lookupRateLimit;

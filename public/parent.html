@@ -175,6 +175,14 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
 .lbox{border-top:4px solid var(--or)!important;border-radius:2px!important}
 .lbox-logo{border-radius:3px!important;border-color:var(--or)!important}
 
+.pm-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;padding:1rem}
+.pm-bg.open{display:flex}
+.pm-box{background:#fff;border-radius:12px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto}
+.pm-hdr{padding:1rem 1.2rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+.pm-body{padding:1.2rem}
+.pm-body label{display:block;font-size:.8rem;font-weight:600;margin:.6rem 0 .3rem}
+.pm-body input,.pm-body select{width:100%;padding:.55rem;border:1px solid #ddd;border-radius:8px;font-size:.85rem}
+.pm-acct{background:#f7f7f7;border-radius:8px;padding:.7rem;font-size:.82rem;margin-bottom:.4rem}
 </style>
 </head>
 <body>
@@ -230,6 +238,7 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
       <button class="tab" onclick="showTab('results',this)">📊 Results</button>
       <button class="tab" onclick="showTab('homework',this)">📚 Homework</button>
       <button class="tab" onclick="showTab('notices',this)">📢 Notices</button>
+      <button class="tab" onclick="showTab('leave',this);loadLeaveStatus()">🏖 Leave</button>
     </div>
 
     <!-- ══ FEES PANEL ══ -->
@@ -300,6 +309,31 @@ footer h4{color:var(--or)!important;font-family:'Montserrat',sans-serif!importan
       </div>
     </div>
 
+    <div class="panel" id="panel-leave">
+      <div class="card">
+        <div class="card-hdr">🏖 Submit Leave Request</div>
+        <div class="card-body">
+          <div style="display:grid;gap:.6rem;margin-bottom:1rem">
+            <label style="font-size:.8rem;font-weight:600">From Date</label>
+            <input type="date" id="leave-from">
+            <label style="font-size:.8rem;font-weight:600">To Date (optional)</label>
+            <input type="date" id="leave-to">
+            <label style="font-size:.8rem;font-weight:600">Reason</label>
+            <textarea id="leave-reason" rows="3" placeholder="Reason for leave..." style="border:1px solid #ddd;border-radius:8px;padding:.5rem;font-size:.85rem"></textarea>
+            <label style="font-size:.8rem;font-weight:600">Your Name</label>
+            <input id="leave-parent-name" placeholder="Parent / Guardian name">
+            <label style="font-size:.8rem;font-weight:600">Contact Number</label>
+            <input id="leave-parent-phone" placeholder="03xxxxxxxxx">
+          </div>
+          <button class="btn" style="width:100%;background:#8b1a1a;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:600" onclick="submitLeaveRequest()">Submit Leave Request</button>
+          <p id="leave-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+          <hr style="margin:1rem 0;border:none;border-top:1px solid #eee">
+          <div class="card-hdr" style="font-size:.9rem;font-weight:700;margin-bottom:.5rem">📋 Previous Requests</div>
+          <div id="leave-history"><p style="font-size:.8rem;color:#888">No previous requests.</p></div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /main-content -->
 </div><!-- /wrap -->
 
@@ -350,6 +384,164 @@ function renderStudentCard() {
 }
 
 // ── Fees ──────────────────────────────────────────────────────────────────────
+let payFee = null;
+
+async function openPayModal(fee) {
+  payFee = fee;
+  document.getElementById('pay-modal').classList.add('open');
+  const body = document.getElementById('pm-body');
+  body.innerHTML = '<p style="font-size:.8rem;color:#888">Loading payment options...</p>';
+  const res = await fetch('/api/parent/payment-info');
+  const info = (await res.json())?.data || {};
+  body.innerHTML = `
+    <p style="font-size:.85rem;margin-bottom:.6rem"><b>${fee.month}</b> — Amount Due: PKR ${fee.amount?.toLocaleString()}</p>
+    <button id="jc-pay-btn" class="btn" style="width:100%;background:#d2042d;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.5rem" onclick="payViaJazzCash()">📱 Pay Instantly via JazzCash</button>
+    <button id="ep-pay-btn" class="btn" style="width:100%;background:#0a8a3e;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.5rem" onclick="payViaEasyPaisa()">📱 Pay Instantly via EasyPaisa</button>
+    <button id="bk-pay-btn" class="btn" style="width:100%;background:#2b6cb0;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;margin-bottom:.8rem" onclick="prefillManual('Bank Transfer')">🏦 I've Paid via Bank Transfer</button>
+    <p id="jc-msg" style="font-size:.75rem;text-align:center;color:#888;margin:-.3rem 0 .8rem"></p>
+    <hr style="border:none;border-top:1px solid #eee;margin:.8rem 0">
+    <p style="font-size:.78rem;color:#888;margin-bottom:.4rem">Or transfer manually and submit your reference:</p>
+    <div class="pm-acct"><b>EasyPaisa:</b> ${info.easypaisa || 'Not set'}</div>
+    <div class="pm-acct"><b>JazzCash:</b> ${info.jazzcash || 'Not set'}</div>
+    <div class="pm-acct"><b>Bank Transfer</b><br>${info.bankAccountTitle}<br>${info.bankName || ''} — ${info.bankAccountNumber || 'Not set'}${info.bankIban ? '<br>IBAN: '+info.bankIban : ''}</div>
+    <label>Payment Method</label>
+    <select id="pm-method">
+      <option value="EasyPaisa">EasyPaisa</option>
+      <option value="JazzCash">JazzCash</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+    </select>
+    <label>Transaction ID / Reference No.</label>
+    <input type="text" id="pm-txn" placeholder="e.g. TXN123456789">
+    <label>Your Name</label>
+    <input type="text" id="pm-name" placeholder="Payer name">
+    <label>Your Phone</label>
+    <input type="text" id="pm-phone" placeholder="03xxxxxxxxx">
+    <button class="btn" style="width:100%;margin-top:1rem;background:#8b1a1a;color:#fff;padding:.7rem;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:600" onclick="submitPayment()">Submit Payment for Verification</button>
+    <p id="pm-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+  `;
+}
+
+async function payViaJazzCash() {
+  const msg = document.getElementById('jc-msg');
+  if (!payFee) return;
+  msg.textContent = 'Connecting...'; msg.style.color = '#888';
+  try {
+    const res = await fetch('/api/payments/jazzcash/initiate', {
+      method: 'POST', headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ feeId: payFee._id, amount: payFee.amount })
+    });
+    const d = await res.json();
+    if (!d.success) { msg.textContent = '⚠️ ' + d.message; msg.style.color = '#d69e2e'; return; }
+    const form = document.createElement('form');
+    form.method = 'POST'; form.action = d.actionUrl;
+    Object.entries(d.fields).forEach(([k,v]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden'; input.name = k; input.value = v;
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+    form.submit();
+  } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color = '#e53935'; }
+}
+
+async function payViaEasyPaisa() {
+  const msg = document.getElementById('jc-msg');
+  if (!payFee) return;
+  msg.textContent = 'Connecting...'; msg.style.color = '#888';
+  try {
+    const res = await fetch('/api/payments/easypaisa/initiate', {
+      method: 'POST', headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ feeId: payFee._id, amount: payFee.amount })
+    });
+    const d = await res.json();
+    if (!d.success) { msg.textContent = '⚠️ ' + d.message; msg.style.color = '#d69e2e'; return; }
+    if (d.actionUrl) {
+      const form = document.createElement('form');
+      form.method = 'POST'; form.action = d.actionUrl;
+      Object.entries(d.fields||{}).forEach(([k,v]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden'; input.name = k; input.value = v;
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+      form.submit();
+    }
+  } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color = '#e53935'; }
+}
+
+function prefillManual(method) {
+  const sel = document.getElementById('pm-method');
+  if (sel) sel.value = method;
+  document.getElementById('pm-txn')?.focus();
+}
+
+function closePayModal() {
+  document.getElementById('pay-modal').classList.remove('open');
+  payFee = null;
+}
+
+async function submitPayment() {
+  const msg = document.getElementById('pm-msg');
+  const method = document.getElementById('pm-method').value;
+  const transactionId = document.getElementById('pm-txn').value.trim();
+  const payerName = document.getElementById('pm-name').value.trim();
+  const payerPhone = document.getElementById('pm-phone').value.trim();
+  if (!transactionId) { msg.textContent = '❌ Transaction ID required.'; msg.style.color = '#e53935'; return; }
+  if (!payFee) return;
+  msg.textContent = '⏳ Submitting...'; msg.style.color = '#888';
+  try {
+    const res = await fetch(`/api/parent/fees/${payFee._id}/submit-payment`, {
+      method: 'POST', headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ method, transactionId, payerName, payerPhone, amount: payFee.amount })
+    });
+    const d = await res.json();
+    if (d.success) {
+      msg.textContent = '✅ Submitted! School will verify and update your status.';
+      msg.style.color = '#2e7d32';
+      setTimeout(() => { closePayModal(); loadFees(); }, 1800);
+    } else { msg.textContent = '❌ ' + (d.message || 'Failed.'); msg.style.color = '#e53935'; }
+  } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color = '#e53935'; }
+}
+
+async function submitLeaveRequest() {
+  const msg = document.getElementById('leave-msg');
+  const fromDate = document.getElementById('leave-from').value;
+  const toDate = document.getElementById('leave-to').value;
+  const reason = document.getElementById('leave-reason').value.trim();
+  const parentName = document.getElementById('leave-parent-name').value.trim();
+  const parentPhone = document.getElementById('leave-parent-phone').value.trim();
+  if (!fromDate || !reason) { msg.textContent = '❌ Date and reason required.'; msg.style.color='#e53935'; return; }
+  msg.textContent = '⏳ Submitting...'; msg.style.color='#888';
+  try {
+    const res = await fetch('/api/leave/submit', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ rollNo: pStudent.rollNo, fromDate, toDate:toDate||fromDate, reason, parentName, parentPhone })
+    });
+    const d = await res.json();
+    if (d.success) { msg.textContent = '✅ Submitted! School will review and notify you.'; msg.style.color='#2e7d32'; loadLeaveStatus(); }
+    else { msg.textContent = '❌ ' + (d.message||'Failed.'); msg.style.color='#e53935'; }
+  } catch(e) { msg.textContent = '❌ ' + e.message; msg.style.color='#e53935'; }
+}
+
+async function loadLeaveStatus() {
+  if (!pStudent) return;
+  const el = document.getElementById('leave-history');
+  try {
+    const res = await fetch('/api/leave/status/' + encodeURIComponent(pStudent.rollNo));
+    const d = await res.json();
+    if (!d.data || !d.data.length) { el.innerHTML = '<p style="font-size:.8rem;color:#888">No previous requests.</p>'; return; }
+    el.innerHTML = d.data.map(r => {
+      const bg = r.status==='Approved'?'#c6f6d5':r.status==='Rejected'?'#fed7d7':'#fefcbf';
+      const cl = r.status==='Approved'?'#276749':r.status==='Rejected'?'#9b2c2c':'#744210';
+      return `<div style="border:1px solid #eee;border-radius:8px;padding:.7rem;margin-bottom:.5rem;font-size:.82rem">
+        <div style="display:flex;justify-content:space-between"><b>${r.fromDate}${r.toDate!==r.fromDate?' to '+r.toDate:''}</b><span style="background:${bg};color:${cl};padding:2px 8px;border-radius:8px;font-size:.72rem">${r.status}</span></div>
+        <div style="color:#666;margin-top:.3rem">${r.reason}</div>
+        ${r.note?`<div style="color:#888;font-size:.75rem;margin-top:.2rem">Note: ${r.note}</div>`:''}
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<p style="color:#e53935;font-size:.8rem">Failed to load.</p>'; }
+}
+
 async function loadFees() {
   const res  = await fetch(`/api/parent/fees/${encodeURIComponent(pStudent.rollNo)}`);
   const data = (await res.json())?.data || [];
@@ -361,11 +553,16 @@ async function loadFees() {
   if (!data.length) { div.innerHTML = '<div class="empty"><div class="ei">💰</div><p>No fee records found.</p></div>'; return; }
   div.innerHTML = data.map(f => {
     const sc = f.status==='Paid'?'fee-paid':f.status==='Partial'?'fee-partial':'fee-unpaid';
+    const payBtn = (f.status==='Unpaid' || f.status==='Partial')
+      ? `<button class="btn btn-sm btn-nv" onclick='openPayModal(${JSON.stringify(f).replace(/'/g,"&apos;")})' style="margin-top:.4rem">💳 Pay Now</button>` : '';
     return `<div class="fee-item">
       <div>
         <div class="fee-month">${f.month}</div>
         <div class="fee-amount">Amount: PKR ${f.amount?.toLocaleString()}</div>
         ${f.paidAmount>0 && f.status!=='Paid' ? `<div style="font-size:.75rem;color:var(--gn)">Paid: PKR ${f.paidAmount?.toLocaleString()}</div>` : ''}
+        ${f.status==='Pending Verification' ? '<div style="font-size:.75rem;color:#d69e2e">⏳ Awaiting school verification</div>' : ''}
+        ${f.status==='Paid' ? `<a href="/api/parent/receipt/${f._id}" target="_blank" class="btn btn-sm btn-nv" style="margin-top:.4rem;display:inline-block;text-decoration:none">🧾 Download Receipt</a>` : ''}
+        ${payBtn}
       </div>
       <span class="fee-status ${sc}">${f.status}</span>
     </div>`;
@@ -474,5 +671,13 @@ async function loadNotices() {
     </div>`).join('');
 }
 </script>
+<div class="pm-bg" id="pay-modal">
+  <div class="pm-box">
+    <div class="pm-hdr"><h3>💳 Pay Fee</h3><button onclick="closePayModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer">✕</button></div>
+    <div class="pm-body" id="pm-body">
+      <p style="font-size:.8rem;color:#888">Loading payment options...</p>
+    </div>
+  </div>
+</div>
 </body>
 </html>

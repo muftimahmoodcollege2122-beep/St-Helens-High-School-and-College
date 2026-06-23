@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { readDB } = require('../db');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production';
+const { JWT_SECRET } = require('../config/jwtSecret');
 
 const protect = (req, res, next) => {
   try {

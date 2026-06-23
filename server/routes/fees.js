@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const { readDB, writeDB, newId } = require('../db');
 const { protect } = require('../middleware/auth');
+const { sendWhatsApp } = require('../utils/whatsapp');
 
 router.get('/', protect, (req,res) => {
   try {
@@ -10,7 +11,12 @@ router.get('/', protect, (req,res) => {
     if (student) data = data.filter(r => r.student === student || r.rollNo === student);
     if (month)   data = data.filter(r => r.month === month);
     if (status)  data = data.filter(r => r.status === status);
-    if (cls)     data = data.filter(r => r.class === cls);
+    const students = readDB('students');
+    data = data.map(f => {
+      const s = students.find(x => x._id === f.student || x.rollNo === f.student);
+      return { ...f, student: s ? { rollNo:s.rollNo, name:s.name, fatherName:s.fatherName, class:s.class, section:s.section, fatherPhone:s.fatherPhone } : null };
+    });
+    if (cls) data = data.filter(r => r.student && r.student.class === cls);
     res.json({ success:true, data });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
@@ -100,10 +106,50 @@ router.post('/bulk/import', protect, (req,res) => {
   try {
     const incoming = req.body.rows || (Array.isArray(req.body) ? req.body : req.body.fees);
     if (!Array.isArray(incoming)) return res.status(400).json({ success:false, message:'rows array required.' });
+    const students = readDB('students');
     const data = readDB('fees');
-    const added = incoming.map(f => { const item={_id:newId(),status:'Unpaid',...f,createdAt:new Date().toISOString()}; data.push(item); return item; });
+    const errors = [];
+    const added = incoming.map(f => {
+      let studentId = f.student;
+      const sr = students.find(s => s._id === f.student || s.rollNo === f.student || s.rollNo === f.rollNo);
+      if (sr) studentId = sr._id;
+      else errors.push(`No student found for: ${f.student || f.rollNo}`);
+      const item = { _id:newId(), status:'Unpaid', ...f, student: studentId, createdAt:new Date().toISOString() };
+      delete item.rollNo;
+      data.push(item);
+      return item;
+    });
     writeDB('fees', data);
-    res.json({ success:true, added:added.length, skipped:0, errors:[] });
+    res.json({ success:true, added:added.length, skipped:0, errors });
+  } catch(e) { res.status(500).json({ success:false, message:e.message }); }
+});
+
+router.patch('/:id/verify-payment', protect, (req,res) => {
+  try {
+    const { approve } = req.body;
+    const data = readDB('fees');
+    const idx = data.findIndex(r => r._id === req.params.id);
+    if (idx===-1) return res.status(404).json({ success:false, message:'Not found.' });
+    if (!data[idx].paymentSubmission) return res.status(400).json({ success:false, message:'No payment submission to verify.' });
+    if (approve) {
+      data[idx].status = 'Paid';
+      data[idx].paymentSubmission.verified = true;
+      data[idx].paidAt = new Date().toISOString();
+    } else {
+      data[idx].status = 'Unpaid';
+      data[idx].paymentSubmission.verified = false;
+      data[idx].paymentSubmission.rejected = true;
+    }
+    writeDB('fees', data);
+    const students = readDB('students');
+    const sr = students.find(s => s._id === data[idx].student || s.rollNo === data[idx].student);
+    if (sr && sr.fatherPhone) {
+      const msg = approve
+        ? `✅ Fee payment for *${sr.name}* (Roll: ${sr.rollNo}) for *${data[idx].month}* has been *verified*. Amount: PKR ${data[idx].amount}. — St. Helen's`
+        : `❌ Fee payment for *${sr.name}* (Roll: ${sr.rollNo}) for *${data[idx].month}* was *rejected*. Please contact the school. — St. Helen's`;
+      sendWhatsApp(sr.fatherPhone, msg);
+    }
+    res.json({ success:true, data:data[idx] });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 

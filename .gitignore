@@ -1,4 +1,5 @@
 .env
+.dev-jwt-secret
 node_modules/
 dist/
 *logs/

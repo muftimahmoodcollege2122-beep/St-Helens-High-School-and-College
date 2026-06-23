@@ -7,6 +7,13 @@ const app = express();
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
@@ -41,9 +48,14 @@ app.use('/api/settings',      require('./server/routes/settings'));
 app.use('/api/teacher-auth',  require('./server/routes/teacher-auth'));
 app.use('/api/teacher-panel', require('./server/routes/teacher-panel'));
 app.use('/api/parent',        require('./server/routes/parent-portal'));
+app.use('/api/payments',      require('./server/routes/payments'));
 app.use('/api/alumni',       require('./server/routes/alumni'));
 app.use('/api/admissions',   require('./server/routes/admissions'));
 app.use('/api/reports',      require('./server/routes/reports'));
+app.use('/api/promotion',    require('./server/routes/promotion'));
+app.use('/api/timetable',    require('./server/routes/timetable'));
+app.use('/api/exams',        require('./server/routes/exams'));
+app.use('/api/leave',        require('./server/routes/leaveRequests'));
 
 // ── Fallback → index.html ─────────────────────────────────────────────────────
 app.get('*', (req, res) => {

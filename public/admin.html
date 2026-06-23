@@ -273,7 +273,11 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('admissions',this)"><span class="ic">📝</span> Admissions</button>
       <button class="sb-link" onclick="showPage('alumni',this)"><span class="ic">🎓</span> Alumni</button>
       <button class="sb-link" onclick="showPage('attendance',this)"><span class="ic">📋</span> Attendance</button>
-      <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management</button>
+      <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management <span id="fee-pending-badge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:.1rem .5rem;font-size:.7rem;margin-left:.3rem"></span></button>
+      <button class="sb-link" onclick="showPage('timetable',this)"><span class="ic">🗓</span> Timetable</button>
+      <button class="sb-link" onclick="showPage('exams',this)"><span class="ic">📝</span> Exam Schedule</button>
+      <button class="sb-link" onclick="showPage('leave',this)"><span class="ic">🏖</span> Leave Requests <span id="leave-pending-badge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:.1rem .5rem;font-size:.7rem;margin-left:.3rem"></span></button>
+      <button class="sb-link" onclick="showPage('promotion',this)"><span class="ic">🎓</span> Student Promotion</button>
       <button class="sb-link" onclick="showPage('results',this)"><span class="ic">📊</span> Results</button>
             <button class="sb-link" onclick="showPage('toppers',this)"><span class="ic">🏆</span> Toppers</button>
       <button class="sb-link" onclick="showPage('teachers',this)"><span class="ic">👨‍🏫</span> Teachers</button>
@@ -774,6 +778,7 @@ textarea{resize:vertical;min-height:90px}
             <button class="btn" style="background:#25d366;color:#fff" onclick="openModal('modal-fee-remind')">📲 Remind Defaulters</button>
             <button class="btn" style="background:#e53e3e;color:#fff" onclick="deleteAllFees()">🗑 Delete All</button>
             <button class="btn" style="background:#2b6cb0;color:#fff" onclick="printReport('fees')">🖨 Print / Export PDF</button>
+            <button class="btn" style="background:#6b46c1;color:#fff" onclick="printReport('payments')">🧾 Payments Report</button>
           </div>
         </div>
         <div class="card-body">
@@ -959,6 +964,23 @@ textarea{resize:vertical;min-height:90px}
               </div>
             </div>
             <button class="btn btn-pr" onclick="changeAdminPassword()">Update Password</button>
+          </div>
+        </div>
+
+        <!-- Payment Accounts Card -->
+        <div class="card">
+          <div class="card-hdr"><h3>💳 Fee Payment Accounts</h3></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group"><label>EasyPaisa Number</label><input id="s-easypaisaNumber"></div>
+              <div class="form-group"><label>JazzCash Number</label><input id="s-jazzcashNumber"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Bank Name</label><input id="s-bankName"></div>
+              <div class="form-group"><label>Bank Account Number</label><input id="s-bankAccountNumber"></div>
+              <div class="form-group"><label>IBAN</label><input id="s-bankIban"></div>
+            </div>
+            <button class="btn btn-pr" onclick="saveSettings('payment')">Save Payment Info</button>
           </div>
         </div>
 
@@ -1375,6 +1397,81 @@ textarea{resize:vertical;min-height:90px}
     </div>
 
 
+    <!-- ── TIMETABLE ── -->
+    <div class="adm-page" id="page-timetable">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🗓 Timetable</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <select id="tt-class" onchange="loadTimetable()"><option value="">All Classes</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option>
+              <option>10</option><option>11</option><option>12</option>
+            </select>
+            <select id="tt-section" onchange="loadTimetable()"><option value="">All Sections</option><option>A</option><option>B</option><option>C</option></select>
+            <button class="btn btn-gd" onclick="openModal('modal-timetable')">+ Add Period</button>
+          </div>
+        </div>
+        <div class="card-body" id="timetable-body"><p style="color:var(--gr)">Select a class to view timetable.</p></div>
+      </div>
+    </div>
+
+    <!-- ── EXAM SCHEDULE ── -->
+    <div class="adm-page" id="page-exams">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>📝 Exam Schedule</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-gd" onclick="openModal('modal-exam')">+ Add Exam</button>
+            <button class="btn" style="background:#805ad5;color:#fff" onclick="notifyExamSchedule()">📲 Notify Parents via WA</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+            <input id="exam-filter-name" placeholder="Filter by exam..." oninput="loadExams()" style="max-width:180px">
+            <input id="exam-filter-year" placeholder="Year..." oninput="loadExams()" style="max-width:100px">
+          </div>
+          <div id="exams-list"><p style="color:var(--gr)">Loading...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LEAVE REQUESTS ── -->
+    <div class="adm-page" id="page-leave">
+      <div class="card">
+        <div class="card-hdr">
+          <h3>🏖 Leave Requests</h3>
+          <select id="leave-filter" onchange="loadLeaveRequests()">
+            <option value="">All</option><option value="Pending">Pending</option>
+            <option value="Approved">Approved</option><option value="Rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="card-body"><div id="leave-list"><p style="color:var(--gr)">Loading...</p></div></div>
+      </div>
+    </div>
+
+    <!-- ── STUDENT PROMOTION ── -->
+    <div class="adm-page" id="page-promotion">
+      <div class="card">
+        <div class="card-hdr"><h3>🎓 Student Promotion (Year End)</h3></div>
+        <div class="card-body">
+          <p style="font-size:.85rem;color:#888;margin-bottom:1rem">Select a class to promote all active students to the next class. Class 12 students will be marked "Passed Out" and added to alumni.</p>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+            <label><b>From Class:</b></label>
+            <select id="promo-class">
+              <option value="">Select class...</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option>
+              <option>10</option><option>11</option><option>12</option>
+            </select>
+            <button class="btn btn-nv" onclick="previewPromotion()">👁 Preview</button>
+            <button class="btn btn-gd" onclick="confirmPromotion()" id="btn-promote" disabled>🎓 Promote Now</button>
+          </div>
+          <div id="promo-preview" style="margin-top:1rem"></div>
+        </div>
+      </div>
+    </div>
+
   </main><!-- /adm-main -->
 </div><!-- /admin-app -->
 
@@ -1751,6 +1848,10 @@ textarea{resize:vertical;min-height:90px}
 
 <script>
 const API = '';
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 let authToken = localStorage.getItem('sthelens_token');
 let currentUser = null;
 
@@ -1885,6 +1986,10 @@ const pageTitles = {
   'why-settings': ['Why Choose Us', 'Edit Strengths & Highlights Section'],
   'achievements-settings': ['Achievements', 'Edit School Achievements Section'],
   'teacher-accounts': ['Teacher Logins', 'Manage Teacher Panel Access'],
+  timetable:  ['Timetable', 'Class Weekly Schedule'],
+  exams:      ['Exam Schedule', 'Plan & Notify Exam Dates'],
+  leave:      ['Leave Requests', 'Student Absence & Leave Management'],
+  promotion:  ['Student Promotion', 'Year-End Class Promotion'],
   fees: ['Fee Management', 'Track & Collect Student Fees'],
   admissions: ['Admissions', 'Student Admission Applications'],
 };
@@ -1918,7 +2023,11 @@ function showPage(name, btn) {
     'teacher-accounts': loadTeacherAccounts,
     fees: loadFees,
     admissions: loadAdmissions,
-    alumni: loadAlumni
+    alumni: loadAlumni,
+    timetable: loadTimetable,
+    exams: loadExams,
+    leave: loadLeaveRequests,
+    promotion: () => {}
   };
   if (loaders[name]) loaders[name]();
 }
@@ -1944,7 +2053,24 @@ function showAlert(id, msg, type = 'err') {
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
+async function checkPendingPayments() {
+  try {
+    const [fees, leave] = await Promise.all([
+      apiFetch('/api/fees?status=' + encodeURIComponent('Pending Verification')),
+      apiFetch('/api/leave?status=Pending')
+    ]);
+    const fc = fees?.data?.length || 0;
+    const lc = leave?.data?.length || 0;
+    const fb = document.getElementById('fee-pending-badge');
+    const lb = document.getElementById('leave-pending-badge');
+    if (fb) { fb.style.display = fc ? 'inline-block' : 'none'; fb.textContent = fc; }
+    if (lb) { lb.style.display = lc ? 'inline-block' : 'none'; lb.textContent = lc; }
+  } catch(e) {}
+}
+setInterval(checkPendingPayments, 60000);
+
 async function loadDashboard() {
+  checkPendingPayments();
   try {
     const [news, events, students, teachers, msgs, gallery] = await Promise.all([
       fetch(`${API}/api/news?limit=1`, { headers: apiHeaders() }).then(r => r.json()),
@@ -2357,13 +2483,13 @@ async function loadMessages(silent = false) {
       <div class="msg-card ${m.status === 'unread' ? 'unread' : ''}">
         <div style="display:flex;align-items:start;justify-content:space-between;gap:.5rem">
           <div>
-            <div class="msg-name">${m.name} <span style="font-size:.68rem;color:var(--gr);font-weight:600">&lt;${m.email}&gt;</span></div>
-            <div class="msg-sub">${m.subject}</div>
-            <div class="msg-body">${m.message}</div>
+            <div class="msg-name">${esc(m.name)} <span style="font-size:.68rem;color:var(--gr);font-weight:600">&lt;${esc(m.email)}&gt;</span></div>
+            <div class="msg-sub">${esc(m.subject)}</div>
+            <div class="msg-body">${esc(m.message)}</div>
             <div class="msg-meta">
               <span>📅 ${fmtDate(m.createdAt)}</span>
-              ${m.phone ? `<span>📞 ${m.phone}</span>` : ''}
-              <span class="badge ${m.status === 'unread' ? 'badge-rd' : m.status === 'replied' ? 'badge-gn' : 'badge-or'}">${m.status}</span>
+              ${m.phone ? `<span>📞 ${esc(m.phone)}</span>` : ''}
+              <span class="badge ${m.status === 'unread' ? 'badge-rd' : m.status === 'replied' ? 'badge-gn' : 'badge-or'}">${esc(m.status)}</span>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0">
@@ -2420,6 +2546,11 @@ async function loadSiteSettings() {
     setVal('s-heroSubtitle', s.heroSubtitle);
     setVal('s-heroMotto', s.heroMotto);
     setVal('s-statStudents', s.statStudents);
+    setVal('s-easypaisaNumber', s.easypaisaNumber);
+    setVal('s-jazzcashNumber', s.jazzcashNumber);
+    setVal('s-bankName', s.bankName);
+    setVal('s-bankAccountNumber', s.bankAccountNumber);
+    setVal('s-bankIban', s.bankIban);
     setVal('s-statFaculty', s.statFaculty);
     setVal('s-statYears', s.statYears);
     setVal('s-statPassRate', s.statPassRate);
@@ -2450,6 +2581,174 @@ function setVal(id, val) {
   if (!el) return;
   if (el.tagName === 'SELECT') el.value = val;
   else el.value = val || '';
+}
+
+// ── TIMETABLE ──────────────────────────────────────────────────────────────
+async function loadTimetable() {
+  const cls = document.getElementById('tt-class').value;
+  const section = document.getElementById('tt-section').value;
+  const el = document.getElementById('timetable-body');
+  if (!cls) { el.innerHTML = '<p style="color:var(--gr)">Select a class to view timetable.</p>'; return; }
+  const d = await apiFetch(`/api/timetable?class=${encodeURIComponent(cls)}&section=${encodeURIComponent(section)}`);
+  if (!d.data || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No timetable entries yet.</p>'; return; }
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const periods = [...new Set(d.data.map(r => r.period))].sort((a,b) => Number(a)-Number(b));
+  let html = `<table style="width:100%;border-collapse:collapse;font-size:.8rem"><tr><th style="background:#8b1a1a;color:#fff;padding:6px">Day</th>${periods.map(p=>`<th style="background:#8b1a1a;color:#fff;padding:6px">P${p}</th>`).join('')}</tr>`;
+  days.forEach(day => {
+    html += `<tr><td style="font-weight:700;padding:5px 8px;background:#f7f7f7">${day}</td>`;
+    periods.forEach(p => {
+      const slot = d.data.find(r => r.day === day && r.period === p);
+      html += `<td style="padding:5px 8px;border:1px solid #eee;text-align:center">${slot ? `<b>${esc(slot.subject)}</b><br><small style="color:#666">${esc(slot.teacher)}</small><br><button onclick="deleteTimetable('${slot._id}')" style="border:none;background:none;color:#e53e3e;cursor:pointer;font-size:.7rem">🗑</button>` : '<span style="color:#ccc">—</span>'}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</table>';
+  el.innerHTML = html;
+}
+async function saveTimetablePeriod() {
+  const msg = document.getElementById('tt-m-msg');
+  const cls = document.getElementById('tt-m-class').value;
+  const section = document.getElementById('tt-m-section').value;
+  const d = await apiFetch('/api/timetable', 'POST', {
+    class: cls,
+    section: section,
+    day: document.getElementById('tt-m-day').value,
+    period: document.getElementById('tt-m-period').value,
+    subject: document.getElementById('tt-m-subject').value,
+    teacher: document.getElementById('tt-m-teacher').value,
+    startTime: document.getElementById('tt-m-start').value,
+    endTime: document.getElementById('tt-m-end').value
+  });
+  if (d.success) {
+    msg.textContent = '✅ Saved.'; msg.style.color = '#2e7d32';
+    // Sync page filter dropdowns so loadTimetable() shows the right class
+    document.getElementById('tt-class').value = cls;
+    document.getElementById('tt-section').value = section;
+    loadTimetable();
+    setTimeout(()=>closeModal('modal-timetable'),1200);
+  }
+  else { msg.textContent = '❌ ' + d.message; msg.style.color = '#e53935'; }
+}
+async function deleteTimetable(id) {
+  if (!confirm('Delete this period?')) return;
+  await apiFetch('/api/timetable/' + id, 'DELETE');
+  loadTimetable();
+}
+
+// ── EXAM SCHEDULE ───────────────────────────────────────────────────────────
+async function loadExams() {
+  const exam = document.getElementById('exam-filter-name').value;
+  const year = document.getElementById('exam-filter-year').value;
+  const d = await apiFetch(`/api/exams?exam=${encodeURIComponent(exam)}&year=${encodeURIComponent(year)}`);
+  const el = document.getElementById('exams-list');
+  if (!d.data || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No exam schedule yet.</p>'; return; }
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+    <tr style="background:#8b1a1a;color:#fff"><th style="padding:6px 8px">Exam</th><th>Class</th><th>Subject</th><th>Date</th><th>Time</th><th>Venue</th><th></th></tr>
+    ${d.data.map(e=>`<tr style="border-bottom:1px solid #eee">
+      <td style="padding:5px 8px">${esc(e.exam)} ${esc(e.year)}</td><td>${esc(e.class)||'All'}</td>
+      <td><b>${esc(e.subject)}</b></td><td>${e.date}</td>
+      <td>${esc(e.startTime)} ${esc(e.endTime)}</td><td>${esc(e.venue)}</td>
+      <td><button onclick="deleteExam('${e._id}')" class="btn btn-sm btn-rd" style="font-size:.7rem;padding:2px 6px">🗑</button></td>
+    </tr>`).join('')}
+  </table>`;
+}
+async function saveExam() {
+  const msg = document.getElementById('ex-m-msg');
+  const d = await apiFetch('/api/exams', 'POST', {
+    exam: document.getElementById('ex-m-exam').value,
+    year: document.getElementById('ex-m-year').value,
+    class: document.getElementById('ex-m-class').value,
+    subject: document.getElementById('ex-m-subject').value,
+    date: document.getElementById('ex-m-date').value,
+    startTime: document.getElementById('ex-m-start').value,
+    endTime: document.getElementById('ex-m-end').value,
+    venue: document.getElementById('ex-m-venue').value,
+    notes: document.getElementById('ex-m-notes').value
+  });
+  if (d.success) { msg.textContent = '✅ Saved.'; msg.style.color = '#2e7d32'; loadExams(); setTimeout(()=>closeModal('modal-exam'),1200); }
+  else { msg.textContent = '❌ ' + d.message; msg.style.color = '#e53935'; }
+}
+async function deleteExam(id) {
+  if (!confirm('Delete?')) return;
+  await apiFetch('/api/exams/' + id, 'DELETE');
+  loadExams();
+}
+async function notifyExamSchedule() {
+  const exam = document.getElementById('exam-filter-name').value;
+  if (!exam) { showToast('Filter by exam name first.', 'err'); return; }
+  const d = await apiFetch('/api/exams/notify', 'POST', { exam });
+  if (d.success) showToast(d.message, 'ok');
+  else showToast(d.message || 'Failed.', 'err');
+}
+
+// ── LEAVE REQUESTS ──────────────────────────────────────────────────────────
+async function loadLeaveRequests() {
+  const status = document.getElementById('leave-filter').value;
+  const d = await apiFetch('/api/leave' + (status ? '?status='+encodeURIComponent(status) : ''));
+  const el = document.getElementById('leave-list');
+  const badge = document.getElementById('leave-pending-badge');
+  if (!d.data || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No leave requests.</p>'; if(badge){badge.style.display='none';} return; }
+  const pending = d.data.filter(r => r.status === 'Pending').length;
+  if (badge) { badge.textContent = pending; badge.style.display = pending ? 'inline-block' : 'none'; }
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+    <tr style="background:#8b1a1a;color:#fff"><th style="padding:6px 8px">Student</th><th>Class</th><th>Dates</th><th>Reason</th><th>Parent</th><th>Status</th><th>Actions</th></tr>
+    ${d.data.map(r=>`<tr style="border-bottom:1px solid #eee">
+      <td style="padding:5px 8px"><b>${esc(r.studentName)}</b><br><small>${esc(r.rollNo)}</small></td>
+      <td>${esc(r.class)} ${esc(r.section)}</td>
+      <td>${r.fromDate}${r.toDate!==r.fromDate?'<br>to '+r.toDate:''}</td>
+      <td style="max-width:180px">${esc(r.reason)}</td>
+      <td>${esc(r.parentName)}<br><small>${esc(r.parentPhone)}</small></td>
+      <td><span style="padding:2px 8px;border-radius:8px;font-size:.72rem;background:${r.status==='Approved'?'#c6f6d5':r.status==='Rejected'?'#fed7d7':'#fefcbf'};color:${r.status==='Approved'?'#276749':r.status==='Rejected'?'#9b2c2c':'#744210'}">${esc(r.status)}</span></td>
+      <td style="display:flex;gap:.3rem;flex-wrap:wrap">
+        ${r.status==='Pending'?`<button class="btn btn-sm btn-gn" style="font-size:.7rem;padding:2px 7px" onclick="reviewLeave('${r._id}','Approved')">✅</button><button class="btn btn-sm btn-rd" style="font-size:.7rem;padding:2px 7px" onclick="reviewLeave('${r._id}','Rejected')">❌</button>`:''}
+        <button class="btn btn-sm btn-rd" style="font-size:.7rem;padding:2px 7px" onclick="deleteLeave('${r._id}')">🗑</button>
+      </td>
+    </tr>`).join('')}
+  </table>`;
+}
+async function reviewLeave(id, status) {
+  const note = status === 'Rejected' ? prompt('Rejection reason (optional):') : '';
+  const d = await apiFetch('/api/leave/' + id, 'PATCH', { status, note: note||'' });
+  if (d.success) { showToast(status + ' and parent notified.', 'ok'); loadLeaveRequests(); }
+  else showToast(d.message || 'Failed.', 'err');
+}
+async function deleteLeave(id) {
+  if (!confirm('Delete?')) return;
+  await apiFetch('/api/leave/' + id, 'DELETE');
+  loadLeaveRequests();
+}
+
+// ── STUDENT PROMOTION ───────────────────────────────────────────────────────
+let _promoData = [];
+async function previewPromotion() {
+  const cls = document.getElementById('promo-class').value;
+  if (!cls) { showToast('Select a class.', 'err'); return; }
+  const d = await apiFetch('/api/promotion/preview?fromClass=' + encodeURIComponent(cls));
+  _promoData = d.data || [];
+  const el = document.getElementById('promo-preview');
+  const btn = document.getElementById('btn-promote');
+  if (!_promoData.length) { el.innerHTML = '<p style="color:var(--gr)">No active students found in Class ' + cls + '.</p>'; btn.disabled=true; return; }
+  const promote = _promoData.filter(s => s.action==='promote');
+  const passedOut = _promoData.filter(s => s.action==='passed-out');
+  el.innerHTML = `<div style="background:#f7f7f7;border-radius:8px;padding:1rem;font-size:.82rem">
+    <b>Preview for Class ${esc(cls)}:</b><br><br>
+    ${promote.length ? `✅ <b>${promote.length}</b> students will be promoted to Class <b>${promote[0].nextClass}</b>.<br>` : ''}
+    ${passedOut.length ? `🎓 <b>${passedOut.length}</b> students will be marked <b>Passed Out</b> and added to alumni.` : ''}
+    <br><br><small style="color:#888">This action cannot be undone. Take a backup first.</small>
+  </div>`;
+  btn.disabled = false;
+}
+async function confirmPromotion() {
+  const cls = document.getElementById('promo-class').value;
+  if (!cls || !_promoData.length) return;
+  if (!confirm(`Promote all active students in Class ${cls}? This cannot be undone.`)) return;
+  const d = await apiFetch('/api/promotion/promote', 'POST', { fromClass: cls });
+  if (d.success) {
+    showToast(d.message, 'ok');
+    document.getElementById('promo-preview').innerHTML = `<p style="color:#2e7d32;font-weight:600">✅ ${d.message}</p>`;
+    document.getElementById('btn-promote').disabled = true;
+    _promoData = [];
+  } else showToast(d.message || 'Failed.', 'err');
 }
 
 async function loadAutoBackups() {
@@ -2532,6 +2831,12 @@ async function saveSettings(section) {
     payload.contactEmail2 = document.getElementById('s-contactEmail2').value.trim();
     payload.contactAddress= document.getElementById('s-contactAddress').value.trim();
     payload.contactHours  = document.getElementById('s-contactHours').value.trim();
+  } else if (section === 'payment') {
+    payload.easypaisaNumber    = document.getElementById('s-easypaisaNumber').value.trim();
+    payload.jazzcashNumber     = document.getElementById('s-jazzcashNumber').value.trim();
+    payload.bankName           = document.getElementById('s-bankName').value.trim();
+    payload.bankAccountNumber  = document.getElementById('s-bankAccountNumber').value.trim();
+    payload.bankIban           = document.getElementById('s-bankIban').value.trim();
   }
 
   try {
@@ -3198,13 +3503,26 @@ async function loadFees() {
         <td>Rs. ${f.amount.toLocaleString()}</td>
         <td><span style="padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700;${badge}">${f.status}</span></td>
         <td style="display:flex;gap:.3rem;flex-wrap:wrap">
-          ${f.status !== 'Paid' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:var(--gd);color:#fff" onclick="openPayModal('${f._id}',${f.amount})">💵 Pay</button>` : ''}
+          ${f.status === 'Pending Verification' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#2e7d32;color:#fff" onclick="verifyFeePayment('${f._id}',true)">✅ Verify</button><button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#e53e3e;color:#fff" onclick="verifyFeePayment('${f._id}',false)">❌ Reject</button>` : ''}
+          ${f.status === 'Paid' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#6b46c1;color:#fff" onclick="downloadReceipt('${f._id}')">🧾 Receipt</button>` : ''}
+          ${f.status !== 'Paid' && f.status !== 'Pending Verification' ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:var(--gd);color:#fff" onclick="openPayModal('${f._id}',${f.amount})">💵 Pay</button>` : ''}
           ${s.fatherPhone ? `<button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#25d366;color:#fff" onclick="openWAModal('${f._id}','${s.fatherPhone}','${s.name}','${f.month}',${f.amount})">📲</button>` : ''}
           <button class="btn" style="font-size:.72rem;padding:.25rem .5rem;background:#e53e3e;color:#fff" onclick="deleteFee('${f._id}')">🗑</button>
         </td>
       </tr>`;
     }).join('');
   } catch(e) { tbody.innerHTML = '<tr><td colspan="8">Error loading fees</td></tr>'; }
+}
+
+function downloadReceipt(feeId) {
+  const token = localStorage.getItem('sthelens_token');
+  window.open(`/api/reports/receipt/${feeId}?token=${encodeURIComponent(token)}`, '_blank');
+}
+
+async function verifyFeePayment(id, approve) {
+  const d = await apiFetch('/api/fees/' + id + '/verify-payment', 'PATCH', { approve });
+  if (d.success) { showToast(approve ? 'Payment verified.' : 'Payment rejected.', 'ok'); loadFees(); }
+  else showToast(d.message || 'Failed.', 'err');
 }
 
 async function submitFee() {
@@ -3736,7 +4054,8 @@ async function loadAdmissions() {
   try {
     const token = localStorage.getItem('sthelens_token');
     const res = await fetch('/api/admissions', { headers: { 'Authorization': 'Bearer ' + token } });
-    const data = await res.json();
+    const json = await res.json();
+    const data = json.data || [];
     if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="es-ic">📝</div><p>No applications yet</p></td></tr>'; return; }
     // Store globally for modal access
     window._admissions = data;
@@ -3745,11 +4064,11 @@ async function loadAdmissions() {
     tbody.innerHTML = data.map((a,i) => `
       <tr>
         <td>${new Date(a.createdAt).toLocaleDateString()}</td>
-        <td><strong>${a.studentName||''}</strong></td>
-        <td>${a.applyingClass||''} ${a.section||''}</td>
-        <td>${a.fatherName||''}</td>
-        <td>${a.phone1||''}</td>
-        <td><span style="padding:2px 8px;border-radius:10px;font-size:.78rem;background:${statusBg(a.status)};color:${statusClr(a.status)}">${a.status||'Pending'}</span></td>
+        <td><strong>${esc(a.studentName)}</strong></td>
+        <td>${esc(a.applyingClass)} ${esc(a.section)}</td>
+        <td>${esc(a.fatherName)}</td>
+        <td>${esc(a.phone1)}</td>
+        <td><span style="padding:2px 8px;border-radius:10px;font-size:.78rem;background:${statusBg(a.status)};color:${statusClr(a.status)}">${esc(a.status||'Pending')}</span></td>
         <td style="display:flex;gap:4px;flex-wrap:wrap">
           <button class="btn btn-gn" style="font-size:.75rem;padding:3px 8px" onclick="showAdmissionDetail(${i})">👁 View</button>
           <select onchange="updateAdmissionStatus('${a._id}',this.value)" style="font-size:.78rem;padding:3px 6px;border-radius:4px;border:1px solid #ddd">
@@ -3766,17 +4085,17 @@ async function loadAdmissions() {
 function showAdmissionDetail(idx) {
   const a = window._admissions[idx];
   if (!a) return;
-  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f8f9ff;width:40%;border-bottom:1px solid #e2e8f0;color:#1a237e">${label}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${val}</td></tr>` : '';
-  const sec = (title) => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:7px 10px;font-weight:700;font-size:.82rem">${title}</td></tr>`;
+  const row = (label, val) => val ? `<tr><td style="padding:6px 10px;font-weight:600;font-size:.82rem;background:#f8f9ff;width:40%;border-bottom:1px solid #e2e8f0;color:#1a237e">${esc(label)}</td><td style="padding:6px 10px;font-size:.85rem;border-bottom:1px solid #e2e8f0">${esc(val)}</td></tr>` : '';
+  const sec = (title) => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:7px 10px;font-weight:700;font-size:.82rem">${esc(title)}</td></tr>`;
   const statusBg = a.status==='Approved'?'#c6f6d5':a.status==='Rejected'?'#fed7d7':'#fefcbf';
   const statusClr = a.status==='Approved'?'#276749':a.status==='Rejected'?'#9b2c2c':'#744210';
   document.getElementById('admission-detail-body').innerHTML = `
     <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
       <div>
-        <div style="font-size:1.1rem;font-weight:700;color:#1a4a2e">${a.studentName||''}</div>
-        <div style="font-size:.82rem;color:#6b7280">Applied: ${new Date(a.createdAt).toLocaleDateString('en-PK')} &nbsp;|&nbsp; ID: ${a._id}</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#1a4a2e">${esc(a.studentName)}</div>
+        <div style="font-size:.82rem;color:#6b7280">Applied: ${new Date(a.createdAt).toLocaleDateString('en-PK')} &nbsp;|&nbsp; ID: ${esc(a._id)}</div>
       </div>
-      <span style="padding:4px 14px;border-radius:12px;font-size:.82rem;font-weight:700;background:${statusBg};color:${statusClr}">${a.status||'Pending'}</span>
+      <span style="padding:4px 14px;border-radius:12px;font-size:.82rem;font-weight:700;background:${statusBg};color:${statusClr}">${esc(a.status||'Pending')}</span>
     </div>
     <table style="width:100%;border-collapse:collapse;border:1px solid #e2e8f0;margin-bottom:1rem">
       ${sec('A — Student Information')}
@@ -4289,15 +4608,15 @@ function renderAlumniTable(data) {
   const statusBg    = { Pending:'#fff8e1', Approved:'#c6f6d5', Rejected:'#fed7d7' };
   tbody.innerHTML = data.map((a, idx) => `
     <tr>
-      <td><strong>${a.name}</strong></td>
-      <td>${a.graduationYear || a.batch || '—'}</td>
-      <td>${a.profession || '—'}</td>
-      <td style="font-size:.78rem">${[a.currentCity, a.currentCountry].filter(Boolean).join(', ') || '—'}</td>
-      <td style="font-size:.78rem">${a.phone || '—'}</td>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td>${esc(a.graduationYear || a.batch) || '—'}</td>
+      <td>${esc(a.profession) || '—'}</td>
+      <td style="font-size:.78rem">${esc([a.currentCity, a.currentCountry].filter(Boolean).join(', ')) || '—'}</td>
+      <td style="font-size:.78rem">${esc(a.phone) || '—'}</td>
       <td><span style="font-size:.72rem;font-weight:700;color:${a.public==='No'?'#e53e3e':'#38a169'}">${a.public==='No'?'🔒 Private':'✅ Public'}</span></td>
       <td>
         <span style="background:${statusBg[a.status]||'#f8f9ff'};color:${statusColor[a.status]||'#6b7280'};padding:3px 10px;border-radius:4px;font-size:.73rem;font-weight:800">
-          ${a.status}
+          ${esc(a.status)}
         </span>
       </td>
       <td style="font-size:.75rem;color:#6b7280">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-PK') : '—'}</td>
@@ -4306,7 +4625,7 @@ function renderAlumniTable(data) {
           <button class="btn btn-sm" style="background:var(--nv);color:#fff;padding:3px 9px;font-size:.72rem" onclick="viewAlumni(${idx})">👁 View</button>
           ${a.status !== 'Approved' ? `<button class="btn btn-sm btn-gn" style="padding:3px 9px;font-size:.72rem" onclick="updateAlumniStatus('${a._id}','Approved')">✅</button>` : ''}
           ${a.status !== 'Rejected' ? `<button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="updateAlumniStatus('${a._id}','Rejected')">❌</button>` : ''}
-          <button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="confirmDeleteAlumni('${a._id}','${a.name.replace(/'/g,"\\'")}')">🗑️</button>
+          <button class="btn btn-sm btn-rd" style="padding:3px 9px;font-size:.72rem" onclick="confirmDeleteAlumni('${a._id}','${esc(a.name).replace(/'/g,"\\'")}')">🗑️</button>
         </div>
       </td>
     </tr>`).join('');
@@ -4314,8 +4633,8 @@ function renderAlumniTable(data) {
 
 function viewAlumni(idx) {
   const a = _alumniData[idx];
-  const row = (l, v) => v ? `<tr><td style="padding:6px 10px;font-weight:700;font-size:.78rem;background:#f8f9ff;width:38%;border:1px solid #e2e8f0;color:#1a237e">${l}</td><td style="padding:6px 10px;font-size:.82rem;border:1px solid #e2e8f0">${v}</td></tr>` : '';
-  const sec = t => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:6px 10px;font-weight:800;font-size:.8rem">${t}</td></tr>`;
+  const row = (l, v) => v ? `<tr><td style="padding:6px 10px;font-weight:700;font-size:.78rem;background:#f8f9ff;width:38%;border:1px solid #e2e8f0;color:#1a237e">${esc(l)}</td><td style="padding:6px 10px;font-size:.82rem;border:1px solid #e2e8f0">${esc(v)}</td></tr>` : '';
+  const sec = t => `<tr><td colspan="2" style="background:#1a237e;color:#f5a623;padding:6px 10px;font-weight:800;font-size:.8rem">${esc(t)}</td></tr>`;
   document.getElementById('alumni-detail-body').innerHTML = `
     <table style="width:100%;border-collapse:collapse;font-family:'Nunito',sans-serif">
       ${sec('Personal Information')}
@@ -4495,6 +4814,55 @@ async function deleteAlumni(id) {
       <button class="btn" style="background:#2b6cb0;color:#fff" onclick="downloadFeeTemplate()">⬇ Template</button>
       <button class="btn" style="background:#2b6cb0;color:#fff" onclick="previewFeeCSV()">👁 Preview</button>
       <button class="btn btn-gd" onclick="runBulkImportFees()" id="btn-import-fees" disabled>📥 Import Fees</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIMETABLE MODAL -->
+<div class="modal-bg" id="modal-timetable">
+  <div class="modal" style="max-width:540px;width:100%;max-height:90vh;display:flex;flex-direction:column">
+    <div class="modal-hdr"><h3>🗓 Add / Update Period</h3><button class="modal-close" onclick="closeModal('modal-timetable')">✕</button></div>
+    <div class="modal-body" style="overflow-y:auto;flex:1">
+      <div class="form-row">
+        <div class="form-group"><label>Class</label><select id="tt-m-class"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+        <div class="form-group"><label>Section</label><select id="tt-m-section"><option>A</option><option>B</option><option>C</option></select></div>
+        <div class="form-group"><label>Day</label><select id="tt-m-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div>
+        <div class="form-group"><label>Period #</label><select id="tt-m-period"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+        <div class="form-group"><label>Subject</label><input id="tt-m-subject" placeholder="e.g. Mathematics"></div>
+        <div class="form-group"><label>Teacher</label><input id="tt-m-teacher" placeholder="Teacher name"></div>
+        <div class="form-group"><label>Start Time</label><input type="time" id="tt-m-start"></div>
+        <div class="form-group"><label>End Time</label><input type="time" id="tt-m-end"></div>
+      </div>
+      <p id="tt-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+    </div>
+    <div class="modal-footer" style="flex-shrink:0">
+      <button class="btn" onclick="closeModal('modal-timetable')">Cancel</button>
+      <button class="btn btn-gd" onclick="saveTimetablePeriod()">Save Period</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM MODAL -->
+<div class="modal-bg" id="modal-exam">
+  <div class="modal" style="max-width:540px;width:100%;max-height:90vh;display:flex;flex-direction:column">
+    <div class="modal-hdr"><h3>📝 Add Exam</h3><button class="modal-close" onclick="closeModal('modal-exam')">✕</button></div>
+    <div class="modal-body" style="overflow-y:auto;flex:1">
+      <div class="form-row">
+        <div class="form-group"><label>Exam Name</label><input id="ex-m-exam" placeholder="e.g. Annual 2026"></div>
+        <div class="form-group"><label>Year</label><input id="ex-m-year" value="2026"></div>
+        <div class="form-group"><label>Class</label><select id="ex-m-class"><option value="">All Classes</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+        <div class="form-group"><label>Subject</label><input id="ex-m-subject" placeholder="e.g. Urdu"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="ex-m-date"></div>
+        <div class="form-group"><label>Venue / Room</label><input id="ex-m-venue" placeholder="e.g. Hall A"></div>
+        <div class="form-group"><label>Start Time</label><input type="time" id="ex-m-start"></div>
+        <div class="form-group"><label>End Time</label><input type="time" id="ex-m-end"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Notes (optional)</label><input id="ex-m-notes" placeholder="Optional"></div>
+      </div>
+      <p id="ex-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
+    </div>
+    <div class="modal-footer" style="flex-shrink:0">
+      <button class="btn" onclick="closeModal('modal-exam')">Cancel</button>
+      <button class="btn btn-gd" onclick="saveExam()">Save</button>
     </div>
   </div>
 </div>

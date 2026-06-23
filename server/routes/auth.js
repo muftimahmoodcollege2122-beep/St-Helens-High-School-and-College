@@ -11,7 +11,7 @@ const { loginRateLimit } = require('../middleware/rateLimit');
 // never written to disk), separate from the image-upload middleware.
 const backupUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 
-const JWT_SECRET = process.env.JWT_SECRET || 'sthelens-shhs-fallback-secret-key-change-in-production';
+const { JWT_SECRET } = require('../config/jwtSecret');
 const makeToken = id => jwt.sign({ id }, JWT_SECRET, { expiresIn: '8h' });
 
 router.post('/login', loginRateLimit, async (req, res) => {

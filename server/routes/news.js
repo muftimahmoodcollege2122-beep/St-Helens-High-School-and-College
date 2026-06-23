@@ -58,7 +58,7 @@ router.delete('/:id', protect, (req,res) => {
     const data = readDB('news');
     const item = data.find(r => r._id === req.params.id);
     if (!item) return res.status(404).json({ success:false, message:'Not found.' });
-    if (item.imageUrl) { const p=path.join(__dirname,'../../',item.imageUrl); if(fs.existsSync(p)) fs.unlinkSync(p); }
+    if (item.imageUrl) { require('../utils/safeFile').safeUnlink(item.imageUrl); }
     writeDB('news', data.filter(r => r._id !== req.params.id));
     res.json({ success:true, message:'Deleted.' });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }

@@ -2536,7 +2536,7 @@ async function loadTimetable() {
   const d = await apiFetch(`/api/timetable?class=${encodeURIComponent(cls)}&section=${encodeURIComponent(section)}`);
   if (!d.data || !d.data.length) { el.innerHTML = '<p style="color:var(--gr)">No timetable entries yet.</p>'; return; }
   const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const periods = [...new Set(d.data.map(r => r.period))].sort();
+  const periods = [...new Set(d.data.map(r => r.period))].sort((a,b) => Number(a)-Number(b));
   let html = `<table style="width:100%;border-collapse:collapse;font-size:.8rem"><tr><th style="background:#8b1a1a;color:#fff;padding:6px">Day</th>${periods.map(p=>`<th style="background:#8b1a1a;color:#fff;padding:6px">P${p}</th>`).join('')}</tr>`;
   days.forEach(day => {
     html += `<tr><td style="font-weight:700;padding:5px 8px;background:#f7f7f7">${day}</td>`;
@@ -2551,9 +2551,11 @@ async function loadTimetable() {
 }
 async function saveTimetablePeriod() {
   const msg = document.getElementById('tt-m-msg');
+  const cls = document.getElementById('tt-m-class').value;
+  const section = document.getElementById('tt-m-section').value;
   const d = await apiFetch('/api/timetable', 'POST', {
-    class: document.getElementById('tt-m-class').value,
-    section: document.getElementById('tt-m-section').value,
+    class: cls,
+    section: section,
     day: document.getElementById('tt-m-day').value,
     period: document.getElementById('tt-m-period').value,
     subject: document.getElementById('tt-m-subject').value,
@@ -2561,7 +2563,14 @@ async function saveTimetablePeriod() {
     startTime: document.getElementById('tt-m-start').value,
     endTime: document.getElementById('tt-m-end').value
   });
-  if (d.success) { msg.textContent = '✅ Saved.'; msg.style.color = '#2e7d32'; loadTimetable(); setTimeout(()=>closeModal('modal-timetable'),1200); }
+  if (d.success) {
+    msg.textContent = '✅ Saved.'; msg.style.color = '#2e7d32';
+    // Sync page filter dropdowns so loadTimetable() shows the right class
+    document.getElementById('tt-class').value = cls;
+    document.getElementById('tt-section').value = section;
+    loadTimetable();
+    setTimeout(()=>closeModal('modal-timetable'),1200);
+  }
   else { msg.textContent = '❌ ' + d.message; msg.style.color = '#e53935'; }
 }
 async function deleteTimetable(id) {

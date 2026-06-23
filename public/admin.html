@@ -4764,9 +4764,9 @@ async function deleteAlumni(id) {
 
 <!-- TIMETABLE MODAL -->
 <div class="modal-bg" id="modal-timetable">
-  <div class="modal" style="max-width:580px;width:100%">
+  <div class="modal" style="max-width:540px;width:100%;max-height:90vh;display:flex;flex-direction:column">
     <div class="modal-hdr"><h3>🗓 Add / Update Period</h3><button class="modal-close" onclick="closeModal('modal-timetable')">✕</button></div>
-    <div class="modal-body">
+    <div class="modal-body" style="overflow-y:auto;flex:1">
       <div class="form-row">
         <div class="form-group"><label>Class</label><select id="tt-m-class"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
         <div class="form-group"><label>Section</label><select id="tt-m-section"><option>A</option><option>B</option><option>C</option></select></div>
@@ -4779,7 +4779,7 @@ async function deleteAlumni(id) {
       </div>
       <p id="tt-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="flex-shrink:0">
       <button class="btn" onclick="closeModal('modal-timetable')">Cancel</button>
       <button class="btn btn-gd" onclick="saveTimetablePeriod()">Save Period</button>
     </div>
@@ -4788,23 +4788,23 @@ async function deleteAlumni(id) {
 
 <!-- EXAM MODAL -->
 <div class="modal-bg" id="modal-exam">
-  <div class="modal" style="max-width:580px;width:100%">
+  <div class="modal" style="max-width:540px;width:100%;max-height:90vh;display:flex;flex-direction:column">
     <div class="modal-hdr"><h3>📝 Add Exam</h3><button class="modal-close" onclick="closeModal('modal-exam')">✕</button></div>
-    <div class="modal-body">
+    <div class="modal-body" style="overflow-y:auto;flex:1">
       <div class="form-row">
         <div class="form-group"><label>Exam Name</label><input id="ex-m-exam" placeholder="e.g. Annual 2026"></div>
         <div class="form-group"><label>Year</label><input id="ex-m-year" value="2026"></div>
-        <div class="form-group"><label>Class (optional)</label><select id="ex-m-class"><option value="">All Classes</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+        <div class="form-group"><label>Class</label><select id="ex-m-class"><option value="">All Classes</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
         <div class="form-group"><label>Subject</label><input id="ex-m-subject" placeholder="e.g. Urdu"></div>
         <div class="form-group"><label>Date</label><input type="date" id="ex-m-date"></div>
+        <div class="form-group"><label>Venue / Room</label><input id="ex-m-venue" placeholder="e.g. Hall A"></div>
         <div class="form-group"><label>Start Time</label><input type="time" id="ex-m-start"></div>
         <div class="form-group"><label>End Time</label><input type="time" id="ex-m-end"></div>
-        <div class="form-group"><label>Venue / Room</label><input id="ex-m-venue" placeholder="e.g. Hall A"></div>
-        <div class="form-group"><label>Notes</label><input id="ex-m-notes" placeholder="Optional"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Notes (optional)</label><input id="ex-m-notes" placeholder="Optional"></div>
       </div>
       <p id="ex-m-msg" style="font-size:.8rem;margin-top:.5rem;text-align:center;min-height:1.2rem"></p>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="flex-shrink:0">
       <button class="btn" onclick="closeModal('modal-exam')">Cancel</button>
       <button class="btn btn-gd" onclick="saveExam()">Save</button>
     </div>

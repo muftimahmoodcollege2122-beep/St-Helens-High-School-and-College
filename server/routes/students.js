@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const { readDB, writeDB, newId } = require('../db');
 const { protect } = require('../middleware/auth');
+const { autoAssignFees } = require('../utils/feeAutoAssign');
 
 router.get('/', protect, (req,res) => {
   try {
@@ -28,7 +29,8 @@ router.post('/', protect, (req,res) => {
     if (all.find(r => r.rollNo === rollNo)) return res.status(400).json({ success:false, message:'Roll number already exists.' });
     const item = { _id:newId(), rollNo, name, fatherName, class:cls, section, gender, status, ...req.body, createdAt:new Date().toISOString() };
     all.push(item); writeDB('students', all);
-    res.status(201).json({ success:true, data:item });
+    const feeResult = autoAssignFees(item);
+    res.status(201).json({ success:true, data:item, feeResult });
   } catch(e) { res.status(500).json({ success:false, message:e.message }); }
 });
 

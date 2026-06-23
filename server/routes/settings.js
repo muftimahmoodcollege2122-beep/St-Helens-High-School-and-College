@@ -42,6 +42,14 @@ const DEFAULTS = {
   achievementsEnabled: true,
   ach1: '🏆 Board Position – 2024 Annual Exams',   ach2: '🥇 District Science Fair Champions 2024',
   ach3: '📚 100% Result in FA/FSc 2023',            ach4: '🎖 Best School Award – Pakistan 2023',
+  feeStructure: {
+    'Nursery-KG':  { monthly: 1500, admission: 3000, annual: 2000 },
+    'Class 1-5':   { monthly: 2000, admission: 4000, annual: 2500 },
+    'Class 6-8':   { monthly: 2500, admission: 5000, annual: 3000 },
+    'Class 9-10':  { monthly: 3000, admission: 6000, annual: 3500 },
+    'FA/FSc':      { monthly: 3500, admission: 7000, annual: 4000 },
+  },
+  feeMonths: ['January','February','March','April','May','June','July','August','September','October','November','December'],
 };
 
 // GET /api/settings  (public — needed by index.html)

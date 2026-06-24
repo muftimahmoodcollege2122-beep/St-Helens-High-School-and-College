@@ -274,6 +274,7 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('alumni',this)"><span class="ic">🎓</span> Alumni</button>
       <button class="sb-link" onclick="showPage('attendance',this)"><span class="ic">📋</span> Attendance</button>
       <button class="sb-link" onclick="showPage('fees',this)"><span class="ic">💰</span> Fee Management <span id="fee-pending-badge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:.1rem .5rem;font-size:.7rem;margin-left:.3rem"></span></button>
+      <button class="sb-link" onclick="showPage('fee-structure',this)"><span class="ic">📋</span> Fee Structure</button>
       <button class="sb-link" onclick="showPage('timetable',this)"><span class="ic">🗓</span> Timetable</button>
       <button class="sb-link" onclick="showPage('exams',this)"><span class="ic">📝</span> Exam Schedule</button>
       <button class="sb-link" onclick="showPage('leave',this)"><span class="ic">🏖</span> Leave Requests <span id="leave-pending-badge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:.1rem .5rem;font-size:.7rem;margin-left:.3rem"></span></button>
@@ -298,7 +299,6 @@ textarea{resize:vertical;min-height:90px}
       <button class="sb-link" onclick="showPage('ticker-settings',this)"><span class="ic">📢</span> Ticker &amp; Notice</button>
       <button class="sb-link" onclick="showPage('why-settings',this)"><span class="ic">⭐</span> Why Choose Us</button>
       <button class="sb-link" onclick="showPage('achievements-settings',this)"><span class="ic">🏅</span> Achievements</button>
-      <button class="sb-link" onclick="showPage('fee-structure',this);loadFeeStructure()"><span class="ic">💰</span> Fee Structure</button>
       <button class="sb-link" onclick="showPage('settings',this)"><span class="ic">🎨</span> Hero, Stats &amp; Password</button>
       <button class="sb-link" onclick="showPage('about-settings',this)"><span class="ic">🏫</span> About Section</button>
       <button class="sb-link" onclick="showPage('contact-settings',this)"><span class="ic">📞</span> Contact Info</button>
@@ -2423,8 +2423,14 @@ let currentFeeStructure = {};
 async function loadFeeStructure() {
   try {
     const d = await apiFetch('/api/settings');
-    if (!d.success) return;
-    currentFeeStructure = d.data.feeStructure || {};
+    if (!d || !d.success) return showToast('Failed to load fee structure','err');
+    currentFeeStructure = d.data.feeStructure || {
+      'Nursery-KG':  { monthly: 1500, admission: 3000, annual: 2000 },
+      'Class 1-5':   { monthly: 2000, admission: 4000, annual: 2500 },
+      'Class 6-8':   { monthly: 2500, admission: 5000, annual: 3000 },
+      'Class 9-10':  { monthly: 3000, admission: 6000, annual: 3500 },
+      'FA/FSc':      { monthly: 3500, admission: 7000, annual: 4000 },
+    };
     renderFeeStructureGrid();
   } catch(e) { showToast('Failed to load fee structure','err'); }
 }
